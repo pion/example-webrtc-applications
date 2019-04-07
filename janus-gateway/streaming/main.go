@@ -5,10 +5,10 @@ import (
 	"time"
 
 	janus "github.com/notedit/janus-go"
-	"github.com/pion/webrtc"
-	"github.com/pion/webrtc/pkg/media"
-	"github.com/pion/webrtc/pkg/media/ivfwriter"
-	"github.com/pion/webrtc/pkg/media/opuswriter"
+	"github.com/pion/webrtc/v2"
+	"github.com/pion/webrtc/v2/pkg/media"
+	"github.com/pion/webrtc/v2/pkg/media/ivfwriter"
+	"github.com/pion/webrtc/v2/pkg/media/opuswriter"
 )
 
 func saveToDisk(i media.Writer, track *webrtc.Track) {
