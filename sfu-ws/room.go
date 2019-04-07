@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/pion/rtcp"
-	"github.com/pion/webrtc"
+	"github.com/pion/webrtc/v2"
 )
 
 // Peer config

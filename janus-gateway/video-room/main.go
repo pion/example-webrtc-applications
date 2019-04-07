@@ -7,7 +7,7 @@ import (
 	"time"
 
 	janus "github.com/notedit/janus-go"
-	"github.com/pion/webrtc"
+	"github.com/pion/webrtc/v2"
 
 	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-src"
 )

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/pion/rtcp"
-	"github.com/pion/webrtc"
+	"github.com/pion/webrtc/v2"
 
 	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-sink"
 	"github.com/pion/example-webrtc-applications/internal/signal"

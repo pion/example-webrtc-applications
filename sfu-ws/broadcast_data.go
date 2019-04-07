@@ -3,7 +3,7 @@ package main
 import (
 	"sync"
 
-	"github.com/pion/webrtc"
+	"github.com/pion/webrtc/v2"
 )
 
 // BroadcastHub keeps a list of all channels
