@@ -22,7 +22,6 @@ type Example struct {
 	Description string `json:"description"`
 	Type        string `json:"type"`
 	IsJS        bool
-	IsWASM      bool
 }
 
 func main() {
@@ -50,15 +49,10 @@ func serve(addr string) error {
 	// DIY 'mux' to avoid additional dependencies
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		url := r.URL.Path
-		if url == "/wasm_exec.js" {
-			http.FileServer(http.Dir("./vendor-wasm/golang.org/misc/wasm/")).ServeHTTP(w, r)
-			return
-		}
-
 		// Split up the URL. Expected parts:
 		// 1: Base url
 		// 2: "example"
-		// 3: Example type: js or wasm
+		// 3: Example type: js
 		// 4: Example folder, e.g.: data-channels
 		// 5: Static file as part of the example
 		parts := strings.Split(url, "/")
@@ -133,10 +127,6 @@ func getExamples() (*Examples, error) {
 		js := filepath.Join(fiddle, "demo.js")
 		if _, err := os.Stat(js); !os.IsNotExist(err) {
 			example.IsJS = true
-		}
-		wasm := filepath.Join(fiddle, "demo.wasm")
-		if _, err := os.Stat(wasm); !os.IsNotExist(err) {
-			example.IsWASM = true
 		}
 	}
 

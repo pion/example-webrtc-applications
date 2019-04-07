@@ -8,8 +8,8 @@ import (
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc"
 
-	gst "github.com/pion/webrtc/examples/internal/gstreamer-sink"
-	"github.com/pion/webrtc/examples/internal/signal"
+	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-sink"
+	"github.com/pion/example-webrtc-applications/internal/signal"
 )
 
 // gstreamerReceiveMain is launched in a goroutine because the main thread is needed

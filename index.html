@@ -55,7 +55,6 @@
 				<div class="content">
 					<p>{{ .Description }}</p>
 					{{ if .IsJS}}<p><a href="/example/js/{{ .Link }}/">Run JavaScript</a></p>{{ end }}
-					{{ if .IsWASM}}<p><a href="/example/wasm/{{ .Link }}/">Run WASM</a></p>{{ end }}
 				</div>
 			</div>
 			{{else}}

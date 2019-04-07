@@ -35,8 +35,9 @@ func init() {
 }
 
 func main() {
-
-	prometheus.Register(prommod.NewCollector("sfu-ws"))
+	if err := prometheus.Register(prommod.NewCollector("sfu-ws")); err != nil {
+		panic(err)
+	}
 
 	port := flag.String("p", "8443", "https port")
 	flag.Parse()
