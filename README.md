@@ -34,5 +34,23 @@ Note that you can change the port of the server using the ``--address`` flag.
 ### Contributing
 Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contributing)** to join the group of amazing people making this project possible:
 
+* [John Bradley](https://github.com/kc5nra) - *Original Author*
+* [Raphael Randschau](https://github.com/nicolai86) - *STUN*
+* [Sean DuBois](https://github.com/Sean-Der) - *Original Author*
+* [Michiel De Backker](https://github.com/backkem) - *SDP, Public API, Project Management*
+* [Konstantin Itskov](https://github.com/trivigy) - *SDP Parsing*
+* [Max Hawkins](https://github.com/maxhawkins) - *RTCP*
+* [Justin Okamoto](https://github.com/justinokamoto) - *Fix Docs*
+* [leeoxiang](https://github.com/notedit) - *Implement Janus examples*
+* [Michael MacDonald](https://github.com/mjmac)
+* [Woodrow Douglass](https://github.com/wdouglass) *RTCP, RTP improvements, G.722 support, Bugfixes*
+* [Rob Deutsch](https://github.com/rob-deutsch) *RTPReceiver graceful shutdown*
+* [Jin Lei](https://github.com/jinleileiking) - *SFU example use http*
+* [Antoine Baché](https://github.com/Antonito) - *OGG Opus export*
+* [frank](https://github.com/feixiao) - *Building examples on OSX*
+* [adwpc](https://github.com/adwpc) - *SFU example with websocket*
+* [imalic3](https://github.com/imalic3) - *SFU websocket example with datachannel broadcast*
+* [Simonacca Fotokite](https://github.com/simonacca-fotokite)
+
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
