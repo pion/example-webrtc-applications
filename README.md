@@ -22,8 +22,8 @@ We've made it easy to run the browser based examples on your local machine.
 
 1. Build and run the example server:
     ``` sh
-    go get github.com/webrtc-example-applications
-    cd $GOPATH/src/github.com/webrtc-example-applications
+    go get github.com/pion/webrtc-example-applications
+    cd $GOPATH/src/github.com/pion/webrtc-example-applications
     go run examples.go
     ```
 
