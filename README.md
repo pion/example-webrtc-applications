@@ -22,8 +22,8 @@ We've made it easy to run the browser based examples on your local machine.
 
 1. Build and run the example server:
     ``` sh
-    go get github.com/pion/webrtc-example-applications
-    cd $GOPATH/src/github.com/pion/webrtc-example-applications
+    go get github.com/pion/example-webrtc-applications
+    cd $GOPATH/src/github.com/pion/example-webrtc-applications
     go run examples.go
     ```
 
@@ -51,6 +51,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [adwpc](https://github.com/adwpc) - *SFU example with websocket*
 * [imalic3](https://github.com/imalic3) - *SFU websocket example with datachannel broadcast*
 * [Simonacca Fotokite](https://github.com/simonacca-fotokite)
+* [Steve Denman](https://github.com/stevedenman)
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
