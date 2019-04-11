@@ -6,6 +6,7 @@ import 'package:flutter_webrtc/webrtc.dart';
 import 'package:sdp_transform/sdp_transform.dart' as sdp_transform;
 
 class SfuWsSample {
+  JsonEncoder _jsonEnc = new JsonEncoder();
   WebSocket _socket;
   MediaStream _stream;
   RTCPeerConnection _pc;
@@ -17,6 +18,71 @@ class SfuWsSample {
   dynamic onError;
 
   SfuWsSample();
+
+  /*Replace the payload to adapt SFU-WS */
+  _changePlyload(description) {
+    var session = sdp_transform.parse(description.sdp);
+    print('session => ' + _jsonEnc.convert(session));
+
+    /*
+     * DefaultPayloadTypeG722 = 9
+	   * DefaultPayloadTypeOpus = 111
+    */
+
+    /*
+     *  DefaultPayloadTypeVP8  = 96
+     *  DefaultPayloadTypeVP9  = 98
+     *  DefaultPayloadTypeH264 = 100
+    */
+
+    var videoIdx = 1;
+
+    /* Only add VP8 and RTX */
+    var rtp = [{
+			"payload": 96,
+			"codec": "VP8",
+			"rate": 90000,
+			"encoding": null
+		},
+    {
+			"payload": 97,
+			"codec": "rtx",
+			"rate": 90000,
+			"encoding": null
+		}];
+
+    session['media'][videoIdx]["payloads"] = "96 97";
+    session['media'][videoIdx]["rtp"] = rtp;
+
+    var fmtp = [{
+			"payload": 97,
+			"config": "apt=96"
+		}];
+
+    session['media'][videoIdx]["fmtp"] = fmtp;
+
+    var rtcpFB = [{
+			"payload": 96,
+			"type": "transport-cc",
+			"subtype": null
+		}, {
+			"payload": 96,
+			"type": "ccm",
+			"subtype": "fir"
+		}, {
+			"payload": 96,
+			"type": "nack",
+			"subtype": null
+		}, {
+			"payload": 96,
+			"type": "nack",
+			"subtype": "pli"
+		}];
+    session['media'][videoIdx]["rtcpFb"] = rtcpFB;
+
+    var sdp = sdp_transform.write(session, null);
+    return new RTCSessionDescription(sdp, description.type);
+  }
 
   bool _inCalling = false;
 
@@ -132,12 +198,8 @@ class SfuWsSample {
     };
     _pc.addStream(_stream);
     RTCSessionDescription description = await _pc.createOffer(_constraints);
-    /*TODO: Use sdp-transform to replace payload type. :(*/
-    var session = sdp_transform.prase(description.sdp);
-
-    /*Change video payloads*/
-    var sdp = sdp_transform.write(session, null);
-    description = new RTCSessionDescription(sdp, description.type);
+    /*Use sdp-transform to replace payload type. :(*/
+    description = _changePlyload(description);
     print('Publisher createOffer');
     _pc.setLocalDescription(description);
     _inCalling = true;
@@ -166,7 +228,8 @@ class SfuWsSample {
     };
 
     RTCSessionDescription description = await _pc.createOffer(_constraints);
-    /*TODO: Use sdp-transform to replace payload type. :(*/
+    /*Use sdp-transform to replace payload type. :(*/
+    description = _changePlyload(description);
     print('Subscriber createOffer');
     _pc.setLocalDescription(description);
     _inCalling = true;
