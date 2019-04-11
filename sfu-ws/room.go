@@ -20,6 +20,7 @@ var peerConnectionConfig = webrtc.Configuration{
 			URLs: []string{"stun:stun.l.google.com:19302"},
 		},
 	},
+	SDPSemantics: webrtc.SDPSemanticsUnifiedPlanWithFallback,
 }
 
 var (
