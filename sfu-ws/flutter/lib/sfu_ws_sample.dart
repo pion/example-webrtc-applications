@@ -24,60 +24,36 @@ class SfuWsSample {
     var session = sdp_transform.parse(description.sdp);
     print('session => ' + _jsonEnc.convert(session));
 
+    var videoIdx = 1;
+
     /*
      * DefaultPayloadTypeG722 = 9
 	   * DefaultPayloadTypeOpus = 111
+     * DefaultPayloadTypeVP8  = 96
+     * DefaultPayloadTypeVP9  = 98
+     * DefaultPayloadTypeH264 = 100
     */
-
-    /*
-     *  DefaultPayloadTypeVP8  = 96
-     *  DefaultPayloadTypeVP9  = 98
-     *  DefaultPayloadTypeH264 = 100
-    */
-
-    var videoIdx = 1;
-
-    /* Only add VP8 and RTX */
-    var rtp = [{
-			"payload": 96,
-			"codec": "VP8",
-			"rate": 90000,
-			"encoding": null
-		},
-    {
-			"payload": 97,
-			"codec": "rtx",
-			"rate": 90000,
-			"encoding": null
-		}];
+    /*Add VP8 and RTX only.*/
+    var rtp = [
+      {"payload": 96, "codec": "VP8", "rate": 90000, "encoding": null},
+      {"payload": 97, "codec": "rtx", "rate": 90000, "encoding": null}
+    ];
 
     session['media'][videoIdx]["payloads"] = "96 97";
     session['media'][videoIdx]["rtp"] = rtp;
 
-    var fmtp = [{
-			"payload": 97,
-			"config": "apt=96"
-		}];
+    var fmtp = [
+      {"payload": 97, "config": "apt=96"}
+    ];
 
     session['media'][videoIdx]["fmtp"] = fmtp;
 
-    var rtcpFB = [{
-			"payload": 96,
-			"type": "transport-cc",
-			"subtype": null
-		}, {
-			"payload": 96,
-			"type": "ccm",
-			"subtype": "fir"
-		}, {
-			"payload": 96,
-			"type": "nack",
-			"subtype": null
-		}, {
-			"payload": 96,
-			"type": "nack",
-			"subtype": "pli"
-		}];
+    var rtcpFB = [
+      {"payload": 96, "type": "transport-cc", "subtype": null},
+      {"payload": 96, "type": "ccm", "subtype": "fir"},
+      {"payload": 96, "type": "nack", "subtype": null},
+      {"payload": 96, "type": "nack", "subtype": "pli"}
+    ];
     session['media'][videoIdx]["rtcpFb"] = rtcpFB;
 
     var sdp = sdp_transform.write(session, null);
