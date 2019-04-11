@@ -13,7 +13,7 @@ This example requires you have GStreamer installed, these are the supported plat
 
 ### Download gstreamer-receive
 ```
-go get github.com/pion/webrtc-example-applications/gstreamer-receive
+go get github.com/pion/example-webrtc-applications/gstreamer-receive
 ```
 
 ### Open gstreamer-receive example page
