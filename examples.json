@@ -24,6 +24,12 @@
 		"type": "browser"
 	},
 	{
+		"title": "GoCV Receive",
+		"link": "gocv-receive",
+		"description": "gocv-receive is a simple application that shows how to receive media using Pion and then do motion detection with GoCV.",
+		"type": "browser"
+	},
+	{
 		"title": "Gstreamer Receive",
 		"link": "gstreamer-receive",
 		"description": "The gstreamer-receive example shows how to receive media from the browser and play it live. This example uses GStreamer for rendering.",
