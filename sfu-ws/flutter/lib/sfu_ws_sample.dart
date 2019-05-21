@@ -28,7 +28,7 @@ class SfuWsSample {
 
     /*
      * DefaultPayloadTypeG722 = 9
-	   * DefaultPayloadTypeOpus = 111
+     * DefaultPayloadTypeOpus = 111
      * DefaultPayloadTypeVP8  = 96
      * DefaultPayloadTypeVP9  = 98
      * DefaultPayloadTypeH264 = 100
