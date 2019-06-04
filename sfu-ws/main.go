@@ -35,7 +35,7 @@ func init() {
 }
 
 func main() {
-	if err := prometheus.Register(prommod.NewCollector("sfu-ws")); err != nil {
+	if err := prometheus.Register(prommod.NewCollector("sfu_ws")); err != nil {
 		panic(err)
 	}
 
