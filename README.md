@@ -52,6 +52,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [imalic3](https://github.com/imalic3) - *SFU websocket example with datachannel broadcast*
 * [Simonacca Fotokite](https://github.com/simonacca-fotokite)
 * [Steve Denman](https://github.com/stevedenman)
+* [CloudWebRTC](https://github.com/cloudwebrtc) - *Flutter example for SFU-WS*
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
