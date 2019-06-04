@@ -10,7 +10,8 @@ If you have a request please make an issue, we also love contributions more exam
 Have any questions? Join [the Slack channel](https://pion.ly/slack) to follow development and speak with the maintainers.
 
 ## Examples
-* [Gstreamer Receive](gstreamer-receive): The gstreamer-receive example shows how to receive media from the browser and play it live. This example uses GStreamer for rendering.
+* [GoCV Receive](gocv-receive): Example gocv-receive shows how to receive media using Pion and then do motion detection with GoCV.
+* [Gstreamer Receive](gstreamer-receive): Example gstreamer-receive shows how to receive media from the browser and play it live. This example uses GStreamer for rendering.
 * [Gstreamer Send](gstreamer-send): Example gstreamer-send shows how to send video to your browser. This example uses GStreamer to process the video.
 * [Gstreamer Send Offer](gstreamer-send-offer): Example gstreamer-send-offer is a variant of gstreamer-send that initiates the WebRTC connection by sending an offer.
 * [Janus Gateway](janus-gateway): Example janus-gateway is a collection of examples showing how to use Pion WebRTC with [janus-gateway](https://github.com/meetecho/janus-gateway).
@@ -52,6 +53,8 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [imalic3](https://github.com/imalic3) - *SFU websocket example with datachannel broadcast*
 * [Simonacca Fotokite](https://github.com/simonacca-fotokite)
 * [Steve Denman](https://github.com/stevedenman)
+* [RunningMan](https://github.com/xsbchen)
+* [mchlrhw](https://github.com/mchlrhw)
 * [CloudWebRTC](https://github.com/cloudwebrtc) - *Flutter example for SFU-WS*
 
 ### License

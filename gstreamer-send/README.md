@@ -9,7 +9,7 @@ This example requires you have GStreamer installed, these are the supported plat
 #### Windows MinGW64/MSYS2
 `pacman -S mingw-w64-x86_64-gstreamer mingw-w64-x86_64-gst-libav mingw-w64-x86_64-gst-plugins-good mingw-w64-x86_64-gst-plugins-bad mingw-w64-x86_64-gst-plugins-ugly`
 #### macOS
-` brew install gst-plugins-good pkg-config && export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig`
+` brew install gst-plugins-good gst-plugins-ugly pkg-config && export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig"`
 
 ### Download gstreamer-send
 ```

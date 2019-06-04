@@ -7,18 +7,15 @@ let pc = new RTCPeerConnection({
     }
   ]
 })
-let log = msg => {
-  document.getElementById('div').innerHTML += msg + '<br>'
+var log = msg => {
+  document.getElementById('logs').innerHTML += msg + '<br>'
 }
 
-pc.ontrack = function (event) {
-  var el = document.createElement(event.track.kind)
-  el.srcObject = event.streams[0]
-  el.autoplay = true
-  el.controls = true
-
-  document.getElementById('remoteVideos').appendChild(el)
-}
+navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+  .then(stream => {
+    pc.addStream(document.getElementById('video1').srcObject = stream)
+    pc.createOffer().then(d => pc.setLocalDescription(d)).catch(log)
+  }).catch(log)
 
 pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
 pc.onicecandidate = event => {
@@ -26,12 +23,6 @@ pc.onicecandidate = event => {
     document.getElementById('localSessionDescription').value = btoa(JSON.stringify(pc.localDescription))
   }
 }
-
-// Offer to receive 1 audio, and 2 video tracks
-pc.addTransceiver('audio', {'direction': 'sendrecv'})
-pc.addTransceiver('video', {'direction': 'sendrecv'})
-pc.addTransceiver('video', {'direction': 'sendrecv'})
-pc.createOffer().then(d => pc.setLocalDescription(d)).catch(log)
 
 window.startSession = () => {
   let sd = document.getElementById('remoteSessionDescription').value
