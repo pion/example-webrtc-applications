@@ -55,7 +55,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Steve Denman](https://github.com/stevedenman)
 * [RunningMan](https://github.com/xsbchen)
 * [mchlrhw](https://github.com/mchlrhw)
-* [CloudWebRTC|湖北捷智云技术有限公司](https://github.com/cloudwebrtc) - *Flutter example for SFU-WS*
+* [CloudWebRTC](https://github.com/cloudwebrtc) - *Flutter example for SFU-WS*
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
