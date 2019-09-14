@@ -56,7 +56,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [RunningMan](https://github.com/xsbchen)
 * [mchlrhw](https://github.com/mchlrhw)
 * [CloudWebRTC|湖北捷智云技术有限公司](https://github.com/cloudwebrtc) - *Flutter example for SFU-WS*
-* [Atsushi Watanabe](https://github.com/at-wat)
+* [Atsushi Watanabe](https://github.com/at-wat) - *WebM muxer example*
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
