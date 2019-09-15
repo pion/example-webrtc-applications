@@ -8,7 +8,7 @@ import (
 	"github.com/pion/webrtc/v2"
 	"github.com/pion/webrtc/v2/pkg/media"
 	"github.com/pion/webrtc/v2/pkg/media/ivfwriter"
-	"github.com/pion/webrtc/v2/pkg/media/opuswriter"
+	"github.com/pion/webrtc/v2/pkg/media/oggwriter"
 )
 
 func saveToDisk(i media.Writer, track *webrtc.Track) {
@@ -82,10 +82,10 @@ func main() {
 	peerConnection.OnTrack(func(track *webrtc.Track, receiver *webrtc.RTPReceiver) {
 		codec := track.Codec()
 		if codec.Name == webrtc.Opus {
-			fmt.Println("Got Opus track, saving to disk as output.opus")
-			i, opusNewErr := opuswriter.New("output.opus", codec.ClockRate, codec.Channels)
-			if opusNewErr != nil {
-				panic(opusNewErr)
+			fmt.Println("Got Opus track, saving to disk as output.ogg")
+			i, oggNewErr := oggwriter.New("output.ogg", codec.ClockRate, codec.Channels)
+			if oggNewErr != nil {
+				panic(oggNewErr)
 			}
 			saveToDisk(i, track)
 		} else if codec.Name == webrtc.VP8 {
