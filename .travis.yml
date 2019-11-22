@@ -1,15 +1,23 @@
 language: go
-dist: xenial
+
+branches:
+  only:
+  - master
 
 go:
-- 1.12.x
+  - "1.x" # use the latest Go release
 
 env:
   - GO111MODULE=on
 
+cache:
+  directories:
+    - $HOME/.cache/go-build
+    - $GOPATH/pkg/mod
+
 before_install:
   - sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
-  - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin v1.15.0
+  - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin v1.18.0
   - sh -c "cd c-data-channels && make"
 
 install:
@@ -17,7 +25,7 @@ install:
   - go get -v -t `go list ./... | grep -v c-data-channels`
 
 script:
-  # Since golangci-lint simply passes the paths to go list and go list doesn't know how to exclude packages, 
+  # Since golangci-lint simply passes the paths to go list and go list doesn't know how to exclude packages,
   # this seems to be the workaround according to https://github.com/golangci/golangci-lint/issues/301#issuecomment-441311986
   - go list -f '{{.Dir}}' ./... | fgrep -v c-data-channels | xargs realpath --relative-to=. | xargs golangci-lint run -v
   - bash .github/assert-contributors.sh
