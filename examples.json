@@ -1,29 +1,5 @@
 [
 	{
-		"title": "Data Channels",
-		"link": "data-channels",
-		"description": "The data-channels example shows how you can send/recv DataChannel messages from a web browser.",
-		"type": "browser"
-	},
-	{
-		"title": "Data Channels Create",
-		"link": "data-channels-create",
-		"description": "Example data-channels-create shows how you can send/recv DataChannel messages from a web browser. The difference with the data-channels example is that the data channel is initialized from the server side in this example.",
-		"type": "browser"
-	},
-	{
-		"title": "Data Channels Close",
-		"link": "data-channels-close",
-		"description": "Example data-channels-close is a variant of data-channels that allow playing with the life cycle of data channels.",
-		"type": "browser"
-	},
-	{
-		"title": "Data Channels Detach",
-		"link": "data-channels-detach",
-		"description": "The data-channels-detach is an example that shows how you can detach a data channel.",
-		"type": "browser"
-	},
-	{
 		"title": "GoCV Receive",
 		"link": "gocv-receive",
 		"description": "gocv-receive is a simple application that shows how to receive media using Pion and then do motion detection with GoCV.",
@@ -42,27 +18,34 @@
 		"type": "browser"
 	},
 	{
-		"title": "Pion to Pion",
-		"link": "#",
-		"description": "Example pion-to-pion is an example of two pion instances communicating directly! It therefore has no corresponding web page.",
-		"type": "browser"
-	},
-	{
-		"title": "Save to Disk",
-		"link": "save-to-disk",
-		"description": "The save-to-disk example shows how to record your webcam and save the footage to disk on the server side.",
-		"type": "browser"
-	},
-	{
-		"title": "Minimal SFU",
-		"link": "sfu-minimal",
-		"description": "The minimal SFU example demonstrates how to broadcast a video to multiple peers. A broadcaster uploads the video once and the server forwards it to all other peers.",
-		"type": "browser"
-	},
-	{
 		"title": "WebSocket SFU",
 		"link": "#",
 		"description": "The Websocket SFU example demonstrates how to broadcast a video to multiple peers. This is similar to Minimal SFU, but all signaling is done via websockets like a more full featured application.",
 		"type": "browser"
+	},
+	{
+		"title": "GStreamer CLI",
+		"link": "gstreamer-cli",
+		"description": "Example use GStreamer cli make v4l2 camera device raw stream to Pion WebRTC video stream and alsa audio device raw stream to Pion WebRTC audio stream",
+		"type": "browser"
+	},
+	{
+		"title": "Save to WebM",
+		"link": "save-to-webm",
+		"description": "save-to-webm demonstrates how to save audio/video from your browser as a webm to the local disk.",
+		"type": "browser"
+	},
+	{
+		"title": "C DataChannels",
+		"link": "#",
+		"description": "C DataChannels demonstrates how to use CGo so you can add Pion to your existing C applications.",
+		"type": "browser"
+	},
+	{
+		"title": "Janus Gateway",
+		"link": "#",
+		"description": "Janus Gateway shows how to use the streaming and video-room plugins with Pion.",
+		"type": "browser"
 	}
+
 ]
