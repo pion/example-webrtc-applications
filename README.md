@@ -59,6 +59,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Atsushi Watanabe](https://github.com/at-wat) - *WebM muxer example*
 * [Jadon Bennett](https://github.com/jsjb)
 * [Lukas Herman](https://github.com/lherman-cs) - *C Data Channels example*
+* [EricSong](https://github.com/xsephiroth) - *Implement GstV4l2Alsa example*
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
