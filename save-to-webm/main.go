@@ -14,10 +14,11 @@ import (
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
 	"github.com/pion/webrtc/v2"
+	"github.com/pion/webrtc/v2/pkg/media/samplebuilder"
 )
 
 func main() {
-	saver := &webmSaver{}
+	saver := newWebmSaver()
 	peerConnection := createWebRTCConn(saver)
 
 	closed := make(chan os.Signal, 1)
@@ -31,10 +32,16 @@ func main() {
 }
 
 type webmSaver struct {
-	audioWriter, videoWriter                 *webm.FrameWriter
-	audioStartTimestamp, videoStartTimestamp uint32
-	videoFrame                               []byte
-	videoKeyframe                            bool
+	audioWriter, videoWriter       *webm.FrameWriter
+	audioBuilder, videoBuilder     *samplebuilder.SampleBuilder
+	audioTimestamp, videoTimestamp uint32
+}
+
+func newWebmSaver() *webmSaver {
+	return &webmSaver{
+		audioBuilder: samplebuilder.New(10, &codecs.OpusPacket{}),
+		videoBuilder: samplebuilder.New(10, &codecs.VP8Packet{}),
+	}
 }
 
 func (s *webmSaver) Close() {
@@ -51,30 +58,35 @@ func (s *webmSaver) Close() {
 	}
 }
 func (s *webmSaver) PushOpus(rtpPacket *rtp.Packet) {
-	if s.audioWriter != nil {
-		if s.audioStartTimestamp == 0 {
-			s.audioStartTimestamp = rtpPacket.Timestamp
+	s.audioBuilder.Push(rtpPacket)
+
+	for {
+		sample := s.audioBuilder.Pop()
+		if sample == nil {
+			return
 		}
-		if rtpPacket.Timestamp < s.audioStartTimestamp {
-			panic("RTP Timestamp overflow. Please add proper timestamp processor to continuously save stream!")
-		}
-		t := (rtpPacket.Timestamp - s.audioStartTimestamp) / 48
-		if _, err := s.audioWriter.Write(true, int64(t), rtpPacket.Payload); err != nil {
-			panic(err)
+		if s.audioWriter != nil {
+			s.audioTimestamp += sample.Samples
+			t := s.audioTimestamp / 48
+			if _, err := s.audioWriter.Write(true, int64(t), rtpPacket.Payload); err != nil {
+				panic(err)
+			}
 		}
 	}
 }
 func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
-	var p codecs.VP8Packet
-	if _, err := p.Unmarshal(rtpPacket.Payload); err != nil {
-		panic(err)
-	}
-	if p.S != 0 {
-		// This is head of VP8 partition. Read VP8 header.
-		s.videoKeyframe = (p.Payload[0]&0x1 == 0)
-		if s.videoKeyframe {
+	s.videoBuilder.Push(rtpPacket)
+
+	for {
+		sample := s.videoBuilder.Pop()
+		if sample == nil {
+			return
+		}
+		// Read VP8 header.
+		videoKeyframe := (sample.Data[0]&0x1 == 0)
+		if videoKeyframe {
 			// Keyframe has frame information.
-			raw := uint(p.Payload[6]) | uint(p.Payload[7])<<8 | uint(p.Payload[8])<<16 | uint(p.Payload[9])<<24
+			raw := uint(sample.Data[6]) | uint(sample.Data[7])<<8 | uint(sample.Data[8])<<16 | uint(sample.Data[9])<<24
 			width := int(raw & 0x3FFF)
 			height := int((raw >> 16) & 0x3FFF)
 
@@ -84,20 +96,13 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 			}
 		}
 		if s.videoWriter != nil {
-			if s.videoStartTimestamp == 0 {
-				s.videoStartTimestamp = rtpPacket.Timestamp
-			}
-			if rtpPacket.Timestamp < s.videoStartTimestamp {
-				panic("RTP Timestamp overflow. Please add proper timestamp processor to continuously save stream!")
-			}
-			t := (rtpPacket.Timestamp - s.videoStartTimestamp) / 90
-			if _, err := s.videoWriter.Write(s.videoKeyframe, int64(t), s.videoFrame); err != nil {
+			s.videoTimestamp += sample.Samples
+			t := s.videoTimestamp / 90
+			if _, err := s.videoWriter.Write(videoKeyframe, int64(t), sample.Data); err != nil {
 				panic(err)
 			}
 		}
-		s.videoFrame = []byte{}
 	}
-	s.videoFrame = append(s.videoFrame, p.Payload...)
 }
 func (s *webmSaver) InitWriter(width, height int) {
 	w, err := os.OpenFile("test.webm", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
