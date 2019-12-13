@@ -32,7 +32,7 @@ func main() {
 }
 
 type webmSaver struct {
-	audioWriter, videoWriter       *webm.FrameWriter
+	audioWriter, videoWriter       webm.BlockWriteCloser
 	audioBuilder, videoBuilder     *samplebuilder.SampleBuilder
 	audioTimestamp, videoTimestamp uint32
 }
@@ -110,7 +110,7 @@ func (s *webmSaver) InitWriter(width, height int) {
 		panic(err)
 	}
 
-	ws, err := webm.NewSimpleWriter(w,
+	ws, err := webm.NewSimpleBlockWriter(w,
 		[]webm.TrackEntry{
 			{
 				Name:            "Audio",
