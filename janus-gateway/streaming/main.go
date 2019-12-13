@@ -53,52 +53,6 @@ func watchHandle(handle *janus.Handle) {
 func main() {
 	// Everything below is the pion-WebRTC API! Thanks for using it ❤️.
 
-	// Prepare the configuration
-	config := webrtc.Configuration{
-		ICEServers: []webrtc.ICEServer{
-			{
-				URLs: []string{"stun:stun.l.google.com:19302"},
-			},
-		},
-		SDPSemantics: webrtc.SDPSemanticsUnifiedPlanWithFallback,
-	}
-
-	// Create a new RTCPeerConnection
-	peerConnection, err := webrtc.NewPeerConnection(config)
-	if err != nil {
-		panic(err)
-	}
-
-	// Allow us to receive 1 audio track, and 1 video track
-	if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeAudio); err != nil {
-		panic(err)
-	} else if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeVideo); err != nil {
-		panic(err)
-	}
-
-	peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
-		fmt.Printf("Connection State has changed %s \n", connectionState.String())
-	})
-
-	peerConnection.OnTrack(func(track *webrtc.Track, receiver *webrtc.RTPReceiver) {
-		codec := track.Codec()
-		if codec.Name == webrtc.Opus {
-			fmt.Println("Got Opus track, saving to disk as output.ogg")
-			i, oggNewErr := oggwriter.New("output.ogg", codec.ClockRate, codec.Channels)
-			if oggNewErr != nil {
-				panic(oggNewErr)
-			}
-			saveToDisk(i, track)
-		} else if codec.Name == webrtc.VP8 {
-			fmt.Println("Got VP8 track, saving to disk as output.ivf")
-			i, ivfNewErr := ivfwriter.New("output.ivf")
-			if ivfNewErr != nil {
-				panic(ivfNewErr)
-			}
-			saveToDisk(i, track)
-		}
-	})
-
 	// Janus
 	gateway, err := janus.Connect("ws://localhost:8188/")
 	if err != nil {
@@ -137,11 +91,61 @@ func main() {
 	}
 
 	if msg.Jsep != nil {
-		err = peerConnection.SetRemoteDescription(webrtc.SessionDescription{
+		offer := webrtc.SessionDescription{
 			Type: webrtc.SDPTypeOffer,
 			SDP:  msg.Jsep["sdp"].(string),
+		}
+
+		mediaEngine := webrtc.MediaEngine{}
+		if err = mediaEngine.PopulateFromSDP(offer); err != nil {
+			panic(err)
+		}
+
+		// Create a new RTCPeerConnection
+		var peerConnection *webrtc.PeerConnection
+		peerConnection, err = webrtc.NewAPI(webrtc.WithMediaEngine(mediaEngine)).NewPeerConnection(webrtc.Configuration{
+			ICEServers: []webrtc.ICEServer{
+				{
+					URLs: []string{"stun:stun.l.google.com:19302"},
+				},
+			},
+			SDPSemantics: webrtc.SDPSemanticsUnifiedPlanWithFallback,
 		})
 		if err != nil {
+			panic(err)
+		}
+
+		// Allow us to receive 1 audio track, and 1 video track
+		if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeAudio); err != nil {
+			panic(err)
+		} else if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeVideo); err != nil {
+			panic(err)
+		}
+
+		peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
+			fmt.Printf("Connection State has changed %s \n", connectionState.String())
+		})
+
+		peerConnection.OnTrack(func(track *webrtc.Track, receiver *webrtc.RTPReceiver) {
+			codec := track.Codec()
+			if codec.Name == webrtc.Opus {
+				fmt.Println("Got Opus track, saving to disk as output.ogg")
+				i, oggNewErr := oggwriter.New("output.ogg", codec.ClockRate, codec.Channels)
+				if oggNewErr != nil {
+					panic(oggNewErr)
+				}
+				saveToDisk(i, track)
+			} else if codec.Name == webrtc.VP8 {
+				fmt.Println("Got VP8 track, saving to disk as output.ivf")
+				i, ivfNewErr := ivfwriter.New("output.ivf")
+				if ivfNewErr != nil {
+					panic(ivfNewErr)
+				}
+				saveToDisk(i, track)
+			}
+		})
+
+		if err = peerConnection.SetRemoteDescription(offer); err != nil {
 			panic(err)
 		}
 
