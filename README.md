@@ -61,6 +61,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Jadon Bennett](https://github.com/jsjb)
 * [Lukas Herman](https://github.com/lherman-cs) - *C Data Channels example*
 * [EricSong](https://github.com/xsephiroth) - *Implement GstV4l2Alsa example*
+* [Tristan Matthews](https://github.com/tmatth)
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
