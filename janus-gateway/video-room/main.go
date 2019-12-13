@@ -43,6 +43,7 @@ func main() {
 				URLs: []string{"stun:stun.l.google.com:19302"},
 			},
 		},
+		SDPSemantics: webrtc.SDPSemanticsUnifiedPlanWithFallback,
 	}
 
 	// Create a new RTCPeerConnection
