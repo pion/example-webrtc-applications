@@ -71,6 +71,16 @@ func main() {
 		panic(err)
 	}
 
+	go func() {
+		for {
+			if _, keepAliveErr := session.KeepAlive(); err != nil {
+				panic(keepAliveErr)
+			}
+
+			time.Sleep(5 * time.Second)
+		}
+	}()
+
 	go watchHandle(handle)
 
 	// Get streaming list
@@ -170,13 +180,5 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-	}
-	for {
-		_, err = session.KeepAlive()
-		if err != nil {
-			panic(err)
-		}
-
-		time.Sleep(5 * time.Second)
 	}
 }
