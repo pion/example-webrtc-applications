@@ -7,7 +7,7 @@ import (
 
 	"github.com/pion/webrtc/v2"
 
-	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-src"
+	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-src2"
 	"github.com/pion/example-webrtc-applications/internal/signal"
 )
 

@@ -8,7 +8,7 @@ import (
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc/v2"
 
-	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-sink"
+	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-sink2"
 	"github.com/pion/example-webrtc-applications/internal/signal"
 )
 
@@ -26,8 +26,15 @@ func gstreamerReceiveMain() {
 		},
 	}
 
+	m := webrtc.MediaEngine{}
+	m.RegisterCodec(webrtc.NewRTPOpusCodec(webrtc.DefaultPayloadTypeOpus, 48000))
+	m.RegisterCodec(webrtc.NewRTPH264Codec(webrtc.DefaultPayloadTypeH264, 90000))
+	m.RegisterCodec(webrtc.NewRTPVP8Codec(webrtc.DefaultPayloadTypeVP8, 90000))
+
+	api := webrtc.NewAPI(webrtc.WithMediaEngine(m))
+
 	// Create a new RTCPeerConnection
-	peerConnection, err := webrtc.NewPeerConnection(config)
+	peerConnection, err := api.NewPeerConnection(config)
 	if err != nil {
 		panic(err)
 	}
