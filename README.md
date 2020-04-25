@@ -62,6 +62,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Lukas Herman](https://github.com/lherman-cs) - *C Data Channels example*
 * [EricSong](https://github.com/xsephiroth) - *Implement GstV4l2Alsa example*
 * [Tristan Matthews](https://github.com/tmatth)
+* [Alexey Kravtsov](https://github.com/alexey-kravtsov) - *GStreamer encoder tune*
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
