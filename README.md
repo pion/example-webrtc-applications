@@ -63,6 +63,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [EricSong](https://github.com/xsephiroth) - *Implement GstV4l2Alsa example*
 * [Tristan Matthews](https://github.com/tmatth)
 * [Alexey Kravtsov](https://github.com/alexey-kravtsov) - *GStreamer encoder tune*
+* [Tarrence van As](https://github.com/tarrencev) - *Webm saver fix*
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
