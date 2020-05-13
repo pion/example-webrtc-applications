@@ -1,0 +1,6 @@
+---
+ name: ffmpeg-receive
+ description: Example of using pion-WebRTC to stream to WebRTC Video Track
+ authors:
+   - Sean DuBois
+   - Ryan Castner

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./demo.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    Browser base64 Session Description<br />
+    <textarea id="localSessionDescription" readonly="true"></textarea> <br />
+
+    Golang base64 Session Description<br />
+    <textarea id="remoteSessionDescription"></textarea> <br />
+    <button onclick="window.startSession()">Start Session</button>
+    ><br />
+
+    <br />
+
+    Video<br />
+    <div id="localVideos"></div>
+    <br />
+
+    Logs<br />
+    <div id="logs"></div>
+  </body>
+
+  <script type="text/javascript" src="./demo.js"></script>
+</html>
