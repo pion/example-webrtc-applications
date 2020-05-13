@@ -19,15 +19,16 @@ const (
 )
 
 // CreateH264Pipe creates an ffmpeg pipe.
-func CreateH264Pipe() io.ReadCloser {
+func CreateH264Pipe(src string) io.ReadCloser {
 	ffmpeg := exec.Command(
 		"ffmpeg",
-		"-f", "avfoundation",
-		"-capture_cursor", "1",
-		"-i", "1:none",
+		"-f", src,
+		// "-capture_cursor", "1",
+		// "-i", "1:none",
+		"-i", ":0.0",
 		"-s", strconv.Itoa(FrameX)+"x"+strconv.Itoa(FrameY),
 		"-c:v", "libx264",
-		"-vsync", "2",
+		// "-vsync", "2",
 		"-framerate", "30",
 		"-preset", "veryfast",
 		"-tune", "zerolatency",
@@ -36,8 +37,15 @@ func CreateH264Pipe() io.ReadCloser {
 		"pipe:1",
 	)
 
-	ffmpegOut, _ := ffmpeg.StdoutPipe()
-	ffmpegErr, _ := ffmpeg.StderrPipe()
+	ffmpegOut, err := ffmpeg.StdoutPipe()
+	if err != nil {
+		panic(err)
+	}
+
+	ffmpegErr, err := ffmpeg.StderrPipe()
+	if err != nil {
+		panic(err)
+	}
 
 	// Log any errors
 	go func() {
@@ -53,7 +61,9 @@ func CreateH264Pipe() io.ReadCloser {
 	// Kill the spawned process if this program receives an interrupt signal
 	go func() {
 		<-sigs
-		ffmpeg.Process.Kill()
+		if err := ffmpeg.Process.Kill(); err != nil {
+			panic(err)
+		}
 	}()
 
 	if err := ffmpeg.Start(); err != nil {

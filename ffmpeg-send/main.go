@@ -3,17 +3,17 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"net"
 
+	"github.com/pion/rtp"
+	"github.com/pion/rtp/codecs"
 	"github.com/pion/webrtc/v2"
-	"github.com/pion/webrtc/v2/pkg/media"
 
 	"github.com/pion/example-webrtc-applications/internal/ffmpeg"
 	"github.com/pion/example-webrtc-applications/internal/signal"
 )
 
-// gstreamerReceiveMain is launched in a goroutine because the main thread is needed
-// for Glib's main loop (Gstreamer uses Glib)
-func ffmpegSendMain() {
+func main() {
 	// Everything below is the pion-WebRTC API! Thanks for using it ❤️.
 
 	// Prepare the configuration
@@ -92,29 +92,41 @@ func ffmpegSendMain() {
 	// Output the answer in base64 so we can paste it in browser
 	fmt.Println(signal.Encode(answer))
 
-	go func() {
-		stdOut := ffmpeg.CreateH264Pipe()
-		buf := make([]byte, ffmpeg.FrameSize)
-		for {
-			n, err := stdOut.Read(buf)
-			if err != nil {
-				panic(err)
-			}
-			err = track.WriteSample(media.Sample{
-				Data:    buf[:n],
-				Samples: 90000, // TODO: correctly determine samples
-			})
-			if err != nil {
-				panic(err)
-			}
+	s, err := net.ResolveUDPAddr("udp4", ":0")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	connection, err := net.ListenUDP("udp4", s)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	stdOut := ffmpeg.CreateH264Pipe("x11grab")
+	buf := make([]byte, ffmpeg.FrameSize)
+	packetizer := rtp.NewPacketizer(1400, 96, 5000, &codecs.H264Payloader{}, rtp.NewFixedSequencer(0), 90000)
+
+	for {
+		n, err := stdOut.Read(buf)
+		if err != nil {
+			panic(err)
 		}
-	}()
 
-	// Block forever
-	select {}
-}
+		for _, f := range packetizer.Packetize(buf[:n], 90000) {
+			raw, _ := f.Marshal()
 
-func main() {
-	// Start a new thread to do the actual work for this application
-	ffmpegSendMain()
+			connection.WriteTo(raw, &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 50001})
+		}
+
+		// panic("fug")
+		// err = track.WriteSample(media.Sample{
+		// 	Data:    buf[:n],
+		// 	Samples: 90000, // TODO: correctly determine samples
+		// })
+		// if err != nil {
+		// 	panic(err)
+		// }
+	}
 }

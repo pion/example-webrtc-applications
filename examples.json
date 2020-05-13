@@ -46,6 +46,11 @@
 		"link": "#",
 		"description": "Janus Gateway shows how to use the streaming and video-room plugins with Pion.",
 		"type": "browser"
+	},
+	{
+		"title": "FFmpeg Send",
+		"link": "ffmpeg-send",
+		"description": "FFmpeg shows how to generate video using FFmpeg and send it to your browser.",
+		"type": "browser"
 	}
-
 ]
