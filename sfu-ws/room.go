@@ -52,7 +52,6 @@ const (
 )
 
 func room(w http.ResponseWriter, r *http.Request) {
-
 	// Websocket client
 	c, err := upgrader.Upgrade(w, r, nil)
 	checkError(err)
@@ -79,7 +78,6 @@ func room(w http.ResponseWriter, r *http.Request) {
 
 		pubReceiver.OnTrack(func(remoteTrack *webrtc.Track, receiver *webrtc.RTPReceiver) {
 			if remoteTrack.PayloadType() == webrtc.DefaultPayloadTypeVP8 || remoteTrack.PayloadType() == webrtc.DefaultPayloadTypeVP9 || remoteTrack.PayloadType() == webrtc.DefaultPayloadTypeH264 {
-
 				// Create a local video track, all our SFU clients will be fed via this track
 				var err error
 				videoTrackLock.Lock()
@@ -107,9 +105,7 @@ func room(w http.ResponseWriter, r *http.Request) {
 						checkError(err)
 					}
 				}
-
 			} else {
-
 				// Create a local audio track, all our SFU clients will be fed via this track
 				var err error
 				audioTrackLock.Lock()
@@ -156,7 +152,6 @@ func room(w http.ResponseWriter, r *http.Request) {
 			})
 		})
 	} else {
-
 		// Create a new PeerConnection
 		subSender, err := api.NewPeerConnection(peerConnectionConfig)
 		checkError(err)

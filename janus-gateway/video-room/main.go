@@ -18,19 +18,17 @@ func watchHandle(handle *janus.Handle) {
 		msg := <-handle.Events
 		switch msg := msg.(type) {
 		case *janus.SlowLinkMsg:
-			log.Println("SlowLinkMsg type ", handle.Id)
+			log.Println("SlowLinkMsg type ", handle.ID)
 		case *janus.MediaMsg:
 			log.Println("MediaEvent type", msg.Type, " receiving ", msg.Receiving)
 		case *janus.WebRTCUpMsg:
-			log.Println("WebRTCUp type ", handle.Id)
+			log.Println("WebRTCUp type ", handle.ID)
 		case *janus.HangupMsg:
-			log.Println("HangupEvent type ", handle.Id)
+			log.Println("HangupEvent type ", handle.ID)
 		case *janus.EventMsg:
 			log.Printf("EventMsg %+v", msg.Plugindata.Data)
 		}
-
 	}
-
 }
 
 func main() {
@@ -152,5 +150,4 @@ func main() {
 	}
 
 	select {}
-
 }
