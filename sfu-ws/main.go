@@ -18,7 +18,6 @@ func checkError(err error) {
 }
 
 func init() {
-
 	// Generate pem file for https
 	genPem()
 
@@ -31,7 +30,6 @@ func init() {
 
 	// Create the API object with the MediaEngine
 	api = webrtc.NewAPI(webrtc.WithMediaEngine(m))
-
 }
 
 func main() {

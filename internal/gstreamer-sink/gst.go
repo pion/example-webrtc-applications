@@ -1,3 +1,4 @@
+// Package gst provides an easy API to create an appsrc pipeline
 package gst
 
 /*

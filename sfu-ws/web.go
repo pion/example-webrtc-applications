@@ -14,7 +14,6 @@ import (
 )
 
 func genPem() {
-
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	checkError(err)
 
