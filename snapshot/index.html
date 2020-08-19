@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <title>snapshot</title>
+  </head>
+
+  <body>
+    <button onclick="window.publishVideo()"> Publish Video </button>
+    <button onclick="window.generateSnapshot()"> Generate Snapshot </button>
+    <br />
+
+    <h3> Snapshot </h3>
+    <img id="snapshot"> </div> <br />
+
+    <h3> Video Stream </h3>
+    <video id="localVideo" autoplay="true" controls="true"></video> <br />
+
+    <h3> Logs </h3>
+    <div id="logs"></div>
+  </body>
+
+  <script>
+    var log = msg => {
+      document.getElementById('logs').innerHTML += msg + '<br>'
+    }
+
+    window.publishVideo = () => {
+      let pc = new RTCPeerConnection()
+      navigator.mediaDevices.getUserMedia({video: true})
+        .then(stream => {
+          document.getElementById('localVideo').srcObject = stream
+          stream.getTracks().forEach(function(track) {
+            pc.addTrack(track, stream)
+          })
+
+          pc.createOffer()
+            .then(offer => {
+              pc.setLocalDescription(offer)
+
+              return fetch(`/signal`, {
+                method: 'post',
+                headers: {
+                  'Accept': 'application/json, text/plain, */*',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(offer)
+              })
+            })
+            .then(res => res.json())
+            .then(res => pc.setRemoteDescription(res))
+            .catch(log)
+        }).catch(log)
+    }
+
+    window.generateSnapshot = () => {
+      fetch(`/snapshot`)
+        .then(response => response.blob())
+        .then(image => {
+          document.getElementById('snapshot').src = URL.createObjectURL(image)
+        })
+    }
+
+  </script>
+</html>
