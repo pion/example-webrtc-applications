@@ -63,9 +63,7 @@ func room(w http.ResponseWriter, r *http.Request) {
 	mt, msg, err := c.ReadMessage()
 	checkError(err)
 
-	if atomic.LoadInt32(&pubCount) == 0 {
-		atomic.AddInt32(&pubCount, 1)
-
+	if atomic.AddInt32(&pubCount, 1) == 1 {
 		// Create a new RTCPeerConnection
 		pubReceiver, err = api.NewPeerConnection(peerConnectionConfig)
 		checkError(err)
