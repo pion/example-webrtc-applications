@@ -67,6 +67,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Tristan Matthews](https://github.com/tmatth)
 * [Alexey Kravtsov](https://github.com/alexey-kravtsov) - *GStreamer encoder tune*
 * [Tarrence van As](https://github.com/tarrencev) - *Webm saver fix*
+* [Jamie Good](https://github.com/jamiegood) - *Bug fix in jsfiddle example*
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
