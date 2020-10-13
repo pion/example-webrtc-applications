@@ -17,7 +17,7 @@ go get github.com/pion/example-webrtc-applications/twitch
 ```
 
 ### Open twitch example page
-[jsfiddle.net](https://jsfiddle.net/8t2g5Lar/) you should see your Webcam, two text-areas and a 'Start Session' button
+[jsfiddle.net](https://jsfiddle.net/cqavdpj8/1/) you should see your Webcam, two text-areas and a 'Start Session' button
 
 ### Run twitch with your browsers SessionDescription as stdin and stream-key as an argument
 In the jsfiddle the top textarea is your browser, copy that and:
