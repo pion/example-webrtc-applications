@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"io"
+	"math/rand"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/at-wat/ebml-go/webm"
+	"github.com/pion/example-webrtc-applications/utils"
 
 	webrtcsignal "github.com/pion/example-webrtc-applications/internal/signal"
 	"github.com/pion/rtcp"
@@ -164,8 +166,11 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 	m.RegisterCodec(webrtc.NewRTPVP8Codec(webrtc.DefaultPayloadTypeVP8, 90000))
 	m.RegisterCodec(webrtc.NewRTPOpusCodec(webrtc.DefaultPayloadTypeOpus, 48000))
 
+	se := &webrtc.SettingEngine{}
+	se.SetSRTPReplayProtectionWindow(1024)
+
 	// Create the API object with the MediaEngine
-	api := webrtc.NewAPI(webrtc.WithMediaEngine(m))
+	api := webrtc.NewAPI(webrtc.WithMediaEngine(m), webrtc.WithSettingEngine(*se))
 
 	// Create a new RTCPeerConnection
 	peerConnection, err := api.NewPeerConnection(config)
@@ -194,6 +199,30 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 			}
 		}()
 
+		receiveLog, err := utils.NewReceiveLog(1024)
+		if err != nil {
+			panic(err)
+		}
+		var senderSSRC = rand.Uint32()
+		go func() {
+			ticker := time.NewTicker(time.Millisecond * 50)
+			for range ticker.C {
+				missing := receiveLog.MissingSeqNumbers(10)
+				nack := &rtcp.TransportLayerNack{
+					SenderSSRC: senderSSRC,
+					MediaSSRC:  track.SSRC(),
+					Nacks:      utils.NackPairs(missing),
+				}
+				errSend := peerConnection.WriteRTCP([]rtcp.Packet{nack})
+				if errSend != nil {
+					fmt.Println(errSend)
+				}
+			}
+		}()
+
+		sequenceUnwrapper := utils.NewSequenceUnwrapper(16)
+		jitterBuffer := utils.NewJitterBuffer(512)
+
 		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), track.Codec().Name)
 		for {
 			// Read RTP packets being sent to Pion
@@ -204,11 +233,23 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 				}
 				panic(readErr)
 			}
-			switch track.Kind() {
-			case webrtc.RTPCodecTypeAudio:
-				saver.PushOpus(rtp)
-			case webrtc.RTPCodecTypeVideo:
-				saver.PushVP8(rtp)
+
+			receiveLog.Add(rtp.SequenceNumber)
+
+			seq := sequenceUnwrapper.Unwrap(uint64(rtp.SequenceNumber))
+			if !jitterBuffer.Add(seq, rtp) {
+				continue
+			}
+
+			// jitterBuffer.SetNextPacketsStart() can be called in case of a keyframe, so the buffer content is dropped up until the keyframe
+
+			for _, rtp := range jitterBuffer.NextPackets() {
+				switch track.Kind() {
+				case webrtc.RTPCodecTypeAudio:
+					saver.PushOpus(rtp)
+				case webrtc.RTPCodecTypeVideo:
+					saver.PushVP8(rtp)
+				}
 			}
 		}
 	})
@@ -243,5 +284,45 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 	// Output the answer in base64 so we can paste it in browser
 	fmt.Println(webrtcsignal.Encode(answer))
 
+	peerConnection.GetReceivers()
+
 	return peerConnection
+}
+
+func SendBufferExample(track *webrtc.Track, receiver *webrtc.RTPReceiver) {
+	sendBuffer, err := utils.NewSendBuffer(1024)
+	if err != nil {
+		panic(err)
+	}
+
+	go func() {
+		for {
+			time.Sleep(100 / time.Millisecond)
+			// ... do stuff
+
+			someRTP := &rtp.Packet{}
+			sendBuffer.Add(someRTP)
+			track.WriteRTP(someRTP) // write some packet
+		}
+	}()
+
+	for {
+		packets, err := receiver.ReadRTCP()
+		if err != nil {
+			panic(err)
+		}
+
+		for _, p := range packets {
+			switch packet := p.(type) {
+			case *rtcp.TransportLayerNack:
+				missing := utils.NackParsToSequenceNumbers(packet.Nacks)
+				for _, m := range missing {
+					rtp := sendBuffer.Get(m)
+					if rtp != nil {
+						track.WriteRTP(rtp)
+					}
+				}
+			}
+		}
+	}
 }
