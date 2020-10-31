@@ -18,7 +18,7 @@ go get github.com/pion/example-webrtc-applications/gocv-receive
 ```
 
 ### Open gocv-receive example page
-[jsfiddle.net](https://jsfiddle.net/Lsfkexmt/) you should see your Webcam, two text-areas and a 'Start Session' button
+[jsfiddle.net](https://jsfiddle.net/nerhsvpg/) you should see your Webcam, two text-areas and a 'Start Session' button
 
 ### Run gocv-receive with your browsers SessionDescription as stdin
 In the jsfiddle the top textarea is your browser, copy that and:
