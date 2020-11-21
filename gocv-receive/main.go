@@ -3,6 +3,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"image"
 	"image/color"
@@ -29,10 +30,18 @@ func main() {
 	ffmpeg := exec.Command("ffmpeg", "-i", "pipe:0", "-pix_fmt", "bgr24", "-s", strconv.Itoa(frameX)+"x"+strconv.Itoa(frameY), "-f", "rawvideo", "pipe:1") //nolint
 	ffmpegIn, _ := ffmpeg.StdinPipe()
 	ffmpegOut, _ := ffmpeg.StdoutPipe()
+	ffmpegErr, _ := ffmpeg.StderrPipe()
 
 	if err := ffmpeg.Start(); err != nil {
 		panic(err)
 	}
+
+	go func() {
+		scanner := bufio.NewScanner(ffmpegErr)
+		for scanner.Scan() {
+			fmt.Println(scanner.Text())
+		}
+	}()
 
 	createWebRTCConn(ffmpegIn)
 	startGoCVMotionDetect(ffmpegOut)
