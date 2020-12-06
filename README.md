@@ -69,6 +69,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Tarrence van As](https://github.com/tarrencev) - *Webm saver fix*
 * [Cameron Elliott](https://github.com/cameronelliott) - *Small race bug fix*
 * [Jamie Good](https://github.com/jamiegood) - *Bug fix in jsfiddle example*
+* [PhVHoang](https://github.com/PhVHoang)
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
