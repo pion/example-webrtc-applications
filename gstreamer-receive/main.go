@@ -37,8 +37,6 @@ func gstreamerReceiveMain() {
 		panic(err)
 	} else if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeVideo); err != nil {
 		panic(err)
-	} else if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeVideo); err != nil {
-		panic(err)
 	}
 
 	// Set a handler for when a new remote track starts, this handler creates a gstreamer pipeline
