@@ -101,7 +101,7 @@ func main() {
 
 	go func() {
 		for {
-			if _, keepAliveErr := session.KeepAlive(); err != nil {
+			if _, keepAliveErr := session.KeepAlive(); keepAliveErr != nil {
 				panic(keepAliveErr)
 			}
 
