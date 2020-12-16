@@ -70,6 +70,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Cameron Elliott](https://github.com/cameronelliott) - *Small race bug fix*
 * [Jamie Good](https://github.com/jamiegood) - *Bug fix in jsfiddle example*
 * [PhVHoang](https://github.com/PhVHoang)
+* [Pascal Benoit](https://github.com/pascal-ace)
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
