@@ -2,7 +2,6 @@ package softphone
 
 import (
 	"fmt"
-	"regexp"
 )
 
 // Invite ...
@@ -24,10 +23,11 @@ func (softphone *Softphone) Invite(extension, offer string) {
 
 	softphone.request(sipMessage, func(message string) bool {
 		authenticateHeader := SIPMessage{}.FromString(message).headers["Proxy-Authenticate"]
-		regex := regexp.MustCompile(`, nonce="(.+?)"`)
-		nonce := regex.FindStringSubmatch(authenticateHeader)[1]
+		ai :=  GetAuthInfo(authenticateHeader)
+		ai.Uri = "sip:" + softphone.sipInfo.Domain
+		ai.Method = "INVITE"
 
-		sipMessage.addProxyAuthorization(*softphone, nonce, extension, "INVITE").addCseq(softphone).newViaBranch()
+		sipMessage.addAuthorization(*softphone, ai).addCseq(softphone).newViaBranch()
 		softphone.request(sipMessage, func(msg string) bool {
 			return false
 		})

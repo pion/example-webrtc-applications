@@ -14,7 +14,7 @@ Run `go run *.go -h` to see the arguments of the program. If everything is worki
 this is the output you will see.
 
 ```
-$ go run *.go -host 172.17.0.2 -password Aelo1ievoh2oopooTh2paijaeNaidiek
+$ go run *.go -host 172.17.0.2 -password Aelo1ievoh2oopooTh2paijaeNaidiek -ws_url ws://172.17.0.2:5066
   Connection State has changed checking
   Connection State has changed connected
   Got Opus track, saving to disk as output.ogg

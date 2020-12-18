@@ -15,17 +15,12 @@ type SIPMessage struct {
 	Body    string
 }
 
-func (sm *SIPMessage) addAuthorization(softphone Softphone, nonce, method string) *SIPMessage {
-	sm.headers["Authorization"] = generateAuthorization(softphone.sipInfo, method, nonce)
+func (sm *SIPMessage) addAuthorization(softphone Softphone, ai AuthInfo) *SIPMessage {
+	sm.headers["Authorization"] = generateAuthorization(softphone.sipInfo, ai)
 
 	return sm
 }
 
-func (sm *SIPMessage) addProxyAuthorization(softphone Softphone, nonce, user, method string) *SIPMessage {
-	sm.headers["Proxy-Authorization"] = generateProxyAuthorization(softphone.sipInfo, method, user, nonce)
-
-	return sm
-}
 
 func (sm *SIPMessage) newViaBranch() {
 	if val, ok := sm.headers["Via"]; ok {
