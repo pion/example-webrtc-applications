@@ -33,7 +33,7 @@ func (softphone *Softphone) register() {
 			}
 
 			message := string(bytes)
-			// log.Print("↓↓↓\n", message)
+			//log.Print("↓↓↓\n", message)
 
 			for _, ml := range softphone.messageListeners {
 				go ml(message)
@@ -58,6 +58,7 @@ func (softphone *Softphone) register() {
 	softphone.request(sipMessage, func(message string) bool {
 		authenticateHeader := SIPMessage{}.FromString(message).headers["WWW-Authenticate"]
 		ai :=  GetAuthInfo(authenticateHeader)
+		ai.AuthType = "Authorization"
 		ai.Uri = "sip:" + softphone.sipInfo.Domain
 		ai.Method = "REGISTER"
 		sipMessage.addAuthorization(*softphone,ai).addCseq(softphone).newViaBranch()

@@ -21,6 +21,7 @@ type SIPInfoResponse struct {
 }
 
 type AuthInfo struct {
+	AuthType string  `json:"auth_type"`
 	Realm string `json:"realm"`
 	Nonce string `json:"nonce"`
 	Uri string `json:"uri"`

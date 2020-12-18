@@ -45,6 +45,7 @@ func (softphone *Softphone) CloseToInvite() {
 
 // OnOK adds a handler that responds to any incoming ok events.
 func (softphone *Softphone) OnOK(hdlr func(string)) {
+
 	softphone.addMessageListener(func(message string) {
 		if strings.HasPrefix(message, "SIP/2.0 200 OK") {
 			parsed := SIPMessage{}.FromString(message)

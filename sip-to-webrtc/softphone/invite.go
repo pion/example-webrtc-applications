@@ -24,9 +24,9 @@ func (softphone *Softphone) Invite(extension, offer string) {
 	softphone.request(sipMessage, func(message string) bool {
 		authenticateHeader := SIPMessage{}.FromString(message).headers["Proxy-Authenticate"]
 		ai :=  GetAuthInfo(authenticateHeader)
-		ai.Uri = "sip:" + softphone.sipInfo.Domain
+		ai.AuthType = "Proxy-Authorization"
+		ai.Uri = "sip:"+ extension + "@"+ softphone.sipInfo.Domain
 		ai.Method = "INVITE"
-
 		sipMessage.addAuthorization(*softphone, ai).addCseq(softphone).newViaBranch()
 		softphone.request(sipMessage, func(msg string) bool {
 			return false

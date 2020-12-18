@@ -16,11 +16,9 @@ type SIPMessage struct {
 }
 
 func (sm *SIPMessage) addAuthorization(softphone Softphone, ai AuthInfo) *SIPMessage {
-	sm.headers["Authorization"] = generateAuthorization(softphone.sipInfo, ai)
-
+	sm.headers[ai.AuthType] = generateAuthorization(softphone.sipInfo, ai)
 	return sm
 }
-
 
 func (sm *SIPMessage) newViaBranch() {
 	if val, ok := sm.headers["Via"]; ok {

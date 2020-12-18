@@ -2,7 +2,6 @@
 package softphone
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"strings"
@@ -56,7 +55,7 @@ func (softphone *Softphone) removeMessageListener(key string) {
 }
 
 func (softphone Softphone) request2(sipMessage SIPMessage, expectedResp string) string {
-	fmt.Println(sipMessage.ToString())
+
 
 	if err := softphone.wsConn.WriteMessage(1, []byte(sipMessage.ToString())); err != nil {
 		log.Panic(err)
@@ -92,7 +91,7 @@ func (softphone *Softphone) request(sipMessage SIPMessage, responseHandler func(
 }
 
 func (softphone *Softphone) response(message string) {
-	log.Print("↑↑↑\n", message)
+//	log.Print("↑↑↑\n", message)
 
 	if err := softphone.wsConn.WriteMessage(1, []byte(message)); err != nil {
 		log.Fatal(err)
