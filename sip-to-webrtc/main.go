@@ -14,24 +14,22 @@ var (
 	username  = flag.String("username", "1000", "Extension you wish to register as")
 	password  = flag.String("password", "", "Password for the extension you wish to register as")
 	extension = flag.String("extension", "9198", "Extension you wish to call")
-	host      = flag.String("host", "", "Host that websocket is available on")
-	port      = flag.String("port", "5066", "Port that websocket is available on")
+	host      = flag.String("host", "", "Host that ipbx is available on")
+	wsURL     = flag.String("ws_url", "", "URL that websocket is available on")
 )
 
 func main() {
 	flag.Parse()
 
-	if *host == "" || *port == "" || *password == "" {
+	if *host == "" || *wsURL == "" || *password == "" {
 		panic("-host -port and -password are required")
 	}
 
 	conn := softphone.NewSoftPhone(softphone.SIPInfoResponse{
-		Username:        *username,
-		AuthorizationID: *username,
-		Password:        *password,
-		Domain:          *host,
-		Transport:       "ws",
-		OutboundProxy:   *host + ":" + *port,
+		Username:     *username,
+		Password:     *password,
+		Domain:       *host,
+		WebsocketURL: *wsURL,
 	})
 
 	pc, err := webrtc.NewPeerConnection(webrtc.Configuration{})

@@ -4,21 +4,21 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"github.com/gorilla/websocket"
 	"log"
 	"net/url"
-	"regexp"
-	"strings"
-
-	"github.com/gorilla/websocket"
 )
 
 func (softphone *Softphone) register() {
-	url := url.URL{Scheme: strings.ToLower(softphone.sipInfo.Transport), Host: softphone.sipInfo.OutboundProxy, Path: ""}
+	parsedUrl, err := url.Parse(softphone.sipInfo.WebsocketURL)
+	if err != nil {
+		panic(err)
+	}
 	dialer := websocket.DefaultDialer
 	dialer.Subprotocols = []string{"sip"}
 	dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint
 
-	conn, _, err := dialer.Dial(url.String(), nil)
+	conn, _, err := dialer.Dial(parsedUrl.String(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,7 +49,7 @@ func (softphone *Softphone) register() {
 	sipMessage.headers["Via"] = fmt.Sprintf("SIP/2.0/WS %s;branch=%s", softphone.fakeDomain, branch())
 	sipMessage.headers["From"] = fmt.Sprintf("<sip:%s@%s>;tag=%s", softphone.sipInfo.Username, softphone.sipInfo.Domain, softphone.fromTag)
 	sipMessage.headers["To"] = fmt.Sprintf("<sip:%s@%s>", softphone.sipInfo.Username, softphone.sipInfo.Domain)
-	sipMessage.headers["Organization"] = "ACE MEDIAS TOOLS"
+	sipMessage.headers["Organization"] = "Pion WebRTC SIP Client"
 	sipMessage.headers["Supported"] = "path,ice"
 	sipMessage.addCseq(softphone).addCallID(*softphone).addUserAgent()
 
@@ -57,10 +57,10 @@ func (softphone *Softphone) register() {
 
 	softphone.request(sipMessage, func(message string) bool {
 		authenticateHeader := SIPMessage{}.FromString(message).headers["WWW-Authenticate"]
-		regex := regexp.MustCompile(`, nonce="(.+?)"`)
-		nonce := regex.FindStringSubmatch(authenticateHeader)[1]
-
-		sipMessage.addAuthorization(*softphone, nonce, "REGISTER").addCseq(softphone).newViaBranch()
+		ai :=  GetAuthInfo(authenticateHeader)
+		ai.Uri = "sip:" + softphone.sipInfo.Domain
+		ai.Method = "REGISTER"
+		sipMessage.addAuthorization(*softphone,ai).addCseq(softphone).newViaBranch()
 		softphone.request(sipMessage, func(msg string) bool {
 			registeredFunc()
 

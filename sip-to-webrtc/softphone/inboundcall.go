@@ -30,7 +30,7 @@ func (softphone *Softphone) OpenToInvite() {
 			sipMessage.headers["To"] = fmt.Sprintf("<sip:%s>", msg.Hdr.From)
 			sipMessage.headers["Content-Type"] = "x-rc/agent"
 			sipMessage.addCseq(softphone).addCallID(*softphone).addUserAgent()
-			sipMessage.Body = fmt.Sprintf(`<Msg><Hdr SID="%s" Req="%s" From="%s" To="%s" Cmd="17"/><Bdy Cln="%s"/></Msg>`, msg.Hdr.SID, msg.Hdr.Req, msg.Hdr.To, msg.Hdr.From, softphone.sipInfo.AuthorizationID)
+			sipMessage.Body = fmt.Sprintf(`<Msg><Hdr SID="%s" Req="%s" From="%s" To="%s" Cmd="17"/><Bdy Cln="%s"/></Msg>`, msg.Hdr.SID, msg.Hdr.Req, msg.Hdr.To, msg.Hdr.From, softphone.sipInfo.Username)
 			softphone.request(sipMessage, nil)
 
 			softphone.OnInvite(inviteMessage)
