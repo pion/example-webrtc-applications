@@ -1,0 +1,46 @@
+name: Lint
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+jobs:
+  lint-commit-message:
+    name: Metadata
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+        - uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+
+        - name: Commit Message
+          run: .github/lint-commit-message.sh
+
+        - name: File names
+          run: .github/lint-filename.sh
+
+        - name: Contributors
+          run: .github/assert-contributors.sh
+
+  lint-go:
+    name: Go
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install GStreamer
+        run: sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+
+      - name: Build data-channels
+        run:  cd c-data-channels && make
+
+      - name: Install golangci-lint
+        run:  curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b /tmp v1.19.1
+
+      - name: Run golangci-lint
+        run:  go list -f '{{.Dir}}' ./... | fgrep -v c-data-channels | xargs realpath --relative-to=. | xargs /tmp/golangci-lint run -v
