@@ -3,9 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math/rand"
 
-	"github.com/pion/webrtc/v2"
+	"github.com/pion/webrtc/v3"
 
 	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-src"
 	"github.com/pion/example-webrtc-applications/internal/signal"
@@ -40,7 +39,7 @@ func main() {
 	})
 
 	// Create a audio track
-	audioTrack, err := peerConnection.NewTrack(webrtc.DefaultPayloadTypeOpus, rand.Uint32(), "audio", "pion1")
+	audioTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "audio/opus"}, "audio", "pion1")
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +49,7 @@ func main() {
 	}
 
 	// Create a video track
-	firstVideoTrack, err := peerConnection.NewTrack(webrtc.DefaultPayloadTypeVP8, rand.Uint32(), "video", "pion2")
+	firstVideoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pion2")
 	if err != nil {
 		panic(err)
 	}
@@ -60,7 +59,7 @@ func main() {
 	}
 
 	// Create a second video track
-	secondVideoTrack, err := peerConnection.NewTrack(webrtc.DefaultPayloadTypeVP8, rand.Uint32(), "video", "pion3")
+	secondVideoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pion3")
 	if err != nil {
 		panic(err)
 	}
@@ -92,11 +91,11 @@ func main() {
 	}
 
 	// Output the answer in base64 so we can paste it in browser
-	fmt.Println(signal.Encode(answer))
+	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))
 
 	// Start pushing buffers on these tracks
-	gst.CreatePipeline(webrtc.Opus, []*webrtc.Track{audioTrack}, *audioSrc).Start()
-	gst.CreatePipeline(webrtc.VP8, []*webrtc.Track{firstVideoTrack, secondVideoTrack}, *videoSrc).Start()
+	gst.CreatePipeline("opus", []*webrtc.TrackLocalStaticSample{audioTrack}, *audioSrc).Start()
+	gst.CreatePipeline("vp8", []*webrtc.TrackLocalStaticSample{firstVideoTrack, secondVideoTrack}, *videoSrc).Start()
 
 	// Block forever
 	select {}

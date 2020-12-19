@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/pion/rtcp"
-	"github.com/pion/webrtc/v2"
+	"github.com/pion/webrtc/v3"
 
 	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-sink"
 	"github.com/pion/example-webrtc-applications/internal/signal"
@@ -34,26 +35,25 @@ func gstreamerReceiveMain() {
 
 	// Set a handler for when a new remote track starts, this handler creates a gstreamer pipeline
 	// for the given codec
-	peerConnection.OnTrack(func(track *webrtc.Track, receiver *webrtc.RTPReceiver) {
+	peerConnection.OnTrack(func(track *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
 		// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
-		// This is a temporary fix until we implement incoming RTCP events, then we would push a PLI only when a viewer requests it
 		go func() {
 			ticker := time.NewTicker(time.Second * 3)
 			for range ticker.C {
-				rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: track.SSRC()}})
+				rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
 				if rtcpSendErr != nil {
 					fmt.Println(rtcpSendErr)
 				}
 			}
 		}()
 
-		codec := track.Codec()
-		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), codec.Name)
-		pipeline := gst.CreatePipeline(codec.Name)
+		codecName := strings.Split(track.Codec().RTPCodecCapability.MimeType, "/")[1]
+		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), codecName)
+		pipeline := gst.CreatePipeline(codecName)
 		pipeline.Start()
 		buf := make([]byte, 1400)
 		for {
-			i, readErr := track.Read(buf)
+			i, _, readErr := track.Read(buf)
 			if readErr != nil {
 				panic(err)
 			}
@@ -84,14 +84,22 @@ func gstreamerReceiveMain() {
 		panic(err)
 	}
 
+	// Create channel that is blocked until ICE Gathering is complete
+	gatherComplete := webrtc.GatheringCompletePromise(peerConnection)
+
 	// Sets the LocalDescription, and starts our UDP listeners
 	err = peerConnection.SetLocalDescription(answer)
 	if err != nil {
 		panic(err)
 	}
 
+	// Block until ICE Gathering is complete, disabling trickle ICE
+	// we do this because we only can exchange one signaling message
+	// in a production application you should exchange ICE Candidates via OnICECandidate
+	<-gatherComplete
+
 	// Output the answer in base64 so we can paste it in browser
-	fmt.Println(signal.Encode(answer))
+	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))
 
 	// Block forever
 	select {}

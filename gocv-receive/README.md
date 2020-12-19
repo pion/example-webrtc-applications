@@ -12,9 +12,9 @@ This example requires you have GoCV and ffmpeg installed, these are the supporte
 * Follow the setup instructions for [GoCV](https://github.com/hybridgroup/gocv)
 * `sudo apt-get install ffmpeg`
 
-### Download gocv-receive
+### Build gocv-receive
 ```
-go get github.com/pion/example-webrtc-applications/gocv-receive
+go build -tags gocv
 ```
 
 ### Open gocv-receive example page

@@ -13,8 +13,8 @@ import (
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
-	"github.com/pion/webrtc/v2"
-	"github.com/pion/webrtc/v2/pkg/media/samplebuilder"
+	"github.com/pion/webrtc/v3"
+	"github.com/pion/webrtc/v3/pkg/media/samplebuilder"
 )
 
 func main() {
@@ -34,13 +34,13 @@ func main() {
 type webmSaver struct {
 	audioWriter, videoWriter       webm.BlockWriteCloser
 	audioBuilder, videoBuilder     *samplebuilder.SampleBuilder
-	audioTimestamp, videoTimestamp uint32
+	audioTimestamp, videoTimestamp time.Duration
 }
 
 func newWebmSaver() *webmSaver {
 	return &webmSaver{
-		audioBuilder: samplebuilder.New(10, &codecs.OpusPacket{}),
-		videoBuilder: samplebuilder.New(10, &codecs.VP8Packet{}),
+		audioBuilder: samplebuilder.New(10, &codecs.OpusPacket{}, 48000),
+		videoBuilder: samplebuilder.New(10, &codecs.VP8Packet{}, 90000),
 	}
 }
 
@@ -66,9 +66,8 @@ func (s *webmSaver) PushOpus(rtpPacket *rtp.Packet) {
 			return
 		}
 		if s.audioWriter != nil {
-			s.audioTimestamp += sample.Samples
-			t := s.audioTimestamp / 48
-			if _, err := s.audioWriter.Write(true, int64(t), sample.Data); err != nil {
+			s.audioTimestamp += sample.Duration
+			if _, err := s.audioWriter.Write(true, int64(s.audioTimestamp/time.Millisecond), sample.Data); err != nil {
 				panic(err)
 			}
 		}
@@ -96,9 +95,8 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 			}
 		}
 		if s.videoWriter != nil {
-			s.videoTimestamp += sample.Samples
-			t := s.videoTimestamp / 90
-			if _, err := s.videoWriter.Write(videoKeyframe, int64(t), sample.Data); err != nil {
+			s.videoTimestamp += sample.Duration
+			if _, err := s.videoWriter.Write(videoKeyframe, int64(s.audioTimestamp/time.Millisecond), sample.Data); err != nil {
 				panic(err)
 			}
 		}
@@ -157,12 +155,22 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 	}
 
 	// Create a MediaEngine object to configure the supported codec
-	m := webrtc.MediaEngine{}
+	m := &webrtc.MediaEngine{}
 
 	// Setup the codecs you want to use.
 	// Only support VP8 and OPUS, this makes our WebM muxer code simpler
-	m.RegisterCodec(webrtc.NewRTPVP8Codec(webrtc.DefaultPayloadTypeVP8, 90000))
-	m.RegisterCodec(webrtc.NewRTPOpusCodec(webrtc.DefaultPayloadTypeOpus, 48000))
+	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "video/VP8", ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+		PayloadType:        96,
+	}, webrtc.RTPCodecTypeVideo); err != nil {
+		panic(err)
+	}
+	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "audio/opus", ClockRate: 48000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+		PayloadType:        111,
+	}, webrtc.RTPCodecTypeAudio); err != nil {
+		panic(err)
+	}
 
 	// Create the API object with the MediaEngine
 	api := webrtc.NewAPI(webrtc.WithMediaEngine(m))
@@ -173,31 +181,24 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 		panic(err)
 	}
 
-	if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeAudio); err != nil {
-		panic(err)
-	} else if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeVideo); err != nil {
-		panic(err)
-	}
-
 	// Set a handler for when a new remote track starts, this handler copies inbound RTP packets,
 	// replaces the SSRC and sends them back
-	peerConnection.OnTrack(func(track *webrtc.Track, receiver *webrtc.RTPReceiver) {
+	peerConnection.OnTrack(func(track *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
 		// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
-		// This is a temporary fix until we implement incoming RTCP events, then we would push a PLI only when a viewer requests it
 		go func() {
 			ticker := time.NewTicker(time.Second * 3)
 			for range ticker.C {
-				errSend := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: track.SSRC()}})
+				errSend := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
 				if errSend != nil {
 					fmt.Println(errSend)
 				}
 			}
 		}()
 
-		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), track.Codec().Name)
+		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), track.Codec().RTPCodecCapability.MimeType)
 		for {
 			// Read RTP packets being sent to Pion
-			rtp, readErr := track.ReadRTP()
+			rtp, _, readErr := track.ReadRTP()
 			if readErr != nil {
 				if readErr == io.EOF {
 					return
@@ -234,14 +235,22 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 		panic(err)
 	}
 
+	// Create channel that is blocked until ICE Gathering is complete
+	gatherComplete := webrtc.GatheringCompletePromise(peerConnection)
+
 	// Sets the LocalDescription, and starts our UDP listeners
 	err = peerConnection.SetLocalDescription(answer)
 	if err != nil {
 		panic(err)
 	}
 
+	// Block until ICE Gathering is complete, disabling trickle ICE
+	// we do this because we only can exchange one signaling message
+	// in a production application you should exchange ICE Candidates via OnICECandidate
+	<-gatherComplete
+
 	// Output the answer in base64 so we can paste it in browser
-	fmt.Println(webrtcsignal.Encode(answer))
+	fmt.Println(webrtcsignal.Encode(*peerConnection.LocalDescription()))
 
 	return peerConnection
 }

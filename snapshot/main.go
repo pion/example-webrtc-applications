@@ -12,8 +12,8 @@ import (
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
-	"github.com/pion/webrtc/v2"
-	"github.com/pion/webrtc/v2/pkg/media/samplebuilder"
+	"github.com/pion/webrtc/v3"
+	"github.com/pion/webrtc/v3/pkg/media/samplebuilder"
 	"golang.org/x/image/vp8"
 )
 
@@ -36,12 +36,12 @@ func signaling(w http.ResponseWriter, r *http.Request) {
 
 	// Set a handler for when a new remote track starts, this handler saves buffers to SampleBuilder
 	// so we can generate a snapshot
-	peerConnection.OnTrack(func(track *webrtc.Track, receiver *webrtc.RTPReceiver) {
+	peerConnection.OnTrack(func(track *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
 		// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
 		go func() {
 			ticker := time.NewTicker(time.Second * 3)
 			for range ticker.C {
-				errSend := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: track.SSRC()}})
+				errSend := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
 				if errSend != nil {
 					fmt.Println(errSend)
 				}
@@ -50,7 +50,7 @@ func signaling(w http.ResponseWriter, r *http.Request) {
 
 		for {
 			// Read RTP Packets in a loop
-			rtpPacket, readErr := track.ReadRTP()
+			rtpPacket, _, readErr := track.ReadRTP()
 			if readErr != nil {
 				panic(readErr)
 			}
@@ -82,9 +82,19 @@ func signaling(w http.ResponseWriter, r *http.Request) {
 	answer, err := peerConnection.CreateAnswer(nil)
 	if err != nil {
 		panic(err)
-	} else if err = peerConnection.SetLocalDescription(answer); err != nil {
+	}
+
+	// Create channel that is blocked until ICE Gathering is complete
+	gatherComplete := webrtc.GatheringCompletePromise(peerConnection)
+
+	if err = peerConnection.SetLocalDescription(answer); err != nil {
 		panic(err)
 	}
+
+	// Block until ICE Gathering is complete, disabling trickle ICE
+	// we do this because we only can exchange one signaling message
+	// in a production application you should exchange ICE Candidates via OnICECandidate
+	<-gatherComplete
 
 	response, err := json.Marshal(*peerConnection.LocalDescription())
 	if err != nil {
@@ -99,7 +109,7 @@ func signaling(w http.ResponseWriter, r *http.Request) {
 
 func snapshot(w http.ResponseWriter, r *http.Request) {
 	// Initialized with 20 maxLate, my samples sometimes 10-15 packets
-	sampleBuilder := samplebuilder.New(20, &codecs.VP8Packet{})
+	sampleBuilder := samplebuilder.New(20, &codecs.VP8Packet{}, 90000)
 	decoder := vp8.NewDecoder()
 
 	for {

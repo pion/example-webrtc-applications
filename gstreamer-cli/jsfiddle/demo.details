@@ -1,5 +1,0 @@
----
- name: gstreamer-cli
- description: Example use GStreamer cli make v4l2 camera device raw stream to Pion WebRTC video stream and alsa audio device raw stream to Pion WebRTC audio stream
- authors:
-   - Sean DuBois
