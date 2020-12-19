@@ -10,8 +10,6 @@ package gst
 import "C"
 import (
 	"unsafe"
-
-	"github.com/pion/webrtc/v2"
 )
 
 // StartMainLoop starts GLib's main loop
@@ -31,15 +29,15 @@ type Pipeline struct {
 func CreatePipeline(codecName string) *Pipeline {
 	pipelineStr := "appsrc format=time is-live=true do-timestamp=true name=src ! application/x-rtp"
 	switch codecName {
-	case webrtc.VP8:
+	case "vp8":
 		pipelineStr += ", encoding-name=VP8-DRAFT-IETF-01 ! rtpvp8depay ! decodebin ! autovideosink"
-	case webrtc.Opus:
+	case "opus":
 		pipelineStr += ", payload=96, encoding-name=OPUS ! rtpopusdepay ! decodebin ! autoaudiosink"
-	case webrtc.VP9:
+	case "vp9":
 		pipelineStr += " ! rtpvp9depay ! decodebin ! autovideosink"
-	case webrtc.H264:
+	case "h264":
 		pipelineStr += " ! rtph264depay ! decodebin ! autovideosink"
-	case webrtc.G722:
+	case "g722":
 		pipelineStr += " clock-rate=8000 ! rtpg722depay ! decodebin ! autoaudiosink"
 	default:
 		panic("Unhandled codec " + codecName)

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/pion/example-webrtc-applications/internal/signal"
-	"github.com/pion/webrtc/v2"
+	"github.com/pion/webrtc/v3"
 )
 
 // Run contains pure Go codes to do the heavy lifting. In fact, the codes
@@ -54,14 +54,22 @@ func Run(f func(*webrtc.DataChannel)) {
 		panic(err)
 	}
 
+	// Create channel that is blocked until ICE Gathering is complete
+	gatherComplete := webrtc.GatheringCompletePromise(peerConnection)
+
 	// Sets the LocalDescription, and starts our UDP listeners
 	err = peerConnection.SetLocalDescription(answer)
 	if err != nil {
 		panic(err)
 	}
 
+	// Block until ICE Gathering is complete, disabling trickle ICE
+	// we do this because we only can exchange one signaling message
+	// in a production application you should exchange ICE Candidates via OnICECandidate
+	<-gatherComplete
+
 	// Output the answer in base64 so we can paste it in browser
-	fmt.Println(signal.Encode(answer))
+	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))
 
 	// Block forever
 	select {}

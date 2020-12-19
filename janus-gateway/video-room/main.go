@@ -3,11 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"math/rand"
 	"time"
 
 	janus "github.com/notedit/janus-go"
-	"github.com/pion/webrtc/v2"
+	"github.com/pion/webrtc/v3"
 
 	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-src"
 )
@@ -55,22 +54,18 @@ func main() {
 	})
 
 	// Create a audio track
-	opusTrack, err := peerConnection.NewTrack(webrtc.DefaultPayloadTypeOpus, rand.Uint32(), "audio", "pion1")
+	opusTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "audio/opus"}, "audio", "pion")
 	if err != nil {
 		panic(err)
-	}
-	_, err = peerConnection.AddTrack(opusTrack)
-	if err != nil {
+	} else if _, err = peerConnection.AddTrack(opusTrack); err != nil {
 		panic(err)
 	}
 
 	// Create a video track
-	vp8Track, err := peerConnection.NewTrack(webrtc.DefaultPayloadTypeVP8, rand.Uint32(), "video", "pion2")
+	vp8Track, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pion")
 	if err != nil {
 		panic(err)
-	}
-	_, err = peerConnection.AddTrack(vp8Track)
-	if err != nil {
+	} else if _, err = peerConnection.AddTrack(vp8Track); err != nil {
 		panic(err)
 	}
 
@@ -79,10 +74,17 @@ func main() {
 		panic(err)
 	}
 
-	err = peerConnection.SetLocalDescription(offer)
-	if err != nil {
+	// Create channel that is blocked until ICE Gathering is complete
+	gatherComplete := webrtc.GatheringCompletePromise(peerConnection)
+
+	if err = peerConnection.SetLocalDescription(offer); err != nil {
 		panic(err)
 	}
+
+	// Block until ICE Gathering is complete, disabling trickle ICE
+	// we do this because we only can exchange one signaling message
+	// in a production application you should exchange ICE Candidates via OnICECandidate
+	<-gatherComplete
 
 	gateway, err := janus.Connect("ws://localhost:8188/janus")
 	if err != nil {
@@ -128,7 +130,7 @@ func main() {
 		"data":    false,
 	}, map[string]interface{}{
 		"type":    "offer",
-		"sdp":     offer.SDP,
+		"sdp":     peerConnection.LocalDescription().SDP,
 		"trickle": false,
 	})
 	if err != nil {
@@ -145,8 +147,8 @@ func main() {
 		}
 
 		// Start pushing buffers on these tracks
-		gst.CreatePipeline(webrtc.Opus, []*webrtc.Track{opusTrack}, "audiotestsrc").Start()
-		gst.CreatePipeline(webrtc.VP8, []*webrtc.Track{vp8Track}, "videotestsrc").Start()
+		gst.CreatePipeline("opus", []*webrtc.TrackLocalStaticSample{opusTrack}, "audiotestsrc").Start()
+		gst.CreatePipeline("vp8", []*webrtc.TrackLocalStaticSample{vp8Track}, "videotestsrc").Start()
 	}
 
 	select {}

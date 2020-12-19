@@ -12,8 +12,8 @@ import (
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
-	"github.com/pion/webrtc/v2"
-	"github.com/pion/webrtc/v2/pkg/media/samplebuilder"
+	"github.com/pion/webrtc/v3"
+	"github.com/pion/webrtc/v3/pkg/media/samplebuilder"
 
 	"github.com/pion/example-webrtc-applications/internal/signal"
 )
@@ -21,7 +21,7 @@ import (
 var (
 	audioWriter, videoWriter       webm.BlockWriteCloser
 	audioBuilder, videoBuilder     *samplebuilder.SampleBuilder
-	audioTimestamp, videoTimestamp uint32
+	audioTimestamp, videoTimestamp time.Duration
 	streamKey                      string
 )
 
@@ -42,15 +42,25 @@ func main() {
 	}
 
 	// Create a MediaEngine object to configure the supported codec
-	m := webrtc.MediaEngine{}
+	m := &webrtc.MediaEngine{}
 
 	// Setup the codecs you want to use.
 	// Only support VP8 and OPUS, this makes our WebM muxer code simpler
-	m.RegisterCodec(webrtc.NewRTPVP8Codec(webrtc.DefaultPayloadTypeVP8, 90000))
-	m.RegisterCodec(webrtc.NewRTPOpusCodec(webrtc.DefaultPayloadTypeOpus, 48000))
+	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "video/VP8", ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+		PayloadType:        96,
+	}, webrtc.RTPCodecTypeVideo); err != nil {
+		panic(err)
+	}
+	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "audio/opus", ClockRate: 48000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+		PayloadType:        111,
+	}, webrtc.RTPCodecTypeAudio); err != nil {
+		panic(err)
+	}
 
-	audioBuilder = samplebuilder.New(10, &codecs.OpusPacket{})
-	videoBuilder = samplebuilder.New(10, &codecs.VP8Packet{})
+	audioBuilder = samplebuilder.New(10, &codecs.OpusPacket{}, 48000)
+	videoBuilder = samplebuilder.New(10, &codecs.VP8Packet{}, 90000)
 
 	// Create the API object with the MediaEngine
 	api := webrtc.NewAPI(webrtc.WithMediaEngine(m))
@@ -61,30 +71,22 @@ func main() {
 		panic(err)
 	}
 
-	// Allow us to receive 1 audio track, and 2 video tracks
-	if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeAudio); err != nil {
-		panic(err)
-	} else if _, err = peerConnection.AddTransceiver(webrtc.RTPCodecTypeVideo); err != nil {
-		panic(err)
-	}
-
-	peerConnection.OnTrack(func(track *webrtc.Track, receiver *webrtc.RTPReceiver) {
+	peerConnection.OnTrack(func(track *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
 		// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
-		// This is a temporary fix until we implement incoming RTCP events, then we would push a PLI only when a viewer requests it
 		go func() {
 			ticker := time.NewTicker(time.Second * 3)
 			for range ticker.C {
-				rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: track.SSRC()}})
+				rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
 				if rtcpSendErr != nil {
 					fmt.Println(rtcpSendErr)
 				}
 			}
 		}()
 
-		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), track.Codec().Name)
+		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), track.Codec().RTPCodecCapability.MimeType)
 		for {
 			// Read RTP packets being sent to Pion
-			rtp, readErr := track.ReadRTP()
+			rtp, _, readErr := track.ReadRTP()
 			if readErr != nil {
 				if readErr == io.EOF {
 					return
@@ -129,7 +131,7 @@ func main() {
 	}
 
 	// Output the answer in base64 so we can paste it in browser
-	fmt.Println(signal.Encode(answer))
+	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))
 
 	// Block forever
 	select {}
@@ -196,9 +198,8 @@ func pushOpus(rtpPacket *rtp.Packet) {
 			return
 		}
 		if audioWriter != nil {
-			audioTimestamp += sample.Samples
-			t := audioTimestamp / 48
-			if _, err := audioWriter.Write(true, int64(t), rtpPacket.Payload); err != nil {
+			audioTimestamp += sample.Duration
+			if _, err := audioWriter.Write(true, int64(audioTimestamp/time.Millisecond), sample.Data); err != nil {
 				panic(err)
 			}
 		}
@@ -228,9 +229,8 @@ func pushVP8(rtpPacket *rtp.Packet) {
 			}
 		}
 		if videoWriter != nil {
-			videoTimestamp += sample.Samples
-			t := videoTimestamp / 90
-			if _, err := videoWriter.Write(videoKeyframe, int64(t), sample.Data); err != nil {
+			videoTimestamp += sample.Duration
+			if _, err := videoWriter.Write(videoKeyframe, int64(audioTimestamp/time.Millisecond), sample.Data); err != nil {
 				panic(err)
 			}
 		}

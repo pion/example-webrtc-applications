@@ -13,7 +13,7 @@ This example requires you have GStreamer installed, these are the supported plat
 
 ### Run gstreamer-send-offer and make an offer to gstreamer-receive via stdin
 ```
-go run examples/gstreamer-send-offer/*.go | go run examples/gstreamer-receive/*.go
+go run gstreamer-send-offer/*.go | go run gstreamer-receive/*.go
 ```
 
 ### post the answer from gstreamer-receive back to gstreamer-send-offer
