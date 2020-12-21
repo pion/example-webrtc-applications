@@ -1,0 +1,25 @@
+name: flutter_sfu_ws
+description: A new Flutter project.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  websocket: ^0.0.5
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.2
+  flutter_webrtc: ^0.5.6
+  sdp_transform:
+  shared_preferences:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+  uses-material-design: true
