@@ -29,12 +29,12 @@ func (softphone *Softphone) Invite(extension, offer string) {
 		var ai AuthInfo
 		if len(authenticateHeader) > 0 { //WWW-Authenticate
 			ai =  GetAuthInfo(authenticateHeader)
-			ai.AuthType = "Proxy-Authorization"
+			ai.AuthType = "Authorization"
 			ai.Uri = "sip:"+ extension + "@"+ softphone.sipInfo.Domain
 			ai.Method = "INVITE"
 		} else if len(proxyAuthenticateHeader) > 0 { //Proxy-Authenticate
 			ai =  GetAuthInfo(authenticateHeader)
-			ai.AuthType = "Authorization"
+			ai.AuthType = "Proxy-Authorization"
 			ai.Uri = "sip:"+ extension + "@"+ softphone.sipInfo.Domain
 			ai.Method = "INVITE"
 		} else {
