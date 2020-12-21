@@ -33,14 +33,14 @@ func (softphone *Softphone) Invite(extension, offer string) {
 			ai.Uri = "sip:"+ extension + "@"+ softphone.sipInfo.Domain
 			ai.Method = "INVITE"
 		} else if len(proxyAuthenticateHeader) > 0 { //Proxy-Authenticate
-			ai =  GetAuthInfo(authenticateHeader)
+			ai =  GetAuthInfo(proxyAuthenticateHeader)
 			ai.AuthType = "Proxy-Authorization"
 			ai.Uri = "sip:"+ extension + "@"+ softphone.sipInfo.Domain
 			ai.Method = "INVITE"
 		} else {
 			panic("FAIL TO SEND INVITE")
 		}
-
+		fmt.Printf("%+v\n", ai)
 		sipMessage.addAuthorization(*softphone, ai).addCseq(softphone).newViaBranch()
 		softphone.request(sipMessage, func(msg string) bool {
 			responseStatus := strings.Split(strings.Split(msg, "\r\n")[0], " ")[1]
