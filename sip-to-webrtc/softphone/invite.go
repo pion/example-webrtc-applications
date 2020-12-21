@@ -2,6 +2,7 @@ package softphone
 
 import (
 	"fmt"
+	"strings"
 )
 
 // Invite ...
@@ -22,14 +23,43 @@ func (softphone *Softphone) Invite(extension, offer string) {
 	sipMessage.Body = offer
 
 	softphone.request(sipMessage, func(message string) bool {
-		authenticateHeader := SIPMessage{}.FromString(message).headers["Proxy-Authenticate"]
-		ai :=  GetAuthInfo(authenticateHeader)
-		ai.AuthType = "Proxy-Authorization"
-		ai.Uri = "sip:"+ extension + "@"+ softphone.sipInfo.Domain
-		ai.Method = "INVITE"
+		proxyAuthenticateHeader := SIPMessage{}.FromString(message).headers["Proxy-Authenticate"]
+		authenticateHeader := SIPMessage{}.FromString(message).headers["WWW-Authenticate"]
+
+		var ai AuthInfo
+		if len(authenticateHeader) > 0 { //WWW-Authenticate
+			ai =  GetAuthInfo(authenticateHeader)
+			ai.AuthType = "Proxy-Authorization"
+			ai.Uri = "sip:"+ extension + "@"+ softphone.sipInfo.Domain
+			ai.Method = "INVITE"
+		} else if len(proxyAuthenticateHeader) > 0 { //Proxy-Authenticate
+			ai =  GetAuthInfo(authenticateHeader)
+			ai.AuthType = "Authorization"
+			ai.Uri = "sip:"+ extension + "@"+ softphone.sipInfo.Domain
+			ai.Method = "INVITE"
+		} else {
+			panic("FAIL TO SEND INVITE")
+		}
+
 		sipMessage.addAuthorization(*softphone, ai).addCseq(softphone).newViaBranch()
 		softphone.request(sipMessage, func(msg string) bool {
-			return false
+			responseStatus := strings.Split(strings.Split(msg, "\r\n")[0], " ")[1]
+			textStatus := strings.Split(strings.Split(msg, "\r\n")[0], " ")[2]
+			switch responseStatus {
+			case "100":
+				fmt.Println(textStatus)
+				return false //Continue the handler
+			case "183":
+				fmt.Println(textStatus)
+				return false //Continue the handler
+
+			case "200":
+				fmt.Println("### INVITE SUCCESS ###")
+				return true
+			default: //480
+				panic("INVITE FAILED : " +  responseStatus  + " " + textStatus)
+			}
+			return true
 		})
 
 		return true

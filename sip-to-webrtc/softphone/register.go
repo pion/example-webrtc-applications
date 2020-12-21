@@ -1,12 +1,12 @@
 package softphone
 
 import (
-	"context"
 	"crypto/tls"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/url"
+	"strings"
 )
 
 func (softphone *Softphone) register() {
@@ -40,7 +40,6 @@ func (softphone *Softphone) register() {
 			}
 		}
 	}()
-
 	sipMessage := SIPMessage{}
 	sipMessage.method = "REGISTER"
 	sipMessage.address = softphone.sipInfo.Domain
@@ -53,23 +52,29 @@ func (softphone *Softphone) register() {
 	sipMessage.headers["Supported"] = "path,ice"
 	sipMessage.addCseq(softphone).addCallID(*softphone).addUserAgent()
 
-	registered, registeredFunc := context.WithCancel(context.Background())
-
 	softphone.request(sipMessage, func(message string) bool {
 		authenticateHeader := SIPMessage{}.FromString(message).headers["WWW-Authenticate"]
-		ai :=  GetAuthInfo(authenticateHeader)
+		ai := GetAuthInfo(authenticateHeader)
 		ai.AuthType = "Authorization"
 		ai.Uri = "sip:" + softphone.sipInfo.Domain
 		ai.Method = "REGISTER"
-		sipMessage.addAuthorization(*softphone,ai).addCseq(softphone).newViaBranch()
+		sipMessage.addAuthorization(*softphone, ai).addCseq(softphone).newViaBranch()
 		softphone.request(sipMessage, func(msg string) bool {
-			registeredFunc()
 
-			return false
+			responseStatus := strings.Split(strings.Split(msg, "\r\n")[0], " ")[1]
+			textStatus := strings.Split(strings.Split(msg, "\r\n")[0], " ")[2]
+			switch responseStatus {
+			case "200":
+				fmt.Println("### SOFTPHONE CONNECTED ###")
+				break
+			default:
+				panic("AUTHENTICATION FAILED : " +  responseStatus  + " " + textStatus)
+				break
+			}
+
+			return true
 		})
 
 		return true
 	})
-
-	<-registered.Done()
 }
