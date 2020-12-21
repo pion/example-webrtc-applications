@@ -16,8 +16,10 @@ import (
 )
 
 var (
-	addr          = flag.String("addr", "localhost:8080", "http service address")
-	upgrader      = websocket.Upgrader{}
+	addr     = flag.String("addr", "localhost:8080", "http service address")
+	upgrader = websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool { return true },
+	}
 	indexTemplate = &template.Template{}
 
 	// lock for peerConnections and trackLocals
