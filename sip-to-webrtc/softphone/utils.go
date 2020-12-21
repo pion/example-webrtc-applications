@@ -33,12 +33,12 @@ type AuthInfo struct {
 }
 func generateAuthorization(sipInfo SIPInfoResponse, ai AuthInfo) (ret string) {
 	var HA1, HA2, response [16]byte
-	switch ai.Algorithm {
-	case "MD5":
+	switch strings.ToLower(ai.Algorithm) {
+	case strings.ToLower("MD5"):
 		//HA1 = MD5(username:realm:password)
 		HA1 = md5.Sum([]byte(fmt.Sprintf("%s:%s:%s", sipInfo.Username, ai.Realm, sipInfo.Password)))
 		break
-	case "MD5-sess":
+	case strings.ToLower("MD5-sess"):
 		//HA1 = MD5(MD5(username:realm:password):nonce:cnonce)
 		HA1 = md5.Sum([]byte(fmt.Sprintf("%s:%s:%s", sipInfo.Username, ai.Realm, sipInfo.Password)))
 		HA1 = md5.Sum([]byte(fmt.Sprintf("%s:%s:%s", HA1, ai.Nonce, ai.Cnonce)))
@@ -46,8 +46,8 @@ func generateAuthorization(sipInfo SIPInfoResponse, ai AuthInfo) (ret string) {
 	default:
 		panic("NO ALGORITHM FOUND ! ")
 	}
-	switch ai.Qop {
-	case "auth":
+	switch strings.ToLower(ai.Qop) {
+	case strings.ToLower("auth"):
 		// HA2 = MD5(A2) = MD5(method:digestURI).
 		// Response = MD5(HA1:nonce:nonceCount:credentialsNonce:qop:HA2).
 		HA2 = md5.Sum([]byte(fmt.Sprintf("%s:%s", ai.Method, ai.Uri)))
@@ -57,7 +57,7 @@ func generateAuthorization(sipInfo SIPInfoResponse, ai AuthInfo) (ret string) {
 			sipInfo.Username, ai.Realm, ai.Nonce, ai.Uri, response,ai.Algorithm, ai.Cnonce, ai.Qop, ai.NonceCount,
 		)
 		break
-	case "auth-int":
+	case strings.ToLower("auth-int"):
 		//TODO : DO THIS PART !
 		// HA2 = MD5(A2) = MD5(method:digestURI:MD5(entityBody)).
 		// Response = MD5(HA1:nonce:nonceCount:credentialsNonce:qop:HA2).
