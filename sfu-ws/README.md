@@ -3,7 +3,7 @@ sfu-ws is a many-to-many websocket based SFU. This is a more advanced version of
 and demonstrates the following features.
 
 * Trickle ICE
-* Re-negotation
+* Re-negotiation
 * Basic RTCP
 * Multiple inbound/outbound tracks per PeerConnection
 * No codec restriction per call. You can have H264 and VP8 in the same conference.
