@@ -15,7 +15,7 @@ Have any questions? Join [the Slack channel](https://pion.ly/slack) to follow de
 * [Gstreamer Send](gstreamer-send): Example gstreamer-send shows how to send video to your browser. This example uses GStreamer to process the video.
 * [Gstreamer Send Offer](gstreamer-send-offer): Example gstreamer-send-offer is a variant of gstreamer-send that initiates the WebRTC connection by sending an offer.
 * [Janus Gateway](janus-gateway): Example janus-gateway is a collection of examples showing how to use Pion WebRTC with [janus-gateway](https://github.com/meetecho/janus-gateway).
-* [SFU Websocket](sfu-ws): The SFU example demonstrates how to broadcast a video to multiple peers. A broadcaster uploads the video once and the server forwards it to all other peers.
+* [SFU Websocket](sfu-ws): The SFU example demonstrates a conference system that uses WebSocket for signaling. It also includes a flutter client for Android, iOS and Native.
 * [Save to WebM](save-to-webm): Example save-to-webm shows how to receive audio and video using Pion and then save to WebM container.
 * [Twitch](twitch): Example twitch shows how to send audio/video from WebRTC to https://www.twitch.tv/ via RTMP.
 * [C DataChannels](c-data-channels) Example c-data-channels shows how you can use Pion WebRTC from a C program

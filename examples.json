@@ -20,7 +20,7 @@
 	{
 		"title": "WebSocket SFU",
 		"link": "#",
-		"description": "The Websocket SFU example demonstrates how to broadcast a video to multiple peers. This is similar to Minimal SFU, but all signaling is done via websockets like a more full featured application.",
+		"description": "The SFU example demonstrates a conference system that uses WebSockets for signaling. It also includes a flutter client for Android, iOS and Native.",
 		"type": "browser"
 	},
 	{
