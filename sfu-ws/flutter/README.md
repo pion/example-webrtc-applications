@@ -8,6 +8,7 @@ A Flutter project for sfu-ws.
 - `flutter create --project-name flutter_sfu_wsx_example --org com.github.pion .`
 
 ## iOS
+
 Add the following entry to your _Info.plist_ file, located in `./ios/Runner/Info.plist`:
 
 ```xml
@@ -15,9 +16,21 @@ Add the following entry to your _Info.plist_ file, located in `./ios/Runner/Info
 <string>$(PRODUCT_NAME) Camera Usage!</string>
 <key>NSMicrophoneUsageDescription</key>
 <string>$(PRODUCT_NAME) Microphone Usage!</string>
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
+```
+
+Replace platform version '9.0' with '10.0' in the Podfile file, located in `./ios/Podfile`:
+
+```ruby
+# platform :ios, '10.0'
 ```
 
 ## Android
+
 Add the following entry to your Android Manifest file, located in `./android/app/src/main/AndroidManifest.xml:
 
 ```xml
@@ -28,9 +41,14 @@ Add the following entry to your Android Manifest file, located in `./android/app
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+<application android:usesCleartextTraffic="true" ...>
+...
+</application>
 ```
 
 Edit`android/app/build.gradle`, modify minSdkVersion to 18
+
 ```gradle
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -44,5 +62,6 @@ Edit`android/app/build.gradle`, modify minSdkVersion to 18
 ```
 
 ## Run
+
 - `flutter pub get`
 - `flutter run`
