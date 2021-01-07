@@ -71,6 +71,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Jamie Good](https://github.com/jamiegood) - *Bug fix in jsfiddle example*
 * [PhVHoang](https://github.com/PhVHoang)
 * [Pascal Benoit](https://github.com/pascal-ace)
+* [Jin Gong](https://github.com/cgojin)
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
