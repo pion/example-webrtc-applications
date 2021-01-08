@@ -82,7 +82,9 @@ func addTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP {
 	listLock.Lock()
 	defer func() {
 		listLock.Unlock()
-		signalPeerConnections()
+
+		// FIXED: If server and client use plan-b, this code will cause endless send offer to the client
+		// signalPeerConnections()
 	}()
 
 	// Create a new TrackLocal with the same codec as our incoming
@@ -236,7 +238,10 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 	defer c.Close() //nolint
 
 	// Create new PeerConnection
-	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{})
+	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
+		SDPSemantics: webrtc.SDPSemanticsUnifiedPlan,
+		//SDPSemantics: webrtc.SDPSemanticsPlanB,
+	})
 	if err != nil {
 		log.Errorf("Failed to creates a PeerConnection: %v", err)
 		return
