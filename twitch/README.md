@@ -1,3 +1,12 @@
+# This example is deprecated
+
+This example is hard to debug/opaque in how it works so we have deprecated it.
+A better alternative is [rtp-forwarder](https://github.com/pion/webrtc/tree/master/examples/rtp-forwarder#twitchrtmp).
+`rtp-forwarder` shows how to forward WebRTC into ffmpeg. When you have the media inside
+ffmpeg it is much easier to process and send to Twitch by invoking the process yourself.
+
+------
+
 # twitch
 Twitch demonstrates how to capture your webcam/microphone via WebRTC and send to Twitch.
 
