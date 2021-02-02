@@ -268,7 +268,8 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 		if i == nil {
 			return
 		}
-
+		// If you are serializing a candidate make sure to use ToJSON
+		// Using Marshal will result in errors around `sdpMid` 
 		candidateString, err := json.Marshal(i.ToJSON())
 		if err != nil {
 			log.Println(err)
