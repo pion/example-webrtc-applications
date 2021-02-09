@@ -234,13 +234,13 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Setup the codecs you want to use.
 	// We'll use a VP8 and Opus but you can also define your own
-	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
+	if err = m.RegisterCodec(webrtc.RTPCodecParameters{
 		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeVP8, ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
 		PayloadType:        96,
 	}, webrtc.RTPCodecTypeVideo); err != nil {
 		panic(err)
 	}
-	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
+	if err = m.RegisterCodec(webrtc.RTPCodecParameters{
 		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus, ClockRate: 48000, Channels: 2, SDPFmtpLine: "minptime=10; useinbandfec=1", RTCPFeedback: nil},
 		PayloadType:        111,
 	}, webrtc.RTPCodecTypeAudio); err != nil {
