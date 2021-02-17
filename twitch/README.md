@@ -22,7 +22,8 @@ This example requires you have ffmpeg installed, these are the supported platfor
 
 ### Download twitch
 ```
-go get github.com/pion/example-webrtc-applications/twitch
+export GO111MODULE=on
+go get github.com/pion/example-webrtc-applications/v3/twitch
 ```
 
 ### Open twitch example page

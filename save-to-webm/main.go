@@ -9,7 +9,7 @@ import (
 
 	"github.com/at-wat/ebml-go/webm"
 
-	webrtcsignal "github.com/pion/example-webrtc-applications/internal/signal"
+	webrtcsignal "github.com/pion/example-webrtc-applications/v3/internal/signal"
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"

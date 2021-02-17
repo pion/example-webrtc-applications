@@ -15,7 +15,7 @@ import (
 	"github.com/pion/webrtc/v3"
 	"github.com/pion/webrtc/v3/pkg/media/samplebuilder"
 
-	"github.com/pion/example-webrtc-applications/internal/signal"
+	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 )
 
 var (

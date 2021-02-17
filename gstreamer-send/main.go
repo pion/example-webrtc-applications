@@ -6,8 +6,8 @@ import (
 
 	"github.com/pion/webrtc/v3"
 
-	gst "github.com/pion/example-webrtc-applications/internal/gstreamer-src"
-	"github.com/pion/example-webrtc-applications/internal/signal"
+	gst "github.com/pion/example-webrtc-applications/v3/internal/gstreamer-src"
+	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 )
 
 func main() {

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/pion/example-webrtc-applications/internal/signal"
+	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
 	"github.com/pion/webrtc/v3"
