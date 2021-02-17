@@ -13,7 +13,8 @@ This example requires you have GStreamer installed, these are the supported plat
 
 ### Download gstreamer-send
 ```
-go get github.com/pion/example-webrtc-applications/gstreamer-send
+export GO111MODULE=on
+go get github.com/pion/example-webrtc-applications/v3/gstreamer-send
 ```
 
 ### Open gstreamer-send example page

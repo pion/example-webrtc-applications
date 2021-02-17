@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/pion/example-webrtc-applications/internal/signal"
+	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 	"github.com/pion/webrtc/v3"
 )
 
