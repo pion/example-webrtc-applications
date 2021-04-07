@@ -9,6 +9,7 @@ package gst
 */
 import "C"
 import (
+	"strings"
 	"unsafe"
 )
 
@@ -28,7 +29,7 @@ type Pipeline struct {
 // CreatePipeline creates a GStreamer Pipeline
 func CreatePipeline(codecName string) *Pipeline {
 	pipelineStr := "appsrc format=time is-live=true do-timestamp=true name=src ! application/x-rtp"
-	switch codecName {
+	switch strings.ToLower(codecName) {
 	case "vp8":
 		pipelineStr += ", encoding-name=VP8-DRAFT-IETF-01 ! rtpvp8depay ! decodebin ! autovideosink"
 	case "opus":
