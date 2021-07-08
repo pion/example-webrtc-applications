@@ -73,6 +73,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Pascal Benoit](https://github.com/pascal-ace)
 * [Jin Gong](https://github.com/cgojin)
 * [harkirat singh](https://github.com/hkirat)
+* [oasangqi](https://github.com/oasangqi)
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text
