@@ -23,7 +23,7 @@ const (
 	h264FrameDuration = time.Millisecond * 33
 )
 
-func main() {
+func main() { //nolint
 	// Assert that we have an audio or video file
 	_, err := os.Stat(videoFileName)
 	haveVideoFile := !os.IsNotExist(err)
