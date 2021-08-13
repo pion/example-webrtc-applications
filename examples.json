@@ -58,5 +58,11 @@
 		"link": "#",
 		"description": "snapshot shows how you can convert incoming video frames to jpeg and serve them via HTTP.",
 		"type": "browser"
+	},
+	{
+		"title": "Play From Disk H264",
+		"link": "play-from-disk-h264",
+		"description": "Example shows how to play a H264 and OGG file from disk",
+		"type": "browser"
 	}
 ]

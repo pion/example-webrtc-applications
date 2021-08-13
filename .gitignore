@@ -1,3 +1,6 @@
 sfu-ws/cert.pem
 sfu-ws/key.pem
-go.sum
+
+*.ogg
+*.ivf
+*.h264
