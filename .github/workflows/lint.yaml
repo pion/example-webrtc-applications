@@ -38,6 +38,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Update packages
+        run: sudo apt-get update
+
       - name: Install GStreamer
         run: sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
 

@@ -49,7 +49,7 @@ func gstreamerReceiveMain() {
 
 		codecName := strings.Split(track.Codec().RTPCodecCapability.MimeType, "/")[1]
 		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), codecName)
-		pipeline := gst.CreatePipeline(strings.ToLower(codecName))
+		pipeline := gst.CreatePipeline(track.PayloadType(), strings.ToLower(codecName))
 		pipeline.Start()
 		buf := make([]byte, 1400)
 		for {
