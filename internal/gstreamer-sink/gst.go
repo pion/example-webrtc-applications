@@ -9,8 +9,11 @@ package gst
 */
 import "C"
 import (
+	"fmt"
 	"strings"
 	"unsafe"
+
+	"github.com/pion/webrtc/v3"
 )
 
 // StartMainLoop starts GLib's main loop
@@ -27,13 +30,13 @@ type Pipeline struct {
 }
 
 // CreatePipeline creates a GStreamer Pipeline
-func CreatePipeline(codecName string) *Pipeline {
+func CreatePipeline(payloadType webrtc.PayloadType, codecName string) *Pipeline {
 	pipelineStr := "appsrc format=time is-live=true do-timestamp=true name=src ! application/x-rtp"
 	switch strings.ToLower(codecName) {
 	case "vp8":
-		pipelineStr += ", encoding-name=VP8-DRAFT-IETF-01 ! rtpvp8depay ! decodebin ! autovideosink"
+		pipelineStr += fmt.Sprintf(", payload=%d, encoding-name=VP8-DRAFT-IETF-01 ! rtpvp8depay ! decodebin ! autovideosink", payloadType)
 	case "opus":
-		pipelineStr += ", payload=96, encoding-name=OPUS ! rtpopusdepay ! decodebin ! autoaudiosink"
+		pipelineStr += fmt.Sprintf(", payload=%d, encoding-name=OPUS ! rtpopusdepay ! decodebin ! autoaudiosink", payloadType)
 	case "vp9":
 		pipelineStr += " ! rtpvp9depay ! decodebin ! autovideosink"
 	case "h264":
