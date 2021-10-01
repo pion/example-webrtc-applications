@@ -31,7 +31,7 @@ On startup you will get a message `Waiting for RTP Packets`, you can use any sof
 
 #### ffmpeg
 ```
-ffmpeg -i '$RTMP_URL' -an -vcodec libvpx -cpu-used 5 -deadline 1 -g 10 -error-resilient 1 -auto-alt-ref 1 -f rtp rtp://127.0.0.1:5004 -vn -c:a libopus -f rtp rtp:/127.0.0.1:5006
+ffmpeg -i '$RTMP_URL' -an -vcodec libvpx -cpu-used 5 -deadline 1 -g 10 -error-resilient 1 -auto-alt-ref 1 -f rtp rtp://127.0.0.1:5004?pkt_size=1200 -vn -c:a libopus -f rtp rtp:/127.0.0.1:5006?pkt_size=1200
 ```
 
 ### Input rtmp-to-webrtc's SessionDescription into your browser
