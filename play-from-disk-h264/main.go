@@ -110,7 +110,7 @@ func main() { //nolint
 					panic(h264Err)
 				}
 
-				if h264Err = videoTrack.WriteSample(media.Sample{Data: nal.Data, Duration: time.Second}); h264Err != nil {
+				if h264Err = videoTrack.WriteSample(media.Sample{Data: nal.Data, Duration: h264FrameDuration}); h264Err != nil {
 					panic(h264Err)
 				}
 			}
