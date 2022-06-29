@@ -96,7 +96,7 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 		}
 		if s.videoWriter != nil {
 			s.videoTimestamp += sample.Duration
-			if _, err := s.videoWriter.Write(videoKeyframe, int64(s.audioTimestamp/time.Millisecond), sample.Data); err != nil {
+			if _, err := s.videoWriter.Write(videoKeyframe, int64(s.videoTimestamp/time.Millisecond), sample.Data); err != nil {
 				panic(err)
 			}
 		}
