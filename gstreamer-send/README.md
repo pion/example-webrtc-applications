@@ -51,6 +51,10 @@ These pipelines work on Linux, they may have issues on other platforms. We would
 
   `echo $BROWSER_SDP | gstreamer-send -video-src "autovideosrc ! video/x-raw, width=320, height=240 ! videoconvert ! queue"`
 
+* desktop capture on X11
+
+  `echo $BROWSER_SDP | gstreamer-send -video-src "ximagesrc startx=1280 show-pointer=true use-damage=0 ! video/x-raw, framerate=30/1 ! videoscale method=0 ! video/x-raw, width=1280, height=720 ! videoconvert ! queue"`
+
 * a pre-recorded video, sintel.mkv is available [here](https://durian.blender.org/download/)
 
   `echo $BROWSER_SDP | gstreamer-send -video-src "uridecodebin uri=file:///tmp/sintel.mkv ! videoscale ! video/x-raw, width=320, height=240 ! queue " -audio-src "uridecodebin uri=file:///tmp/sintel.mkv ! queue ! audioconvert"`
