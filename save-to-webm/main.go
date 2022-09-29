@@ -32,9 +32,10 @@ func main() {
 }
 
 type webmSaver struct {
-	audioWriter, videoWriter       webm.BlockWriteCloser
-	audioBuilder, videoBuilder     *samplebuilder.SampleBuilder
-	audioTimestamp, videoTimestamp time.Duration
+	audioWriter, videoWriter                 webm.BlockWriteCloser
+	audioBuilder, videoBuilder               *samplebuilder.SampleBuilder
+	hasStartAudioOffset, hasStartVideoOffset bool
+	startAudioOffset, startVideoOffset       uint32
 }
 
 func newWebmSaver() *webmSaver {
@@ -66,8 +67,11 @@ func (s *webmSaver) PushOpus(rtpPacket *rtp.Packet) {
 			return
 		}
 		if s.audioWriter != nil {
-			s.audioTimestamp += sample.Duration
-			if _, err := s.audioWriter.Write(true, int64(s.audioTimestamp/time.Millisecond), sample.Data); err != nil {
+			if !s.hasStartAudioOffset {
+				s.startAudioOffset = sample.PacketTimestamp
+				s.hasStartAudioOffset = true
+			}
+			if _, err := s.audioWriter.Write(true, int64((sample.PacketTimestamp-s.startAudioOffset)/48), sample.Data); err != nil {
 				panic(err)
 			}
 		}
@@ -95,8 +99,11 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 			}
 		}
 		if s.videoWriter != nil {
-			s.videoTimestamp += sample.Duration
-			if _, err := s.videoWriter.Write(videoKeyframe, int64(s.videoTimestamp/time.Millisecond), sample.Data); err != nil {
+			if !s.hasStartVideoOffset {
+				s.startVideoOffset = sample.PacketTimestamp
+				s.hasStartVideoOffset = true
+			}
+			if _, err := s.videoWriter.Write(videoKeyframe, int64((sample.PacketTimestamp-s.startVideoOffset)/90), sample.Data); err != nil {
 				panic(err)
 			}
 		}
