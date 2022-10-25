@@ -20,7 +20,7 @@ go build -tags gocv
 ```
 
 ### Open gocv-receive example page
-[jsfiddle.net](https://jsfiddle.net/nerhsvpg/) you should see your Webcam, two text-areas and a 'Start Session' button
+[jsfiddle.net](https://jsfiddle.net/tfmLq8jw/) you should see your Webcam, two text-areas and a 'Start Session' button
 
 ### Run gocv-receive with your browsers SessionDescription as stdin
 In the jsfiddle the top textarea is your browser, copy that and:

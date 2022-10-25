@@ -17,7 +17,7 @@ go get github.com/pion/example-webrtc-applications/v3/play-from-disk-h264
 ```
 
 ### Open play-from-disk-h264 example page
-[jsfiddle.net](https://jsfiddle.net/9s10amwL/) you should see two text-areas and a 'Start Session' button
+[jsfiddle.net](https://jsfiddle.net/8qvzh6ue/) you should see two text-areas and a 'Start Session' button
 
 ### Run play-from-disk-h264 with your browsers SessionDescription as stdin
 The `output.h264` and `output.ogg` you created should be in the same directory as `play-from-disk-h264`. In the jsfiddle the top textarea is your browser, copy that and:

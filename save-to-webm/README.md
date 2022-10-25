@@ -3,7 +3,7 @@ save-to-webm is a simple application that shows how to receive audio and video u
 
 ## Instructions
 ### Open save-to-webm example page
-[jsfiddle.net](https://jsfiddle.net/vfmcg8rk/1/) you should see your Webcam, two text-areas and a 'Start Session' button
+[jsfiddle.net](https://jsfiddle.net/07jknmed/) you should see your Webcam, two text-areas and a 'Start Session' button
 
 ### Run save-to-webm with your browsers SessionDescription as stdin
 In the jsfiddle the top textarea is your browser, copy that and:
