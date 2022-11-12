@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"os/signal"
 	"time"
@@ -71,7 +72,12 @@ func (s *webmSaver) PushOpus(rtpPacket *rtp.Packet) {
 				s.startAudioOffset = sample.PacketTimestamp
 				s.hasStartAudioOffset = true
 			}
-			if _, err := s.audioWriter.Write(true, int64((sample.PacketTimestamp-s.startAudioOffset)/48), sample.Data); err != nil {
+			timestampSinceStart := int64(sample.PacketTimestamp) - int64(s.startAudioOffset)
+			// handle range where PacketTimestamp has wrapped past uint32 by operating in int64 range until the timestamp has caught up to the offset
+			if timestampSinceStart < 0 {
+				timestampSinceStart = int64(sample.PacketTimestamp+math.MaxUint32) - int64(s.startAudioOffset)
+			}
+			if _, err := s.audioWriter.Write(true, timestampSinceStart/48, sample.Data); err != nil {
 				panic(err)
 			}
 		}
@@ -103,7 +109,12 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 				s.startVideoOffset = sample.PacketTimestamp
 				s.hasStartVideoOffset = true
 			}
-			if _, err := s.videoWriter.Write(videoKeyframe, int64((sample.PacketTimestamp-s.startVideoOffset)/90), sample.Data); err != nil {
+			timestampSinceStart := int64(sample.PacketTimestamp) - int64(s.startVideoOffset)
+			// handle range where PacketTimestamp has wrapped past uint32 by operating in int64 range until the timestamp has caught up to the offset
+			if timestampSinceStart < 0 {
+				timestampSinceStart = int64(sample.PacketTimestamp+math.MaxUint32) - int64(s.startVideoOffset)
+			}
+			if _, err := s.videoWriter.Write(videoKeyframe, timestampSinceStart/90, sample.Data); err != nil {
 				panic(err)
 			}
 		}
