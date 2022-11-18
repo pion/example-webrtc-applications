@@ -68,16 +68,20 @@ func (s *webmSaver) PushOpus(rtpPacket *rtp.Packet) {
 			return
 		}
 		if s.audioWriter != nil {
+			var ts int64
 			if !s.hasStartAudioOffset {
 				s.startAudioOffset = sample.PacketTimestamp
 				s.hasStartAudioOffset = true
+				ts = int64(sample.Duration / time.Millisecond)
+			} else {
+				timestampSinceStart := int64(sample.PacketTimestamp) - int64(s.startAudioOffset)
+				// handle range where PacketTimestamp has wrapped past uint32 by operating in int64 range until the timestamp has caught up to the offset
+				if timestampSinceStart < 0 {
+					timestampSinceStart = int64(sample.PacketTimestamp+math.MaxUint32) - int64(s.startAudioOffset)
+				}
+				ts = timestampSinceStart / 48 // convert from RTPTime to sample time
 			}
-			timestampSinceStart := int64(sample.PacketTimestamp) - int64(s.startAudioOffset)
-			// handle range where PacketTimestamp has wrapped past uint32 by operating in int64 range until the timestamp has caught up to the offset
-			if timestampSinceStart < 0 {
-				timestampSinceStart = int64(sample.PacketTimestamp+math.MaxUint32) - int64(s.startAudioOffset)
-			}
-			if _, err := s.audioWriter.Write(true, timestampSinceStart/48, sample.Data); err != nil {
+			if _, err := s.audioWriter.Write(true, ts, sample.Data); err != nil {
 				panic(err)
 			}
 		}
@@ -105,16 +109,20 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 			}
 		}
 		if s.videoWriter != nil {
+			var ts int64
 			if !s.hasStartVideoOffset {
 				s.startVideoOffset = sample.PacketTimestamp
 				s.hasStartVideoOffset = true
+				ts = int64(sample.Duration / time.Millisecond)
+			} else {
+				timestampSinceStart := int64(sample.PacketTimestamp) - int64(s.startVideoOffset)
+				// handle range where PacketTimestamp has wrapped past uint32 by operating in int64 range until the timestamp has caught up to the offset
+				if timestampSinceStart < 0 {
+					timestampSinceStart = int64(sample.PacketTimestamp+math.MaxUint32) - int64(s.startVideoOffset)
+				}
+				ts = timestampSinceStart / 90 // convert from RTP time to sample time
 			}
-			timestampSinceStart := int64(sample.PacketTimestamp) - int64(s.startVideoOffset)
-			// handle range where PacketTimestamp has wrapped past uint32 by operating in int64 range until the timestamp has caught up to the offset
-			if timestampSinceStart < 0 {
-				timestampSinceStart = int64(sample.PacketTimestamp+math.MaxUint32) - int64(s.startVideoOffset)
-			}
-			if _, err := s.videoWriter.Write(videoKeyframe, timestampSinceStart/90, sample.Data); err != nil {
+			if _, err := s.videoWriter.Write(videoKeyframe, ts, sample.Data); err != nil {
 				panic(err)
 			}
 		}
