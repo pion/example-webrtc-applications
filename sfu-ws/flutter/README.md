@@ -23,10 +23,10 @@ Add the following entry to your _Info.plist_ file, located in `./ios/Runner/Info
 </dict>
 ```
 
-Replace platform version '9.0' with '10.0' in the Podfile file, located in `./ios/Podfile`:
+Add the following to the bottom of the `./ios/Podfile`:
 
 ```ruby
-# platform :ios, '10.0'
+# platform :ios, '13.0'
 ```
 
 ## Android
