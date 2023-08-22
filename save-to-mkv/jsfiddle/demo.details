@@ -1,5 +1,5 @@
 ---
- name: save-to-webm
- description: Example of using Pion WebRTC to save video to disk in an WebM container
+ name: save-to-mkv
+ description: Example of using Pion WebRTC to save opus audio and h264 video to disk in an Mkv container
  authors:
    - Sean DuBois
