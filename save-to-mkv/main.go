@@ -334,8 +334,7 @@ func main() {
 	// Create a MediaEngine object to configure the supported codec
 	m := &webrtc.MediaEngine{}
 
-	// Setup the codecs you want to use.
-	// We'll use a VP8 and Opus but you can also define your own
+	// Request H264 and OPUS
 	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
 		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264, ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
 		PayloadType:        96,
