@@ -42,7 +42,9 @@ jobs:
         run: sudo apt-get update
 
       - name: Install GStreamer
-        run: sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+        run: |
+          sudo apt-get purge -y libunwind-14-dev
+          sudo apt-get install -y libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
 
       - name: Build data-channels
         run:  cd c-data-channels && make
