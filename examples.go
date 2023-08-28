@@ -100,7 +100,7 @@ func serve(addr string) error {
 	})
 
 	// Start the server
-	return http.ListenAndServe(addr, nil)
+	return http.ListenAndServe(addr, nil) // nolint:gosec
 }
 
 // getExamples loads the examples from the examples.json file.

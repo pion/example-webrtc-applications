@@ -168,5 +168,5 @@ func main() {
 	http.HandleFunc("/snapshot", snapshot)
 
 	fmt.Println("Open http://localhost:8080 to access this demo")
-	panic(http.ListenAndServe(":8080", nil))
+	panic(http.ListenAndServe(":8080", nil)) // nolint:gosec
 }

@@ -71,7 +71,7 @@ func main() {
 	}()
 
 	// start HTTP server
-	log.Fatal(http.ListenAndServe(*addr, nil))
+	log.Fatal(http.ListenAndServe(*addr, nil)) // nolint:gosec
 }
 
 // Add to list of tracks and fire renegotation for all PeerConnections

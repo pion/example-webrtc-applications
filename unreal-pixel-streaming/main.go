@@ -82,7 +82,7 @@ func main() {
 }
 
 // Given a Configuration create a PeerConnection and set the appropriate handlers.
-//nolint
+// nolint
 func createPeerConnection(conn *websocket.Conn, configuration webrtc.Configuration) *webrtc.PeerConnection {
 	m := &webrtc.MediaEngine{}
 
