@@ -229,7 +229,7 @@ func pushVP8(rtpPacket *rtp.Packet) {
 		}
 		if videoWriter != nil {
 			videoTimestamp += sample.Duration
-			if _, err := videoWriter.Write(videoKeyframe, int64(audioTimestamp/time.Millisecond), sample.Data); err != nil {
+			if _, err := videoWriter.Write(videoKeyframe, int64(videoTimestamp/time.Millisecond), sample.Data); err != nil {
 				panic(err)
 			}
 		}
