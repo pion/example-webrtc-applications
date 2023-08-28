@@ -4,10 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/pion/webrtc/v3"
-
 	gst "github.com/pion/example-webrtc-applications/v3/internal/gstreamer-src"
 	"github.com/pion/example-webrtc-applications/v3/internal/signal"
+	"github.com/pion/webrtc/v3"
 )
 
 func main() {

@@ -1,3 +1,4 @@
+//go:build gocv
 // +build gocv
 
 package main
@@ -121,7 +122,6 @@ func startGoCVMotionDetect(ffmpegOut io.Reader) {
 			break
 		}
 	}
-
 }
 
 func createWebRTCConn(ffmpegIn io.Writer) {

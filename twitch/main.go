@@ -9,13 +9,12 @@ import (
 	"time"
 
 	"github.com/at-wat/ebml-go/webm"
+	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
 	"github.com/pion/webrtc/v3"
 	"github.com/pion/webrtc/v3/pkg/media/samplebuilder"
-
-	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 )
 
 var (
