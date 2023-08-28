@@ -14,18 +14,22 @@ jobs:
   lint-commit-message:
     name: Metadata
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
-        - uses: actions/checkout@v2
-          with:
-            fetch-depth: 0
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Checkout .goassets
+        uses: actions/checkout@v3
+        with:
+          repository: pion/.goassets
+          path: ${{ github.workspace }}/.github/.goassets
+          ref: ${{ inputs.goassets-ref }}
 
-        - name: Commit Message
-          run: .github/lint-commit-message.sh
+      - name: Commit Message
+        run: .github/.goassets/scripts/lint-commit-message.sh
 
-        - name: File names
-          run: .github/lint-filename.sh
+      - name: File names
+        run: .github/.goassets/scripts/lint-filename.sh
 
         - name: Contributors
           run: .github/assert-contributors.sh
