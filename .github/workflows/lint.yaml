@@ -14,41 +14,54 @@ jobs:
   lint-commit-message:
     name: Metadata
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
-        - uses: actions/checkout@v2
-          with:
-            fetch-depth: 0
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Checkout .goassets
+        uses: actions/checkout@v3
+        with:
+          repository: pion/.goassets
+          path: ${{ github.workspace }}/.github/.goassets
+          ref: ${{ inputs.goassets-ref }}
 
-        - name: Commit Message
-          run: .github/lint-commit-message.sh
+      - name: Commit Message
+        run: .github/.goassets/scripts/lint-commit-message.sh
 
-        - name: File names
-          run: .github/lint-filename.sh
+      - name: File names
+        run: .github/.goassets/scripts/lint-filename.sh
 
-        - name: Contributors
-          run: .github/assert-contributors.sh
+      - name: Logging messages should not have trailing newlines
+        run: .github/.goassets/scripts/lint-no-trailing-newline-in-log-messages.sh
+
+      - name: Go version in go.mod
+        run: .github/.goassets/scripts/lint-go-mod-version.sh
 
   lint-go:
     name: Go
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v4
+        with:
+          go-version: 'stable'
 
       - name: Update packages
         run: sudo apt-get update
 
       - name: Install GStreamer
-        run: sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+        run: |
+          sudo apt-get purge -y libunwind-14-dev
+          sudo apt-get install -y libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
 
       - name: Build data-channels
         run:  cd c-data-channels && make
 
-      - name: Install golangci-lint
-        run:  curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b /tmp v1.19.1
-
-      - name: Run golangci-lint
-        run:  go list -f '{{.Dir}}' ./... | fgrep -v c-data-channels | xargs realpath --relative-to=. | xargs /tmp/golangci-lint run -v
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.52.2

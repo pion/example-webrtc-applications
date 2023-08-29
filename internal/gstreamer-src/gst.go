@@ -8,6 +8,7 @@ package gst
 
 */
 import "C"
+
 import (
 	"fmt"
 	"sync"
@@ -31,8 +32,10 @@ type Pipeline struct {
 	clockRate float32
 }
 
-var pipelines = make(map[int]*Pipeline)
-var pipelinesLock sync.Mutex
+var (
+	pipelines     = make(map[int]*Pipeline)
+	pipelinesLock sync.Mutex
+)
 
 const (
 	videoClockRate = 90000

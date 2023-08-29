@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/at-wat/ebml-go/webm"
-
 	webrtcsignal "github.com/pion/example-webrtc-applications/v3/internal/signal"
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
@@ -57,6 +56,7 @@ func (s *webmSaver) Close() {
 		}
 	}
 }
+
 func (s *webmSaver) PushOpus(rtpPacket *rtp.Packet) {
 	s.audioBuilder.Push(rtpPacket)
 
@@ -73,6 +73,7 @@ func (s *webmSaver) PushOpus(rtpPacket *rtp.Packet) {
 		}
 	}
 }
+
 func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 	s.videoBuilder.Push(rtpPacket)
 
@@ -102,8 +103,9 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 		}
 	}
 }
+
 func (s *webmSaver) InitWriter(width, height int) {
-	w, err := os.OpenFile("test.webm", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	w, err := os.OpenFile("test.webm", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o600)
 	if err != nil {
 		panic(err)
 	}

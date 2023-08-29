@@ -9,13 +9,12 @@ import (
 	"time"
 
 	"github.com/at-wat/ebml-go/webm"
+	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
 	"github.com/pion/webrtc/v3"
 	"github.com/pion/webrtc/v3/pkg/media/samplebuilder"
-
-	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 )
 
 var (
@@ -230,7 +229,7 @@ func pushVP8(rtpPacket *rtp.Packet) {
 		}
 		if videoWriter != nil {
 			videoTimestamp += sample.Duration
-			if _, err := videoWriter.Write(videoKeyframe, int64(audioTimestamp/time.Millisecond), sample.Data); err != nil {
+			if _, err := videoWriter.Write(videoKeyframe, int64(videoTimestamp/time.Millisecond), sample.Data); err != nil {
 				panic(err)
 			}
 		}
