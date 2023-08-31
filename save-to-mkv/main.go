@@ -173,8 +173,7 @@ func Se(pBuff []byte, nLen uint, nStartBit *uint) int {
 
 func u(bitCount uint, buf []byte, nStartBit *uint) uint {
 	var dwRet uint = 0
-	var i uint = 0
-	for i = 0; i < bitCount; i++ {
+	for i := uint(0); i < bitCount; i++ {
 		dwRet <<= 1
 		if (buf[*nStartBit/8] & (0x80 >> (*nStartBit % 8))) > 0 {
 			dwRet += 1
@@ -185,15 +184,13 @@ func u(bitCount uint, buf []byte, nStartBit *uint) uint {
 }
 
 func deEmulationPrevention(buf []byte, bufSize *uint) {
-	i := 0
-	j := 0
 	tmpPtr := buf
 	tmpBufSize := *bufSize
-	for i = 0; i < (int)(tmpBufSize-2); i++ {
+	for i := 0; i < (int)(tmpBufSize-2); i++ {
 		val := (int)(tmpPtr[i] + tmpPtr[i+1] + tmpPtr[i+2])
 		if val == 0 {
 			// kick out 0x03
-			for j = i + 2; j < (int)(tmpBufSize-1); j++ {
+			for j := i + 2; j < (int)(tmpBufSize-1); j++ {
 				tmpPtr[j] = tmpPtr[j+1]
 			}
 			// and so we should devrease bufsize
@@ -224,7 +221,7 @@ func H264DecodeSps(buf []byte, nLen uint) (int, int, uint, bool) {
 		if profileIdc == 100 || profileIdc == 110 || profileIdc == 122 || profileIdc == 144 {
 			chromaFormatIdc := Ue(buf, nLen, &startBit)
 			if chromaFormatIdc == 3 {
-				u(1, buf, &startBit) // residual_colour_transform_flag :=
+				u(1, buf, &startBit) // residual_colou_transform_flag :=
 			}
 
 			Ue(buf, nLen, &startBit) // bit_depth_luma_minus8 :=
@@ -293,9 +290,9 @@ func H264DecodeSps(buf []byte, nLen uint) (int, int, uint, bool) {
 			if videoSignalTypePresentFlag > 0 {
 				u(3, buf, &startBit) // video_format:=
 				u(1, buf, &startBit) // video_full_range_flag:=
-				colour_description_present_flag := u(1, buf, &startBit)
-				if colour_description_present_flag > 0 {
-					u(8, buf, &startBit) // colour_primaries:=
+				colorDescriptionPresentFlag := u(1, buf, &startBit)
+				if colorDescriptionPresentFlag > 0 {
+					u(8, buf, &startBit) // color_primaries:=
 					u(8, buf, &startBit) // transfer_characteristics:=
 					u(8, buf, &startBit) // matrix_coefficients:=
 				}
