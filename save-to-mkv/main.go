@@ -75,7 +75,7 @@ func (s *mkvSaver) Push264(rtpPacket *rtp.Packet) {
 		if videoKeyframe {
 			if (s.videoWriter == nil || s.audioWriter == nil) && naluType == 7 {
 				p := bytes.SplitN(sample.Data[4:], []byte{0x00, 0x00, 0x00, 0x01}, 2)
-				if width, height, fps, ok := H264_decode_sps(p[0], uint(len(p[0]))); ok {
+				if width, height, fps, ok := H264DecodeSps(p[0], uint(len(p[0]))); ok {
 					log.Printf("width:%d, height:%d, fps:%d", width, height, fps)
 					s.InitWriter(width, height)
 				}
@@ -172,10 +172,10 @@ func Se(pBuff []byte, nLen uint, nStartBit *uint) int {
 	return nValue
 }
 
-func u(BitCount uint, buf []byte, nStartBit *uint) uint {
+func u(bitCount uint, buf []byte, nStartBit *uint) uint {
 	var dwRet uint = 0
 	var i uint = 0
-	for i = 0; i < BitCount; i++ {
+	for i = 0; i < bitCount; i++ {
 		dwRet <<= 1
 		if (buf[*nStartBit/8] & (0x80 >> (*nStartBit % 8))) > 0 {
 			dwRet += 1
@@ -185,140 +185,140 @@ func u(BitCount uint, buf []byte, nStartBit *uint) uint {
 	return dwRet
 }
 
-func de_emulation_prevention(buf []byte, buf_size *uint) {
+func deEmulationPrevention(buf []byte, buf_size *uint) {
 	i := 0
 	j := 0
 	var tmp_buf_size uint = 0
 	var val int = 0
 
-	tmp_ptr := buf
+	tmpPtr := buf
 	tmp_buf_size = *buf_size
 	for i = 0; i < (int)(tmp_buf_size-2); i++ {
-		val = (int)((tmp_ptr[i] ^ 0x00) + (tmp_ptr[i+1] ^ 0x00) + (tmp_ptr[i+2] ^ 0x03))
+		val = (int)(tmpPtr[i] + tmpPtr[i+1] + tmpPtr[i+2])
 		if val == 0 {
-			//kick out 0x03
+			// kick out 0x03
 			for j = i + 2; j < (int)(tmp_buf_size-1); j++ {
-				tmp_ptr[j] = tmp_ptr[j+1]
+				tmpPtr[j] = tmpPtr[j+1]
 			}
 
-			//and so we should devrease bufsize
+			// and so we should devrease bufsize
 			*buf_size--
 		}
 	}
 }
 
-func H264_decode_sps(buf []byte, nLen uint) (int, int, uint, bool) {
-	var StartBit uint = 0
+func H264DecodeSps(buf []byte, nLen uint) (int, int, uint, bool) {
+	var startBit uint = 0
 	var fps uint = 0
-	de_emulation_prevention(buf, &nLen)
+	deEmulationPrevention(buf, &nLen)
 
-	u(1, buf, &StartBit) //forbidden_zero_bit :=
-	u(2, buf, &StartBit) //nal_ref_idc :=
-	nal_unit_type := u(5, buf, &StartBit)
-	if nal_unit_type == 7 {
-		profile_idc := u(8, buf, &StartBit) //
-		_ = u(1, buf, &StartBit)            //(buf[1] & 0x80)>>7  constraint_set0_flag
-		_ = u(1, buf, &StartBit)            //(buf[1] & 0x40)>>6;constraint_set1_flag
-		_ = u(1, buf, &StartBit)            //(buf[1] & 0x20)>>5;constraint_set2_flag
-		_ = u(1, buf, &StartBit)            //(buf[1] & 0x10)>>4;constraint_set3_flag
-		_ = u(4, buf, &StartBit)            //reserved_zero_4bits
-		u(8, buf, &StartBit)                //level_idc :=
+	u(1, buf, &startBit) // forbidden_zero_bit :=
+	u(2, buf, &startBit) // nal_ref_idc :=
+	nalUnitType := u(5, buf, &startBit)
+	if nalUnitType == 7 {
+		profileIdc := u(8, buf, &startBit) //
+		_ = u(1, buf, &startBit)           // (buf[1] & 0x80)>>7  constraint_set0_flag
+		_ = u(1, buf, &startBit)           // (buf[1] & 0x40)>>6;constraint_set1_flag
+		_ = u(1, buf, &startBit)           // (buf[1] & 0x20)>>5;constraint_set2_flag
+		_ = u(1, buf, &startBit)           // (buf[1] & 0x10)>>4;constraint_set3_flag
+		_ = u(4, buf, &startBit)           // reserved_zero_4bits
+		u(8, buf, &startBit)               // level_idc :=
 
-		Ue(buf, nLen, &StartBit) //seq_parameter_set_id :=
+		Ue(buf, nLen, &startBit) // seq_parameter_set_id :=
 
-		if profile_idc == 100 || profile_idc == 110 || profile_idc == 122 || profile_idc == 144 {
-			chroma_format_idc := Ue(buf, nLen, &StartBit)
-			if chroma_format_idc == 3 {
-				u(1, buf, &StartBit) //residual_colour_transform_flag :=
+		if profileIdc == 100 || profileIdc == 110 || profileIdc == 122 || profileIdc == 144 {
+			chromaFormatIdc := Ue(buf, nLen, &startBit)
+			if chromaFormatIdc == 3 {
+				u(1, buf, &startBit) // residual_colour_transform_flag :=
 			}
 
-			Ue(buf, nLen, &StartBit) //bit_depth_luma_minus8 :=
-			Ue(buf, nLen, &StartBit) //bit_depth_chroma_minus8 :=
-			u(1, buf, &StartBit)     //qpprime_y_zero_transform_bypass_flag :=
-			seq_scaling_matrix_present_flag := u(1, buf, &StartBit)
+			Ue(buf, nLen, &startBit) // bit_depth_luma_minus8 :=
+			Ue(buf, nLen, &startBit) // bit_depth_chroma_minus8 :=
+			u(1, buf, &startBit)     // qpprime_y_zero_transform_bypass_flag :=
+			seqScalingMatrixPresentFlag := u(1, buf, &startBit)
 
-			seq_scaling_list_present_flag := make([]int, 8)
-			if seq_scaling_matrix_present_flag > 0 {
+			seqScalingListPresentFlag := make([]int, 8)
+			if seqScalingMatrixPresentFlag > 0 {
 				for i := 0; i < 8; i++ {
-					seq_scaling_list_present_flag[i] = (int)(u(1, buf, &StartBit))
+					seqScalingListPresentFlag[i] = (int)(u(1, buf, &startBit))
 				}
 			}
 		}
-		Ue(buf, nLen, &StartBit) //log2_max_frame_num_minus4 :=
-		pic_order_cnt_type := Ue(buf, nLen, &StartBit)
-		if pic_order_cnt_type == 0 {
-			Ue(buf, nLen, &StartBit) //log2_max_pic_order_cnt_lsb_minus4 :=
-		} else if pic_order_cnt_type == 1 {
-			u(1, buf, &StartBit)     //delta_pic_order_always_zero_flag :=
-			Se(buf, nLen, &StartBit) //offset_for_non_ref_pic :=
-			Se(buf, nLen, &StartBit) //offset_for_top_to_bottom_field :=
-			num_ref_frames_in_pic_order_cnt_cycle := Ue(buf, nLen, &StartBit)
+		Ue(buf, nLen, &startBit) // log2_max_frame_num_minus4 :=
+		picOrderCntType := Ue(buf, nLen, &startBit)
+		if picOrderCntType == 0 {
+			Ue(buf, nLen, &startBit) // log2_max_pic_order_cnt_lsb_minus4 :=
+		} else if picOrderCntType == 1 {
+			u(1, buf, &startBit)     // delta_pic_order_always_zero_flag :=
+			Se(buf, nLen, &startBit) // offset_for_non_ref_pic :=
+			Se(buf, nLen, &startBit) // offset_for_top_to_bottom_field :=
+			numRefFramesInPicOrderCntCycle := Ue(buf, nLen, &startBit)
 
-			offset_for_ref_frame := make([]int, num_ref_frames_in_pic_order_cnt_cycle)
-			for i := 0; i < (int)(num_ref_frames_in_pic_order_cnt_cycle); i++ {
-				offset_for_ref_frame[i] = Se(buf, nLen, &StartBit)
+			offsetForRefFrame := make([]int, numRefFramesInPicOrderCntCycle)
+			for i := 0; i < (int)(numRefFramesInPicOrderCntCycle); i++ {
+				offsetForRefFrame[i] = Se(buf, nLen, &startBit)
 			}
 		}
-		Ue(buf, nLen, &StartBit) //num_ref_frames :=
-		u(1, buf, &StartBit)     //gaps_in_frame_num_value_allowed_flag :=
-		pic_width_in_mbs_minus1 := Ue(buf, nLen, &StartBit)
-		pic_height_in_map_units_minus1 := Ue(buf, nLen, &StartBit)
+		Ue(buf, nLen, &startBit) // num_ref_frames :=
+		u(1, buf, &startBit)     // gaps_in_frame_num_value_allowed_flag :=
+		picWidthInMbsMinus1 := Ue(buf, nLen, &startBit)
+		picHeightInMapUnitsMinus1 := Ue(buf, nLen, &startBit)
 
-		width := (pic_width_in_mbs_minus1 + 1) * 16
-		height := (pic_height_in_map_units_minus1 + 1) * 16
+		width := (picWidthInMbsMinus1 + 1) * 16
+		height := (picHeightInMapUnitsMinus1 + 1) * 16
 
-		frame_mbs_only_flag := u(1, buf, &StartBit)
-		if frame_mbs_only_flag <= 0 {
-			u(1, buf, &StartBit) //mb_adaptive_frame_field_flag :=
+		frameMbsOnlyFlag := u(1, buf, &startBit)
+		if frameMbsOnlyFlag <= 0 {
+			u(1, buf, &startBit) // mb_adaptive_frame_field_flag :=
 		}
 
-		u(1, buf, &StartBit) //direct_8x8_inference_flag :=
-		frame_cropping_flag := u(1, buf, &StartBit)
-		if frame_cropping_flag > 0 {
-			Ue(buf, nLen, &StartBit) //frame_crop_left_offset:=
-			Ue(buf, nLen, &StartBit) //frame_crop_right_offset:=
-			Ue(buf, nLen, &StartBit) //frame_crop_top_offset:=
-			Ue(buf, nLen, &StartBit) //frame_crop_bottom_offset:=
+		u(1, buf, &startBit) // direct_8x8_inference_flag :=
+		frameCroppingFlag := u(1, buf, &startBit)
+		if frameCroppingFlag > 0 {
+			Ue(buf, nLen, &startBit) // frame_crop_left_offset:=
+			Ue(buf, nLen, &startBit) // frame_crop_right_offset:=
+			Ue(buf, nLen, &startBit) // frame_crop_top_offset:=
+			Ue(buf, nLen, &startBit) // frame_crop_bottom_offset:=
 		}
-		vui_parameter_present_flag := u(1, buf, &StartBit)
-		if vui_parameter_present_flag > 0 {
-			aspect_ratio_info_present_flag := u(1, buf, &StartBit)
-			if aspect_ratio_info_present_flag > 0 {
-				aspect_ratio_idc := u(8, buf, &StartBit)
-				if aspect_ratio_idc == 255 {
-					u(16, buf, &StartBit) //sar_width:=
-					u(16, buf, &StartBit) //sar_height:=
+		vuiParameterPresentFlag := u(1, buf, &startBit)
+		if vuiParameterPresentFlag > 0 {
+			aspectRatioInfoPresentFlag := u(1, buf, &startBit)
+			if aspectRatioInfoPresentFlag > 0 {
+				aspectRatioIdc := u(8, buf, &startBit)
+				if aspectRatioIdc == 255 {
+					u(16, buf, &startBit) // sar_width:=
+					u(16, buf, &startBit) // sar_height:=
 				}
 			}
-			overscan_info_present_flag := u(1, buf, &StartBit)
-			if overscan_info_present_flag > 0 {
-				u(1, buf, &StartBit) //overscan_appropriate_flagu:=
+			overscanInfoPresentFlag := u(1, buf, &startBit)
+			if overscanInfoPresentFlag > 0 {
+				u(1, buf, &startBit) // overscan_appropriate_flagu:=
 			}
-			video_signal_type_present_flag := u(1, buf, &StartBit)
-			if video_signal_type_present_flag > 0 {
-				u(3, buf, &StartBit) //video_format:=
-				u(1, buf, &StartBit) //video_full_range_flag:=
-				colour_description_present_flag := u(1, buf, &StartBit)
+			videoSignalTypePresentFlag := u(1, buf, &startBit)
+			if videoSignalTypePresentFlag > 0 {
+				u(3, buf, &startBit) // video_format:=
+				u(1, buf, &startBit) // video_full_range_flag:=
+				colour_description_present_flag := u(1, buf, &startBit)
 				if colour_description_present_flag > 0 {
-					u(8, buf, &StartBit) //colour_primaries:=
-					u(8, buf, &StartBit) //transfer_characteristics:=
-					u(8, buf, &StartBit) //matrix_coefficients:=
+					u(8, buf, &startBit) // colour_primaries:=
+					u(8, buf, &startBit) // transfer_characteristics:=
+					u(8, buf, &startBit) // matrix_coefficients:=
 				}
 			}
-			chroma_loc_info_present_flag := u(1, buf, &StartBit)
-			if chroma_loc_info_present_flag > 0 {
-				Ue(buf, nLen, &StartBit) //chroma_sample_loc_type_top_field:=
-				Ue(buf, nLen, &StartBit) //chroma_sample_loc_type_bottom_field:=
+			chromaLocInfoPresentFlag := u(1, buf, &startBit)
+			if chromaLocInfoPresentFlag > 0 {
+				Ue(buf, nLen, &startBit) // chroma_sample_loc_type_top_field:=
+				Ue(buf, nLen, &startBit) // chroma_sample_loc_type_bottom_field:=
 			}
-			timing_info_present_flag := u(1, buf, &StartBit)
+			timingInfoPresentFlag := u(1, buf, &startBit)
 
-			if timing_info_present_flag > 0 {
-				num_units_in_tick := u(32, buf, &StartBit)
-				time_scale := u(32, buf, &StartBit)
-				fps = time_scale / num_units_in_tick
-				fixed_frame_rate_flag := u(1, buf, &StartBit)
-				if fixed_frame_rate_flag > 0 {
-					fps = fps / 2
+			if timingInfoPresentFlag > 0 {
+				numUnitsInTick := u(32, buf, &startBit)
+				timeScale := u(32, buf, &startBit)
+				fps = timeScale / numUnitsInTick
+				fixedFrameRateFlag := u(1, buf, &startBit)
+				if fixedFrameRateFlag > 0 {
+					fps /= 2
 				}
 			}
 		}
