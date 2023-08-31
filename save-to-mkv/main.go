@@ -164,8 +164,7 @@ func Ue(pBuff []byte, nLen uint, nStartBit *uint) uint {
 
 func Se(pBuff []byte, nLen uint, nStartBit *uint) int {
 	UeVal := Ue(pBuff, nLen, nStartBit)
-	var k int64 = (int64)(UeVal)
-	var nValue int = (int)(math.Ceil((float64)(k / 2)))
+	var nValue int = (int)(math.Ceil((float64)(UeVal) / 2))
 	if UeVal%2 == 0 {
 		nValue = -nValue
 	}
@@ -185,24 +184,20 @@ func u(bitCount uint, buf []byte, nStartBit *uint) uint {
 	return dwRet
 }
 
-func deEmulationPrevention(buf []byte, buf_size *uint) {
+func deEmulationPrevention(buf []byte, bufSize *uint) {
 	i := 0
 	j := 0
-	var tmp_buf_size uint = 0
-	var val int = 0
-
 	tmpPtr := buf
-	tmp_buf_size = *buf_size
-	for i = 0; i < (int)(tmp_buf_size-2); i++ {
-		val = (int)(tmpPtr[i] + tmpPtr[i+1] + tmpPtr[i+2])
+	tmpBufSize := *bufSize
+	for i = 0; i < (int)(tmpBufSize-2); i++ {
+		val := (int)(tmpPtr[i] + tmpPtr[i+1] + tmpPtr[i+2])
 		if val == 0 {
 			// kick out 0x03
-			for j = i + 2; j < (int)(tmp_buf_size-1); j++ {
+			for j = i + 2; j < (int)(tmpBufSize-1); j++ {
 				tmpPtr[j] = tmpPtr[j+1]
 			}
-
 			// and so we should devrease bufsize
-			*buf_size--
+			*bufSize--
 		}
 	}
 }
