@@ -54,13 +54,13 @@ func Encode(obj interface{}) string {
 		b = zip(b)
 	}
 
-	return base64.StdEncoding.EncodeToString(b)
+	return base64.RawURLEncoding.EncodeToString(b)
 }
 
 // Decode decodes the input from base64
 // It can optionally unzip the input after decoding
 func Decode(in string, obj interface{}) {
-	b, err := base64.StdEncoding.DecodeString(in)
+	b, err := base64.RawURLEncoding.DecodeString(in)
 	if err != nil {
 		panic(err)
 	}
