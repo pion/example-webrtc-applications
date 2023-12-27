@@ -1,6 +1,9 @@
-# sip-to-webrtc
-sip-to-webrtc demonstrates how you can connect to a SIP over WebRTC endpoint. This example connects to an extension
-and saves the audio to a ogg file.
+# sip-over-websocket-to-webrtc
+SIP Signaling via WebSocket is defined in [RFC 7118](https://www.rfc-editor.org/rfc/rfc7118.html).
+If you want to connect to a SIP server via UDP/TCP see [sip-to-webrtc](../sip-to-webrtc)
+
+sip-over-websocket-to-webrtc demonstrates how to connect to a SIP Server via Websocket.
+This example connects to an extension and saves the audio to a ogg file.
 
 ## Instructions
 ### Setup FreeSWITCH (or SIP over WebSocket Server)
