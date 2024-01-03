@@ -1,15 +1,23 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// sip-over-websocket-to-webrtc demonstrates how to connect to a SIP Server via Websocket
 package main
 
 import (
 	"flag"
 	"fmt"
 
-	"github.com/pion/example-webrtc-applications/v3/sip-to-webrtc/softphone"
+	"github.com/pion/example-webrtc-applications/v3/sip-over-websocket-to-webrtc/softphone"
 	"github.com/pion/sdp/v2"
 	"github.com/pion/webrtc/v3"
 	"github.com/pion/webrtc/v3/pkg/media/oggwriter"
 )
 
+// nolint
 var (
 	username  = flag.String("username", "1000", "Extension you wish to register as")
 	password  = flag.String("password", "", "Password for the extension you wish to register as")

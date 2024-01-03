@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+// examples hosts the HTML/JS for different examples
 package main
 
 import (
@@ -107,7 +111,7 @@ func serve(addr string) error {
 func getExamples() (*Examples, error) {
 	file, err := os.Open("./examples.json")
 	if err != nil {
-		return nil, fmt.Errorf("failed to list examples (please run in the examples folder): %v", err)
+		return nil, fmt.Errorf("failed to list examples (please run in the examples folder): %v", err) //nolint
 	}
 	defer func() {
 		closeErr := file.Close()
@@ -119,7 +123,7 @@ func getExamples() (*Examples, error) {
 	var examples Examples
 	err = json.NewDecoder(file).Decode(&examples)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse examples: %v", err)
+		return nil, fmt.Errorf("failed to parse examples: %v", err) //nolint
 	}
 
 	for _, example := range examples {

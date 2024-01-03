@@ -1,5 +1,8 @@
 ---
- name: gocv-receive
- description: Example of using Pion WebRTC with GoCV to do motion detection
- authors:
-   - Sean DuBois
+# SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+# SPDX-License-Identifier: MIT
+
+name: gocv-receive
+description: Example of using Pion WebRTC with GoCV to do motion detection
+authors:
+  - Sean DuBois

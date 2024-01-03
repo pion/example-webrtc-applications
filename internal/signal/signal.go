@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 // Package signal contains helpers to exchange the SDP session
 // description between examples.
 package signal
@@ -10,7 +13,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -28,7 +30,7 @@ func MustReadStdin() string {
 		in, err = r.ReadString('\n')
 		if err != io.EOF {
 			if err != nil {
-				panic(err)
+				panic(err) //nolint
 			}
 		}
 		in = strings.TrimSpace(in)
@@ -37,7 +39,7 @@ func MustReadStdin() string {
 		}
 	}
 
-	fmt.Println("")
+	fmt.Println("") //nolint
 
 	return in
 }
@@ -47,7 +49,7 @@ func MustReadStdin() string {
 func Encode(obj interface{}) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 
 	if compress {
@@ -62,7 +64,7 @@ func Encode(obj interface{}) string {
 func Decode(in string, obj interface{}) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 
 	if compress {
@@ -71,7 +73,7 @@ func Decode(in string, obj interface{}) {
 
 	err = json.Unmarshal(b, obj)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 }
 
@@ -80,15 +82,15 @@ func zip(in []byte) []byte {
 	gz := gzip.NewWriter(&b)
 	_, err := gz.Write(in)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 	err = gz.Flush()
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 	err = gz.Close()
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 	return b.Bytes()
 }
@@ -97,15 +99,15 @@ func unzip(in []byte) []byte {
 	var b bytes.Buffer
 	_, err := b.Write(in)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 	r, err := gzip.NewReader(&b)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
-	res, err := ioutil.ReadAll(r)
+	res, err := io.ReadAll(r)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 	return res
 }

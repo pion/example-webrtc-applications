@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 package softphone
 
 import (
@@ -20,7 +23,7 @@ func (softphone *Softphone) register() {
 
 	conn, _, err := dialer.Dial(url.String(), nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err) // nolint
 	}
 
 	softphone.wsConn = conn
@@ -29,7 +32,7 @@ func (softphone *Softphone) register() {
 		for {
 			_, bytes, err := conn.ReadMessage()
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal(err) // nolint
 			}
 
 			message := string(bytes)

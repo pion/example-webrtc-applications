@@ -1,5 +1,9 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 package softphone
 
+// nolint
 var responseCodes = map[int]string{
 	100: "Trying",
 	180: "Ringing",

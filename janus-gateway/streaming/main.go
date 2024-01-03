@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// example of how to connect Pion and Janus
 package main
 
 import (
@@ -90,9 +97,14 @@ func main() {
 	}
 
 	if msg.Jsep != nil {
+		sdpVal, ok := msg.Jsep["sdp"].(string)
+		if !ok {
+			panic("failed to cast")
+		}
+
 		offer := webrtc.SessionDescription{
 			Type: webrtc.SDPTypeOffer,
-			SDP:  msg.Jsep["sdp"].(string),
+			SDP:  sdpVal,
 		}
 
 		// Create a new RTCPeerConnection

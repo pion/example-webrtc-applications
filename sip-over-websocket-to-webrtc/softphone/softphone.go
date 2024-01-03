@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 // Package softphone provides abstractions for SIP over Websocket
 package softphone
 
@@ -65,14 +68,14 @@ func (softphone *Softphone) request(sipMessage SIPMessage, responseHandler func(
 	}
 
 	if err := softphone.wsConn.WriteMessage(1, []byte(sipMessage.ToString())); err != nil {
-		log.Fatal(err)
+		log.Fatal(err) // nolint
 	}
 }
 
 func (softphone *Softphone) response(message string) {
-	log.Print("↑↑↑\n", message)
+	log.Print("↑↑↑\n", message) // nolint
 
 	if err := softphone.wsConn.WriteMessage(1, []byte(message)); err != nil {
-		log.Fatal(err)
+		log.Fatal(err) // nolint
 	}
 }

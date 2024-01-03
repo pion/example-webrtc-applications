@@ -1,10 +1,15 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 //go:build !js
 // +build !js
 
+// play-from-disk demonstrates how to send video and/or audio to your browser from files saved to disk.
 package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -103,7 +108,7 @@ func main() { //nolint
 			ticker := time.NewTicker(h264FrameDuration)
 			for ; true; <-ticker.C {
 				nal, h264Err := h264.NextNAL()
-				if h264Err == io.EOF {
+				if errors.Is(h264Err, io.EOF) {
 					fmt.Printf("All video frames parsed and sent")
 					os.Exit(0)
 				}
@@ -167,7 +172,7 @@ func main() { //nolint
 			ticker := time.NewTicker(oggPageDuration)
 			for ; true; <-ticker.C {
 				pageData, pageHeader, oggErr := ogg.ParseNextPage()
-				if oggErr == io.EOF {
+				if errors.Is(oggErr, io.EOF) {
 					fmt.Printf("All audio pages parsed and sent")
 					os.Exit(0)
 				}

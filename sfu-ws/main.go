@@ -1,11 +1,18 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// sfu-ws is a many-to-many websocket based SFU
 package main
 
 import (
 	"encoding/json"
 	"flag"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 	"text/template"
 	"time"
@@ -15,6 +22,7 @@ import (
 	"github.com/pion/webrtc/v3"
 )
 
+// nolint
 var (
 	addr     = flag.String("addr", ":8080", "http service address")
 	upgrader = websocket.Upgrader{
@@ -47,7 +55,7 @@ func main() {
 	trackLocals = map[string]*webrtc.TrackLocalStaticRTP{}
 
 	// Read index.html from disk into memory, serve whenever anyone requests /
-	indexHTML, err := ioutil.ReadFile("index.html")
+	indexHTML, err := os.ReadFile("index.html")
 	if err != nil {
 		panic(err)
 	}
@@ -283,6 +291,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		case webrtc.PeerConnectionStateClosed:
 			signalPeerConnections()
+		default:
 		}
 	})
 

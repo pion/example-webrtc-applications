@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+// c-data-channels shows how to mix C and Go code
 package main
 
 /*
@@ -41,8 +45,11 @@ import (
 	"github.com/pion/webrtc/v3"
 )
 
+// nolint
 var store = map[C.GoDataChannel]*webrtc.DataChannel{}
 
+// nolint
+//
 //export GoRun
 func GoRun(f C.GoOnDataChannelFunc) {
 	Run(func(d *webrtc.DataChannel) {
@@ -55,6 +62,8 @@ func GoRun(f C.GoOnDataChannelFunc) {
 	})
 }
 
+// nolint
+//
 //export GoOnOpen
 func GoOnOpen(d C.GoDataChannel, f C.GoOnOpenFunc) {
 	// get the actual DataChannel using a unique id
@@ -64,6 +73,8 @@ func GoOnOpen(d C.GoDataChannel, f C.GoOnOpenFunc) {
 	})
 }
 
+// nolint
+//
 //export GoOnMessage
 func GoOnMessage(d C.GoDataChannel, f C.GoOnMessageFunc) {
 	dc := store[d]
@@ -84,12 +95,16 @@ func GoOnMessage(d C.GoDataChannel, f C.GoOnMessageFunc) {
 	})
 }
 
+// nolint
+//
 //export GoSendText
 func GoSendText(d C.GoDataChannel, t *C.char) {
 	dc := store[d]
-	dc.SendText(C.GoString(t))
+	_ = dc.SendText(C.GoString(t))
 }
 
+// nolint
+//
 //export GoLabel
 func GoLabel(d C.GoDataChannel) *C.char {
 	dc := store[d]

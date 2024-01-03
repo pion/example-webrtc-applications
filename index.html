@@ -1,4 +1,8 @@
 <html>
+	<!--
+		SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+		SPDX-License-Identifier: MIT
+	-->
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,700" rel="stylesheet">
@@ -10,13 +14,13 @@
 		font-weight: 400;
 		margin: 4em 10%;
 	}
-	
+
 	.container {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
 	}
-	
+
 	.card {
 		box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 		transition: 0.3s;
@@ -24,16 +28,16 @@
 		flex-grow: 1;
 		max-width: 500px;
 	}
-	
+
 	.card:hover {
 		box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 	}
-		
+
 	.content {
 		line-height: 1.2em;
 		padding: 0 16px;
 	}
-	
+
 	.header {
 		color:#ffffff;
 		background-image: linear-gradient(225deg, #eb6562 0%, #E53935 100%);
@@ -46,11 +50,11 @@
 	</style>
 	<body>
 		<h1>Pion WebRTC examples</h1>
-		<div class="container"> 
+		<div class="container">
 			{{range .}}
 			<div class="card">
 				<div class="header">
-					<h3>{{ .Title }}</h3> 
+					<h3>{{ .Title }}</h3>
 				</div>
 				<div class="content">
 					<p>{{ .Description }}</p>

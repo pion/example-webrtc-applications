@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_webrtc/flutter_webrtc.dart';

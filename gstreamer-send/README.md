@@ -1,5 +1,5 @@
 # gstreamer-send
-gstreamer-send is a simple application that shows how to send video to your browser using pion-WebRTC and GStreamer.
+gstreamer-send is a simple application that shows how to send video to your browser using Pion WebRTC and GStreamer.
 
 ## Instructions
 ### Install GStreamer

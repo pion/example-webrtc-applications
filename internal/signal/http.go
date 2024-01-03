@@ -1,9 +1,12 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 package signal
 
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -15,7 +18,7 @@ func HTTPSDPServer() chan string {
 
 	sdpChan := make(chan string)
 	http.HandleFunc("/sdp", func(w http.ResponseWriter, r *http.Request) {
-		body, _ := ioutil.ReadAll(r.Body)
+		body, _ := io.ReadAll(r.Body)
 		fmt.Fprintf(w, "done")
 		sdpChan <- string(body)
 	})
@@ -23,7 +26,7 @@ func HTTPSDPServer() chan string {
 	go func() {
 		err := http.ListenAndServe(":"+strconv.Itoa(*port), nil) // nolint:gosec
 		if err != nil {
-			panic(err)
+			panic(err) //nolint
 		}
 	}()
 

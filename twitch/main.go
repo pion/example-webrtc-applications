@@ -1,7 +1,15 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// Twitch is an example of ingesting WebRTC and streaming to Twitch
 package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -17,6 +25,7 @@ import (
 	"github.com/pion/webrtc/v3/pkg/media/samplebuilder"
 )
 
+// nolint
 var (
 	audioWriter, videoWriter       webm.BlockWriteCloser
 	audioBuilder, videoBuilder     *samplebuilder.SampleBuilder
@@ -87,7 +96,7 @@ func main() {
 			// Read RTP packets being sent to Pion
 			rtp, _, readErr := track.ReadRTP()
 			if readErr != nil {
-				if readErr == io.EOF {
+				if errors.Is(readErr, io.EOF) {
 					return
 				}
 				panic(readErr)

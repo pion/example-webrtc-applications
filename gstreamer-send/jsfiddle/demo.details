@@ -1,5 +1,8 @@
 ---
- name: gstreamer-send
- description: Example of using pion-WebRTC to send video to your browser using GStreamer
- authors:
-   - Sean DuBois
+# SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+# SPDX-License-Identifier: MIT
+
+name: gstreamer-send
+description: Example of using pion-WebRTC to send video to your browser using GStreamer
+authors:
+  - Sean DuBois

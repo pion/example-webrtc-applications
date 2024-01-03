@@ -1,5 +1,5 @@
 # gstreamer-receive
-gstreamer-receive is a simple application that shows how to receive media using pion-WebRTC and play live using GStreamer.
+gstreamer-receive is a simple application that shows how to receive media using Pion WebRTC and play live using GStreamer.
 
 ## Instructions
 ### Install GStreamer
