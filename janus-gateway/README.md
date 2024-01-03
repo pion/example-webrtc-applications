@@ -1,5 +1,5 @@
 # janus-gateway
-janus-gateway is a collection of examples showing how to use pion-WebRTC with [janus-gateway](https://github.com/meetecho/janus-gateway)
+janus-gateway is a collection of examples showing how to use Pion WebRTC with [janus-gateway](https://github.com/meetecho/janus-gateway)
 
 These examples require that you build+enable websockets with Janus
 
@@ -21,7 +21,7 @@ Got VP8 track, saving to disk as output.ivf
 You will see output.ivf in the current folder.
 
 ## video-room
-This example demonstrates how to stream to a Janus video-room using pion-WebRTC
+This example demonstrates how to stream to a Janus video-room using Pion WebRTC
 
 ### Running
 run `main.go` in `github.com/pion/webrtc-example-applications/janus-gateway/video-room`

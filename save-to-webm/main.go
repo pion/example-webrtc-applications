@@ -153,7 +153,7 @@ func (s *webmSaver) InitWriter(width, height int) {
 }
 
 func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
-	// Everything below is the pion-WebRTC API! Thanks for using it ❤️.
+	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Prepare the configuration
 	config := webrtc.Configuration{

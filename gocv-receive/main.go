@@ -133,7 +133,7 @@ func createWebRTCConn(ffmpegIn io.Writer) {
 		panic(err)
 	}
 
-	// Everything below is the pion-WebRTC API! Thanks for using it ❤️.
+	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Prepare the configuration
 	config := webrtc.Configuration{

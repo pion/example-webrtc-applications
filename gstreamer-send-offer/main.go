@@ -21,7 +21,7 @@ func main() {
 	videoSrc := flag.String("video-src", "videotestsrc", "GStreamer video src")
 	sdpChan := signal.HTTPSDPServer()
 
-	// Everything below is the pion-WebRTC API! Thanks for using it ❤️.
+	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Prepare the configuration
 	config := webrtc.Configuration{

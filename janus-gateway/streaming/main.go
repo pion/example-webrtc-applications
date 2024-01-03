@@ -57,7 +57,7 @@ func watchHandle(handle *janus.Handle) {
 }
 
 func main() {
-	// Everything below is the pion-WebRTC API! Thanks for using it ❤️.
+	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Janus
 	gateway, err := janus.Connect("ws://localhost:8188/")

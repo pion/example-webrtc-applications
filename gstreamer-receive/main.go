@@ -22,7 +22,7 @@ import (
 // gstreamerReceiveMain is launched in a goroutine because the main thread is needed
 // for Glib's main loop (Gstreamer uses Glib)
 func gstreamerReceiveMain() {
-	// Everything below is the pion-WebRTC API! Thanks for using it ❤️.
+	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Prepare the configuration
 	config := webrtc.Configuration{

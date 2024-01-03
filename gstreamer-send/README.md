@@ -34,7 +34,7 @@ Copy the text that `gstreamer-send` just emitted and copy into second text area
 ### Hit 'Start Session' in jsfiddle, enjoy your video!
 A video should start playing in your browser above the input boxes, and will continue playing until you close the application.
 
-Congrats, you have used pion-WebRTC! Now start building something cool
+Congrats, you have used Pion WebRTC! Now start building something cool
 
 ## Customizing your video or audio
 `gstreamer-send` also accepts the command line arguments `-video-src` and `-audio-src` allowing you to provide custom inputs.

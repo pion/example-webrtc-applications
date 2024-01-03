@@ -1,5 +1,5 @@
 # gstreamer-send-offer
-gstreamer-send-offer is a simple application that shows how to send video using pion-WebRTC and GStreamer. This is meant to be used with `gstreamer-receive`, if you want to send via to your browser try `gstreamer-send`
+gstreamer-send-offer is a simple application that shows how to send video using Pion WebRTC and GStreamer. This is meant to be used with `gstreamer-receive`, if you want to send via to your browser try `gstreamer-send`
 
 ## Instructions
 ### Install GStreamer
@@ -24,7 +24,7 @@ You will see a base64 SDP printed to your console. You now need to communicate t
 ### enjoy your video!
 A video should start playing via GStreamer and will continue playing until you close the application.
 
-Congrats, you have used pion-WebRTC! Now start building something cool
+Congrats, you have used Pion WebRTC! Now start building something cool
 
 ## Customizing your video or audio
 `gstreamer-send-offer` also accepts the command line arguments `-video-src` and `-audio-src` allowing you to provide custom inputs.

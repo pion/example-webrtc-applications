@@ -19,4 +19,4 @@ Copy the text that `save-to-webm` just emitted and copy into second text area
 ### Hit 'Start Session' in jsfiddle, enjoy your media!
 Your video and/or audio should be saved to `test.webm`, and will continue playing until you stop the application by Ctrl+C.
 
-Congrats, you have used pion-WebRTC! Now start building something cool
+Congrats, you have used Pion WebRTC! Now start building something cool
