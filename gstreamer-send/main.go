@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// gstreamer-send is a simple application that shows how to send video to your browser using Pion WebRTC and GStreamer.
 package main
 
 import (

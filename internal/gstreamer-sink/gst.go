@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 // Package gst provides an easy API to create an appsrc pipeline
 package gst
 
@@ -45,7 +48,7 @@ func CreatePipeline(payloadType webrtc.PayloadType, codecName string) *Pipeline 
 	case "g722":
 		pipelineStr += " clock-rate=8000 ! rtpg722depay ! decodebin ! autoaudiosink"
 	default:
-		panic("Unhandled codec " + codecName)
+		panic("Unhandled codec " + codecName) //nolint
 	}
 
 	pipelineStrUnsafe := C.CString(pipelineStr)

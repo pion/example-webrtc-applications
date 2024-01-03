@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 #ifndef GST_H
 #define GST_H
 
@@ -6,7 +9,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-extern void goHandlePipelineBuffer(void *buffer, int bufferLen, int samples, int pipelineId);
+extern void goHandlePipelineBuffer(void *buffer, int bufferLen, int samples,
+				   int pipelineId);
 
 GstElement *gstreamer_send_create_pipeline(char *pipeline);
 void gstreamer_send_start_pipeline(GstElement *pipeline, int pipelineId);

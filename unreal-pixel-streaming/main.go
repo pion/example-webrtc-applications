@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// unreal-pixel-streaming demonstrates how to connect to a Unreal Pixel Streaming instance and accept the inbound audio/video
 package main
 
 import (

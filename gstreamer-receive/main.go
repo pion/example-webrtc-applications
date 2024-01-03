@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// gstreamer-receive is a simple application that shows how to receive media using Pion WebRTC and play live using GStreamer.
 package main
 
 import (
@@ -104,6 +111,7 @@ func gstreamerReceiveMain() {
 	select {}
 }
 
+// nolint
 func init() {
 	// This example uses Gstreamer's autovideosink element to display the received video
 	// This element, along with some others, sometimes require that the process' main thread is used

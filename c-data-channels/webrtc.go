@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 package main
 
 import (
@@ -26,13 +29,13 @@ func Run(f func(*webrtc.DataChannel)) {
 	// Create a new RTCPeerConnection
 	peerConnection, err := webrtc.NewPeerConnection(config)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 
 	// Set the handler for ICE connection state
 	// This will notify you when the peer has connected/disconnected
 	peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
-		fmt.Printf("ICE Connection State has changed: %s\n", connectionState.String())
+		fmt.Printf("ICE Connection State has changed: %s\n", connectionState.String()) //nolint
 	})
 
 	// Register data channel creation handling
@@ -45,13 +48,13 @@ func Run(f func(*webrtc.DataChannel)) {
 	// Set the remote SessionDescription
 	err = peerConnection.SetRemoteDescription(offer)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 
 	// Create an answer
 	answer, err := peerConnection.CreateAnswer(nil)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 
 	// Create channel that is blocked until ICE Gathering is complete
@@ -60,7 +63,7 @@ func Run(f func(*webrtc.DataChannel)) {
 	// Sets the LocalDescription, and starts our UDP listeners
 	err = peerConnection.SetLocalDescription(answer)
 	if err != nil {
-		panic(err)
+		panic(err) //nolint
 	}
 
 	// Block until ICE Gathering is complete, disabling trickle ICE
@@ -69,7 +72,7 @@ func Run(f func(*webrtc.DataChannel)) {
 	<-gatherComplete
 
 	// Output the answer in base64 so we can paste it in browser
-	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))
+	fmt.Println(signal.Encode(*peerConnection.LocalDescription())) //nolint
 
 	// Block forever
 	select {}

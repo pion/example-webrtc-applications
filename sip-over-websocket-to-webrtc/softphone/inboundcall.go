@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 package softphone
 
 import (
@@ -19,7 +22,7 @@ func (softphone *Softphone) OpenToInvite() {
 
 			var msg Msg
 			if err := xml.Unmarshal([]byte(inviteMessage.headers["P-rc"]), &msg); err != nil {
-				log.Panic(err)
+				log.Panic(err) // nolint
 			}
 			sipMessage := SIPMessage{}
 			sipMessage.method = "MESSAGE"

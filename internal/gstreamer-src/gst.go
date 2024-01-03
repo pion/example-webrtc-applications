@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
 // Package gst provides an easy API to create an appsink pipeline
 package gst
 
@@ -19,6 +22,7 @@ import (
 	"github.com/pion/webrtc/v3/pkg/media"
 )
 
+// nolint
 func init() {
 	go C.gstreamer_send_start_mainloop()
 }
@@ -32,6 +36,7 @@ type Pipeline struct {
 	clockRate float32
 }
 
+// nolint
 var (
 	pipelines     = make(map[int]*Pipeline)
 	pipelinesLock sync.Mutex
@@ -78,7 +83,7 @@ func CreatePipeline(codecName string, tracks []*webrtc.TrackLocalStaticSample, p
 		clockRate = pcmClockRate
 
 	default:
-		panic("Unhandled codec " + codecName)
+		panic("Unhandled codec " + codecName) //nolint
 	}
 
 	pipelineStrUnsafe := C.CString(pipelineStr)
@@ -118,11 +123,11 @@ func goHandlePipelineBuffer(buffer unsafe.Pointer, bufferLen C.int, duration C.i
 	if ok {
 		for _, t := range pipeline.tracks {
 			if err := t.WriteSample(media.Sample{Data: C.GoBytes(buffer, bufferLen), Duration: time.Duration(duration)}); err != nil {
-				panic(err)
+				panic(err) //nolint
 			}
 		}
 	} else {
-		fmt.Printf("discarding buffer, no pipeline with id %d", int(pipelineID))
+		fmt.Printf("discarding buffer, no pipeline with id %d", int(pipelineID)) //nolint
 	}
 	C.free(buffer)
 }

@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// gstreamer-send-offer is a simple application that shows how to send video using Pion WebRTC and GStreamer
 package main
 
 import (

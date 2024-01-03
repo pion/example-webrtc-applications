@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// snapshot shows how you can convert incoming video frames to jpeg and serve them via HTTP.
 package main
 
 import (
@@ -107,7 +114,7 @@ func signaling(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func snapshot(w http.ResponseWriter, r *http.Request) {
+func snapshot(w http.ResponseWriter, _ *http.Request) {
 	// Initialized with 20 maxLate, my samples sometimes 10-15 packets
 	sampleBuilder := samplebuilder.New(20, &codecs.VP8Packet{}, 90000)
 	decoder := vp8.NewDecoder()

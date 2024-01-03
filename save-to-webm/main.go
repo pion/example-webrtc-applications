@@ -1,6 +1,14 @@
+// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-License-Identifier: MIT
+
+//go:build !js
+// +build !js
+
+// save-to-webm is a simple application that shows how to receive audio and video using Pion and then save to WebM container.
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -202,7 +210,7 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 			// Read RTP packets being sent to Pion
 			rtp, _, readErr := track.ReadRTP()
 			if readErr != nil {
-				if readErr == io.EOF {
+				if errors.Is(readErr, io.EOF) {
 					return
 				}
 				panic(readErr)
