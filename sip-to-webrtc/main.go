@@ -16,7 +16,7 @@ import (
 	"github.com/emiago/sipgo"
 	"github.com/emiago/sipgo/sip"
 	"github.com/pion/example-webrtc-applications/v3/internal/signal"
-	"github.com/pion/sdp/v2"
+	"github.com/pion/sdp/v3"
 	"github.com/pion/webrtc/v3"
 )
 

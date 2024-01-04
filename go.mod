@@ -10,7 +10,7 @@ require (
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
 	github.com/pion/rtcp v1.2.13
 	github.com/pion/rtp v1.8.3
-	github.com/pion/sdp/v2 v2.4.0
+	github.com/pion/sdp/v3 v3.0.6
 	github.com/pion/webrtc/v3 v3.2.24
 	gocv.io/x/gocv v0.35.0
 	golang.org/x/image v0.14.0
@@ -33,7 +33,6 @@ require (
 	github.com/pion/mdns v0.0.8 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
 	github.com/pion/sctp v1.8.8 // indirect
-	github.com/pion/sdp/v3 v3.0.6 // indirect
 	github.com/pion/srtp/v2 v2.0.18 // indirect
 	github.com/pion/stun v0.6.1 // indirect
 	github.com/pion/transport/v2 v2.2.3 // indirect
