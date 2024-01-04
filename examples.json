@@ -64,5 +64,11 @@
 		"link": "play-from-disk-h264",
 		"description": "Example shows how to play a H264 and OGG file from disk",
 		"type": "browser"
+	},
+	{
+		"title": "SIP to WebRTC",
+		"link": "sip-to-webrtc",
+		"description": "sip-to-webrtc demonstrates how to bridge WebRTC and SIP traffic using Pion.",
+		"type": "browser"
 	}
 ]

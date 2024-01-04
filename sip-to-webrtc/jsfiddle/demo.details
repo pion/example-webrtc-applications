@@ -1,0 +1,8 @@
+---
+# SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+# SPDX-License-Identifier: MIT
+
+name: save-to-webm
+description: Example of using Pion WebRTC to bridge SIP traffic
+authors:
+  - Sean DuBois
