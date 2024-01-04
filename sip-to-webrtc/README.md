@@ -44,7 +44,7 @@ If everything worked now it is time to make a SIP Invite.
 
 ### Make your phone call
 `sip-to-webrtc` is now listening on `:5060` and will accept all invites.
-When an Invite has been accepted you will a log message like this.
+When an Invite has been accepted you will see a log message like this.
 
 ```
 Accepting SIP Invite: From: "+15550100001" <sip:+15550100001@192.168.1.93>;tag=nc8uzmZUHUTbqH0v
