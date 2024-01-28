@@ -25,7 +25,7 @@ This example requires you to clone the repo since it is serving static HTML.
 mkdir -p $GOPATH/src/github.com/pion
 cd $GOPATH/src/github.com/pion
 git clone https://github.com/pion/example-webrtc-applications.git
-cd webrtc/examples/sfu-ws
+cd example-webrtc-applications/sfu-ws
 ```
 
 ### Run sfu-ws
