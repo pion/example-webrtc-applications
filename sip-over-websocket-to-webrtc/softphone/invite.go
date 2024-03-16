@@ -31,7 +31,7 @@ func (softphone *Softphone) Invite(extension, offer string) {
 		nonce := regex.FindStringSubmatch(authenticateHeader)[1]
 
 		sipMessage.addProxyAuthorization(*softphone, nonce, extension, "INVITE").addCseq(softphone).newViaBranch()
-		softphone.request(sipMessage, func(msg string) bool {
+		softphone.request(sipMessage, func(string) bool {
 			return false
 		})
 

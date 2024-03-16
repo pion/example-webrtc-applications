@@ -30,7 +30,7 @@ type Softphone struct {
 // NewSoftPhone ...
 func NewSoftPhone(sipInfo SIPInfoResponse) *Softphone {
 	softphone := Softphone{}
-	softphone.OnInvite = func(inviteMessage SIPMessage) {}
+	softphone.OnInvite = func(SIPMessage) {}
 	softphone.fakeDomain = uuid.New().String() + ".invalid"
 	softphone.FakeEmail = uuid.New().String() + "@" + softphone.fakeDomain
 	softphone.fromTag = uuid.New().String()

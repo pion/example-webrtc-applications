@@ -64,7 +64,7 @@ func (softphone *Softphone) register() {
 		nonce := regex.FindStringSubmatch(authenticateHeader)[1]
 
 		sipMessage.addAuthorization(*softphone, nonce, "REGISTER").addCseq(softphone).newViaBranch()
-		softphone.request(sipMessage, func(msg string) bool {
+		softphone.request(sipMessage, func(string) bool {
 			registeredFunc()
 
 			return false

@@ -56,7 +56,7 @@ func main() {
 		panic(err)
 	}
 
-	pc.OnTrack(func(track *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
+	pc.OnTrack(func(track *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
 		fmt.Println("Got Opus track, saving to disk as output.ogg")
 
 		for {

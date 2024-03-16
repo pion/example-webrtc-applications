@@ -136,7 +136,7 @@ func main() {
 			fmt.Printf("Connection State has changed %s \n", connectionState.String())
 		})
 
-		peerConnection.OnTrack(func(track *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
+		peerConnection.OnTrack(func(track *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
 			codec := track.Codec()
 			if codec.MimeType == "audio/opus" {
 				fmt.Println("Got Opus track, saving to disk as output.ogg")
