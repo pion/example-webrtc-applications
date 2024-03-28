@@ -3,7 +3,7 @@ module github.com/pion/example-webrtc-applications/v3
 go 1.19
 
 require (
-	github.com/at-wat/ebml-go v0.17.0
+	github.com/at-wat/ebml-go v0.17.1
 	github.com/emiago/sipgo v0.17.0
 	github.com/google/uuid v1.5.0
 	github.com/gorilla/websocket v1.5.1
