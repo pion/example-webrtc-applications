@@ -10,7 +10,7 @@ require (
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
 	github.com/pion/rtcp v1.2.14
 	github.com/pion/rtp v1.8.4
-	github.com/pion/sdp/v3 v3.0.6
+	github.com/pion/sdp/v3 v3.0.8
 	github.com/pion/webrtc/v3 v3.2.24
 	gocv.io/x/gocv v0.35.0
 	golang.org/x/image v0.14.0
@@ -41,7 +41,7 @@ require (
 	github.com/rs/xid v1.4.0 // indirect
 	github.com/rs/zerolog v1.28.0 // indirect
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b // indirect
-	github.com/stretchr/testify v1.8.4 // indirect
+	github.com/stretchr/testify v1.9.0 // indirect
 	golang.org/x/crypto v0.16.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
