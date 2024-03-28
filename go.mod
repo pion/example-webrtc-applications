@@ -1,10 +1,12 @@
 module github.com/pion/example-webrtc-applications/v3
 
-go 1.19
+go 1.21
+
+toolchain go1.22.1
 
 require (
 	github.com/at-wat/ebml-go v0.17.1
-	github.com/emiago/sipgo v0.17.0
+	github.com/emiago/sipgo v0.19.0
 	github.com/google/uuid v1.5.0
 	github.com/gorilla/websocket v1.5.1
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
