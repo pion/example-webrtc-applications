@@ -57,7 +57,7 @@ void gstreamer_receive_stop_pipeline(GstElement *pipeline) { gst_element_set_sta
 void gstreamer_receive_push_buffer(GstElement *pipeline, void *buffer, int len) {
   GstElement *src = gst_bin_get_by_name(GST_BIN(pipeline), "src");
   if (src != NULL) {
-    gpointer p = g_memdup(buffer, len);
+    gpointer p = g_memdup2(buffer, len);
     GstBuffer *buffer = gst_buffer_new_wrapped(p, len);
     gst_app_src_push_buffer(GST_APP_SRC(src), buffer);
     gst_object_unref(src);
