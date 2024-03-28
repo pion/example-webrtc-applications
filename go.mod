@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/at-wat/ebml-go v0.17.1
 	github.com/emiago/sipgo v0.17.0
-	github.com/google/uuid v1.5.0
+	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.1
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
 	github.com/pion/rtcp v1.2.14
