@@ -104,8 +104,8 @@ github.com/pion/transport/v3 v3.0.1 h1:gDTlPJwROfSfz6QfSi0ZmeCSkFcnWWiiR9ES0ouAN
 github.com/pion/transport/v3 v3.0.1/go.mod h1:UY7kiITrlMv7/IKgd5eTUcaahZx5oUN3l9SzK5f5xE0=
 github.com/pion/turn/v2 v2.1.3 h1:pYxTVWG2gpC97opdRc5IGsQ1lJ9O/IlNhkzj7MMrGAA=
 github.com/pion/turn/v2 v2.1.3/go.mod h1:huEpByKKHix2/b9kmTAM3YoX6MKP+/D//0ClgUYR2fY=
-github.com/pion/webrtc/v3 v3.2.30 h1:MzFD5UNtQsmSmqeiWaWB3v0nY/D+02wglBoXPJJnhc8=
-github.com/pion/webrtc/v3 v3.2.30/go.mod h1:pa9KWkGlWnzLth6BXju8OTCXXhAXzJiQxQtcDoiQw44=
+github.com/pion/webrtc/v3 v3.2.31 h1:bRflNBcb6NF1Hp8l4yjJQDEW8JU1hO5DiSrhoBvaGnQ=
+github.com/pion/webrtc/v3 v3.2.31/go.mod h1:8nsXAU16J1wabqt93u1PwwhkCbGrA/B143sRepFzJ1Y=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
