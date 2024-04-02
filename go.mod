@@ -1,12 +1,10 @@
 module github.com/pion/example-webrtc-applications/v3
 
-go 1.21
-
-toolchain go1.22.1
+go 1.19
 
 require (
 	github.com/at-wat/ebml-go v0.17.1
-	github.com/emiago/sipgo v0.19.0
+	github.com/emiago/sipgo v0.17.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.1
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
@@ -14,7 +12,7 @@ require (
 	github.com/pion/rtp v1.8.5
 	github.com/pion/sdp/v3 v3.0.9
 	github.com/pion/webrtc/v3 v3.2.32
-	gocv.io/x/gocv v0.36.0
+	gocv.io/x/gocv v0.35.0
 	golang.org/x/image v0.15.0
 	golang.org/x/net v0.22.0
 )
@@ -27,18 +25,18 @@ require (
 	github.com/icholy/digest v0.1.22 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
-	github.com/pion/datachannel v1.5.6 // indirect
-	github.com/pion/dtls/v2 v2.2.10 // indirect
-	github.com/pion/ice/v2 v2.3.14 // indirect
-	github.com/pion/interceptor v0.1.27 // indirect
+	github.com/pion/datachannel v1.5.5 // indirect
+	github.com/pion/dtls/v2 v2.2.7 // indirect
+	github.com/pion/ice/v2 v2.3.13 // indirect
+	github.com/pion/interceptor v0.1.25 // indirect
 	github.com/pion/logging v0.2.2 // indirect
 	github.com/pion/mdns v0.0.12 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
 	github.com/pion/sctp v1.8.13 // indirect
 	github.com/pion/srtp/v2 v2.0.18 // indirect
 	github.com/pion/stun v0.6.1 // indirect
-	github.com/pion/transport/v2 v2.2.4 // indirect
-	github.com/pion/turn/v2 v2.1.5 // indirect
+	github.com/pion/transport/v2 v2.2.3 // indirect
+	github.com/pion/turn/v2 v2.1.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rs/xid v1.4.0 // indirect
 	github.com/rs/zerolog v1.28.0 // indirect
