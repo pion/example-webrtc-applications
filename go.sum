@@ -41,8 +41,8 @@ github.com/pion/datachannel v1.5.5 h1:10ef4kwdjije+M9d7Xm9im2Y3O6A6ccQb0zcqZcJew
 github.com/pion/datachannel v1.5.5/go.mod h1:iMz+lECmfdCMqFRhXhcA/219B0SQlbpoR2V118yimL0=
 github.com/pion/dtls/v2 v2.2.7 h1:cSUBsETxepsCSFSxC3mc/aDo14qQLMSL+O6IjG28yV8=
 github.com/pion/dtls/v2 v2.2.7/go.mod h1:8WiMkebSHFD0T+dIU+UeBaoV7kDhOW5oDCzZ7WZ/F9s=
-github.com/pion/ice/v2 v2.3.13 h1:xOxP+4V9nSDlUaGFRf/LvAuGHDXRcjIdsbbXPK/w7c8=
-github.com/pion/ice/v2 v2.3.13/go.mod h1:KXJJcZK7E8WzrBEYnV4UtqEZsGeWfHxsNqhVcVvgjxw=
+github.com/pion/ice/v2 v2.3.15 h1:oCGVqnd6OWmJr4I6eQwSWn8VJDF45wIXFTjV3tyyris=
+github.com/pion/ice/v2 v2.3.15/go.mod h1:KXJJcZK7E8WzrBEYnV4UtqEZsGeWfHxsNqhVcVvgjxw=
 github.com/pion/interceptor v0.1.25 h1:pwY9r7P6ToQ3+IF0bajN0xmk/fNw/suTgaTdlwTDmhc=
 github.com/pion/interceptor v0.1.25/go.mod h1:wkbPYAak5zKsfpVDYMtEfWEy8D4zL+rpxCxPImLOg3Y=
 github.com/pion/logging v0.2.2 h1:M9+AIj/+pxNsDfAT64+MAVgJO0rsyLnoJKCqf//DoeY=
@@ -60,8 +60,8 @@ github.com/pion/rtp v1.8.3/go.mod h1:pBGHaFt/yW7bf1jjWAoUjpSNoDnw98KTMg+jWWvziqU
 github.com/pion/rtp v1.8.5 h1:uYzINfaK+9yWs7r537z/Rc1SvT8ILjBcmDOpJcTB+OU=
 github.com/pion/rtp v1.8.5/go.mod h1:pBGHaFt/yW7bf1jjWAoUjpSNoDnw98KTMg+jWWvziqU=
 github.com/pion/sctp v1.8.5/go.mod h1:SUFFfDpViyKejTAdwD1d/HQsCu+V/40cCs2nZIvC3s0=
-github.com/pion/sctp v1.8.14 h1:NzwwDrtpvbdqMMWV9Q6NYGbHE/FQmjI+GEQLyeJahu4=
-github.com/pion/sctp v1.8.14/go.mod h1:P6PbDVA++OJMrVNg2AL3XtYHV4uD6dvfyOovCgMs0PE=
+github.com/pion/sctp v1.8.16 h1:PKrMs+o9EMLRvFfXq59WFsC+V8mN1wnKzqrv+3D/gYY=
+github.com/pion/sctp v1.8.16/go.mod h1:P6PbDVA++OJMrVNg2AL3XtYHV4uD6dvfyOovCgMs0PE=
 github.com/pion/sdp/v3 v3.0.9 h1:pX++dCHoHUwq43kuwf3PyJfHlwIj4hXA7Vrifiq0IJY=
 github.com/pion/sdp/v3 v3.0.9/go.mod h1:B5xmvENq5IXJimIO4zfp6LAe1fD9N+kFv+V/1lOdz8M=
 github.com/pion/srtp/v2 v2.0.18 h1:vKpAXfawO9RtTRKZJbG4y0v1b11NZxQnxRl85kGuUlo=
@@ -79,8 +79,8 @@ github.com/pion/transport/v3 v3.0.1/go.mod h1:UY7kiITrlMv7/IKgd5eTUcaahZx5oUN3l9
 github.com/pion/transport/v3 v3.0.2 h1:r+40RJR25S9w3jbA6/5uEPTzcdn7ncyU44RWCbHkLg4=
 github.com/pion/turn/v2 v2.1.3 h1:pYxTVWG2gpC97opdRc5IGsQ1lJ9O/IlNhkzj7MMrGAA=
 github.com/pion/turn/v2 v2.1.3/go.mod h1:huEpByKKHix2/b9kmTAM3YoX6MKP+/D//0ClgUYR2fY=
-github.com/pion/webrtc/v3 v3.2.37 h1:iKe2Ufu4g94KBRy63fzWRU5ufOpE+RIw05M9TkK/dzk=
-github.com/pion/webrtc/v3 v3.2.37/go.mod h1:wWQz1PuKNSNK4VrJJNpPN3vZmKEi4zA6i2ynaQOlxIU=
+github.com/pion/webrtc/v3 v3.2.38 h1:oA52VJAJhOjSi1JpKjf0CM+cCiZ3b7jBxvsoOiajeDU=
+github.com/pion/webrtc/v3 v3.2.38/go.mod h1:AQ8p56OLbm3MjhYovYdgPuyX6oc+JcKx/HFoCGFcYzA=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
