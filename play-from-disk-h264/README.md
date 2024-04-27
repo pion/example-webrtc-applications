@@ -13,7 +13,7 @@ ffmpeg -i $INPUT_FILE -c:a libopus -page_duration 20000 -vn output.ogg
 ### Download play-from-disk-h264
 ```
 export GO111MODULE=on
-go get github.com/pion/example-webrtc-applications/v3/play-from-disk-h264
+go install github.com/pion/example-webrtc-applications/v3/play-from-disk-h264@latest
 ```
 
 ### Open play-from-disk-h264 example page

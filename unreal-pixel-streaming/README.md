@@ -7,7 +7,7 @@ This example doesn't do anything with the media [rtp-forwarder](https://github.c
 ### Download unreal-pixel-streaming
 ```
 export GO111MODULE=on
-go get github.com/pion/example-webrtc-applications/v3/unreal-pixel-streaming
+go install github.com/pion/example-webrtc-applications/v3/unreal-pixel-streaming@latest
 ```
 
 ### Run unreal-pixel-streaming and pass the url and origin

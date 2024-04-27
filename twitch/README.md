@@ -23,7 +23,7 @@ This example requires you have ffmpeg installed, these are the supported platfor
 ### Download twitch
 ```
 export GO111MODULE=on
-go get github.com/pion/example-webrtc-applications/v3/twitch
+go install github.com/pion/example-webrtc-applications/v3/twitch@latest
 ```
 
 ### Open twitch example page
