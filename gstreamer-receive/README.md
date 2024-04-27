@@ -14,7 +14,7 @@ This example requires you have GStreamer installed, these are the supported plat
 ### Download gstreamer-receive
 ```
 export GO111MODULE=on
-go get github.com/pion/example-webrtc-applications/v3/gstreamer-receive
+go install github.com/pion/example-webrtc-applications/v3/gstreamer-receive@latest
 ```
 
 ### Open gstreamer-receive example page

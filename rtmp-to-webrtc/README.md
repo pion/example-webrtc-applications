@@ -9,7 +9,7 @@ of VP8 with H264 in `main.go`
 ### Download rtmp-to-webrtc
 ```
 export GO111MODULE=on
-go get github.com/pion/example-webrtc-applications/v3/rtmp-to-webrtc
+go install github.com/pion/example-webrtc-applications/v3/rtmp-to-webrtc@latest
 ```
 
 ### Open jsfiddle example page
