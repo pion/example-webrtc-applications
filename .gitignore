@@ -19,6 +19,8 @@ node_modules/
 #############
 *.ivf
 *.ogg
+*.mkv
+*.h264
 tags
 cover.out
 *.sw[poe]
