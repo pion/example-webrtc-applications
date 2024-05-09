@@ -33,18 +33,113 @@ const (
 // nolint: gochecknoglobals
 var annexBPrefix = []byte{0x00, 0x00, 0x01}
 
-// Read incoming RTCP packets
-// Before these packets are returned they are processed by interceptors. For things
-// like NACK this needs to be called.
-func rtcpReader(rtpSender *webrtc.RTPSender) {
-	go func() {
-		rtcpBuf := make([]byte, 1500)
-		for {
-			if _, _, rtcpErr := rtpSender.Read(rtcpBuf); rtcpErr != nil {
-				return
-			}
+func main() {
+	// Assert that the MKV exists
+	_, err := os.Stat(mkvFileName)
+	if os.IsNotExist(err) {
+		panic("Could not find `" + mkvFileName + "`")
+	}
+
+	// Create a new RTCPeerConnection
+	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
+		ICEServers: []webrtc.ICEServer{
+			{
+				URLs: []string{"stun:stun.l.google.com:19302"},
+			},
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		if cErr := peerConnection.Close(); cErr != nil {
+			fmt.Printf("cannot close peerConnection: %v\n", cErr)
 		}
 	}()
+
+	// Create a Audio Track
+	audioTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus}, "audio", "pion")
+	if err != nil {
+		panic(err)
+	}
+
+	// Handle RTCP, see rtcpReader for why
+	rtpSender, err := peerConnection.AddTrack(audioTrack)
+	if err != nil {
+		panic(err)
+	}
+	rtcpReader(rtpSender)
+
+	// Create a Video Track
+	videoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264}, "video", "pion")
+	if err != nil {
+		panic(err)
+	}
+
+	// Handle RTCP, see rtcpReader for why
+	rtpSender, err = peerConnection.AddTrack(videoTrack)
+	if err != nil {
+		panic(err)
+	}
+	rtcpReader(rtpSender)
+
+	mkvFile, err := os.Open(mkvFileName)
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		if closeErr := mkvFile.Close(); closeErr != nil {
+			panic(closeErr)
+		}
+	}()
+
+	// Set the handler for Peer connection state
+	// This will notify you when the peer has connected/disconnected
+	peerConnection.OnConnectionStateChange(func(s webrtc.PeerConnectionState) {
+		fmt.Printf("Peer Connection State has changed: %s\n", s.String())
+
+		if s == webrtc.PeerConnectionStateFailed {
+			// Wait until PeerConnection has had no network activity for 30 seconds or another failure. It may be reconnected using an ICE Restart.
+			// Use webrtc.PeerConnectionStateDisconnected if you are interested in detecting faster timeout.
+			// Note that the PeerConnection may come back from PeerConnectionStateDisconnected.
+			fmt.Println("Peer Connection has gone to failed exiting")
+			os.Exit(0)
+		}
+	})
+
+	// Wait for the offer to be pasted
+	offer := webrtc.SessionDescription{}
+	signal.Decode(signal.MustReadStdin(), &offer)
+
+	// Set the remote SessionDescription
+	if err = peerConnection.SetRemoteDescription(offer); err != nil {
+		panic(err)
+	}
+
+	// Create answer
+	answer, err := peerConnection.CreateAnswer(nil)
+	if err != nil {
+		panic(err)
+	}
+
+	// Create channel that is blocked until ICE Gathering is complete
+	gatherComplete := webrtc.GatheringCompletePromise(peerConnection)
+
+	// Sets the LocalDescription, and starts our UDP listeners
+	if err = peerConnection.SetLocalDescription(answer); err != nil {
+		panic(err)
+	}
+
+	// Block until ICE Gathering is complete, disabling trickle ICE
+	// we do this because we only can exchange one signaling message
+	// in a production application you should exchange ICE Candidates via OnICECandidate
+	<-gatherComplete
+
+	// Output the answer in base64 so we can paste it in browser
+	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))
+
+	// Read from the MKV and write the Audio and Video tracks
+	sendMkv(mkvFile, audioTrack, videoTrack)
 }
 
 // Write the audio samples to the video and audio track. Record how long we have been sleeping
@@ -145,113 +240,6 @@ func sendMkv(mkvFile *os.File, audioTrack, videoTrack *webrtc.TrackLocalStaticSa
 	}
 }
 
-func main() { //nolint
-	// Assert that we have an audio or video file
-	_, err := os.Stat(mkvFileName)
-	if os.IsNotExist(err) {
-		panic("Could not find `" + mkvFileName + "`")
-	}
-
-	// Create a new RTCPeerConnection
-	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
-		ICEServers: []webrtc.ICEServer{
-			{
-				URLs: []string{"stun:stun.l.google.com:19302"},
-			},
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
-	defer func() {
-		if cErr := peerConnection.Close(); cErr != nil {
-			fmt.Printf("cannot close peerConnection: %v\n", cErr)
-		}
-	}()
-
-	// Create a Audio Track
-	audioTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus}, "audio", "pion")
-	if err != nil {
-		panic(err)
-	}
-
-	rtpSender, err := peerConnection.AddTrack(audioTrack)
-	if err != nil {
-		panic(err)
-	}
-	rtcpReader(rtpSender)
-
-	// Create a Video Track
-	videoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264}, "video", "pion")
-	if err != nil {
-		panic(err)
-	}
-
-	rtpSender, err = peerConnection.AddTrack(videoTrack)
-	if err != nil {
-		panic(err)
-	}
-	rtcpReader(rtpSender)
-
-	mkvFile, err := os.Open(mkvFileName)
-	if err != nil {
-		panic(err)
-	}
-	defer func() {
-		if closeErr := mkvFile.Close(); closeErr != nil {
-			panic(closeErr)
-		}
-	}()
-
-	// Set the handler for Peer connection state
-	// This will notify you when the peer has connected/disconnected
-	peerConnection.OnConnectionStateChange(func(s webrtc.PeerConnectionState) {
-		fmt.Printf("Peer Connection State has changed: %s\n", s.String())
-
-		if s == webrtc.PeerConnectionStateFailed {
-			// Wait until PeerConnection has had no network activity for 30 seconds or another failure. It may be reconnected using an ICE Restart.
-			// Use webrtc.PeerConnectionStateDisconnected if you are interested in detecting faster timeout.
-			// Note that the PeerConnection may come back from PeerConnectionStateDisconnected.
-			fmt.Println("Peer Connection has gone to failed exiting")
-			os.Exit(0)
-		}
-	})
-
-	// Wait for the offer to be pasted
-	offer := webrtc.SessionDescription{}
-	signal.Decode(signal.MustReadStdin(), &offer)
-
-	// Set the remote SessionDescription
-	if err = peerConnection.SetRemoteDescription(offer); err != nil {
-		panic(err)
-	}
-
-	// Create answer
-	answer, err := peerConnection.CreateAnswer(nil)
-	if err != nil {
-		panic(err)
-	}
-
-	// Create channel that is blocked until ICE Gathering is complete
-	gatherComplete := webrtc.GatheringCompletePromise(peerConnection)
-
-	// Sets the LocalDescription, and starts our UDP listeners
-	if err = peerConnection.SetLocalDescription(answer); err != nil {
-		panic(err)
-	}
-
-	// Block until ICE Gathering is complete, disabling trickle ICE
-	// we do this because we only can exchange one signaling message
-	// in a production application you should exchange ICE Candidates via OnICECandidate
-	<-gatherComplete
-
-	// Output the answer in base64 so we can paste it in browser
-	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))
-
-	// Read from the MKV and write the Audio and Video tracks
-	sendMkv(mkvFile, audioTrack, videoTrack)
-}
-
 // Convert AVC Extradata to Annex-B SPS and PPS
 func extractMetadata(codecData []byte) (out []byte) {
 	spsCount := codecData[spsCountOffset] & naluTypeBitmask
@@ -283,4 +271,18 @@ func extractMetadata(codecData []byte) (out []byte) {
 	}
 
 	return
+}
+
+// Read incoming RTCP packets
+// Before these packets are returned they are processed by interceptors. For things
+// like NACK this needs to be called.
+func rtcpReader(rtpSender *webrtc.RTPSender) {
+	go func() {
+		rtcpBuf := make([]byte, 1500)
+		for {
+			if _, _, rtcpErr := rtpSender.Read(rtcpBuf); rtcpErr != nil {
+				return
+			}
+		}
+	}()
 }
