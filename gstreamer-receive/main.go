@@ -9,19 +9,20 @@ package main
 
 import (
 	"fmt"
-	"runtime"
 	"strings"
 	"time"
 
-	gst "github.com/pion/example-webrtc-applications/v3/internal/gstreamer-sink"
+	"github.com/go-gst/go-gst/gst"
+	"github.com/go-gst/go-gst/gst/app"
 	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc/v3"
 )
 
-// gstreamerReceiveMain is launched in a goroutine because the main thread is needed
-// for Glib's main loop (Gstreamer uses Glib)
-func gstreamerReceiveMain() {
+func main() {
+	// Initialize GStreamer
+	gst.Init(nil)
+
 	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Prepare the configuration
@@ -55,8 +56,8 @@ func gstreamerReceiveMain() {
 
 		codecName := strings.Split(track.Codec().RTPCodecCapability.MimeType, "/")[1]
 		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), codecName)
-		pipeline := gst.CreatePipeline(track.PayloadType(), strings.ToLower(codecName))
-		pipeline.Start()
+
+		appSrc := pipelineForCodec(track, codecName)
 		buf := make([]byte, 1400)
 		for {
 			i, _, readErr := track.Read(buf)
@@ -64,7 +65,7 @@ func gstreamerReceiveMain() {
 				panic(err)
 			}
 
-			pipeline.Push(buf[:i])
+			appSrc.PushBuffer(gst.NewBufferFromBytes(buf[:i]))
 		}
 	})
 
@@ -111,16 +112,37 @@ func gstreamerReceiveMain() {
 	select {}
 }
 
-// nolint
-func init() {
-	// This example uses Gstreamer's autovideosink element to display the received video
-	// This element, along with some others, sometimes require that the process' main thread is used
-	runtime.LockOSThread()
-}
+// Create the appropriate GStreamer pipeline depending on what codec we are working with
+func pipelineForCodec(track *webrtc.TrackRemote, codecName string) *app.Source {
+	pipelineString := "appsrc format=time is-live=true do-timestamp=true name=src ! application/x-rtp"
+	switch strings.ToLower(codecName) {
+	case "vp8":
+		pipelineString += fmt.Sprintf(", payload=%d, encoding-name=VP8-DRAFT-IETF-01 ! rtpvp8depay ! decodebin ! autovideosink", track.PayloadType())
+	case "opus":
+		pipelineString += fmt.Sprintf(", payload=%d, encoding-name=OPUS ! rtpopusdepay ! decodebin ! autoaudiosink", track.PayloadType())
+	case "vp9":
+		pipelineString += " ! rtpvp9depay ! decodebin ! autovideosink"
+	case "h264":
+		pipelineString += " ! rtph264depay ! decodebin ! autovideosink"
+	case "g722":
+		pipelineString += " clock-rate=8000 ! rtpg722depay ! decodebin ! autoaudiosink"
+	default:
+		panic("Unhandled codec " + codecName) //nolint
+	}
 
-func main() {
-	// Start a new thread to do the actual work for this application
-	go gstreamerReceiveMain()
-	// Use this goroutine (which has been runtime.LockOSThread'd to he the main thread) to run the Glib loop that Gstreamer requires
-	gst.StartMainLoop()
+	pipeline, err := gst.NewPipelineFromString(pipelineString)
+	if err != nil {
+		panic(err)
+	}
+
+	if err = pipeline.SetState(gst.StatePlaying); err != nil {
+		panic(err)
+	}
+
+	appSrc, err := pipeline.GetElementByName("src")
+	if err != nil {
+		panic(err)
+	}
+
+	return app.SrcFromElement(appSrc)
 }
