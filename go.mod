@@ -1,10 +1,13 @@
 module github.com/pion/example-webrtc-applications/v3
 
-go 1.19
+go 1.22
+
+toolchain go1.22.3
 
 require (
 	github.com/at-wat/ebml-go v0.17.1
-	github.com/emiago/sipgo v0.17.0
+	github.com/emiago/sipgo v0.21.0
+	github.com/go-gst/go-gst v1.0.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.1
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
@@ -12,19 +15,21 @@ require (
 	github.com/pion/rtp v1.8.6
 	github.com/pion/sdp/v3 v3.0.9
 	github.com/pion/webrtc/v3 v3.2.40
-	gocv.io/x/gocv v0.35.0
-	golang.org/x/image v0.15.0
-	golang.org/x/net v0.24.0
+	gocv.io/x/gocv v0.36.1
+	golang.org/x/image v0.16.0
+	golang.org/x/net v0.25.0
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/go-gst/go-glib v1.0.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.2.1 // indirect
 	github.com/icholy/digest v0.1.22 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-pointer v0.0.1 // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
 	github.com/pion/dtls/v2 v2.2.7 // indirect
 	github.com/pion/ice/v2 v2.3.24 // indirect
@@ -42,7 +47,7 @@ require (
 	github.com/rs/zerolog v1.28.0 // indirect
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
-	golang.org/x/crypto v0.22.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
+	golang.org/x/crypto v0.23.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
