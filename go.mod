@@ -5,6 +5,7 @@ go 1.22
 toolchain go1.22.4
 
 require (
+	github.com/asticode/go-astiav v0.16.0
 	github.com/at-wat/ebml-go v0.17.1
 	github.com/emiago/sipgo v0.22.0
 	github.com/go-gst/go-gst v1.0.0
@@ -21,6 +22,7 @@ require (
 )
 
 require (
+	github.com/asticode/go-astikit v0.42.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-gst/go-glib v1.0.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
