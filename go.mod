@@ -10,7 +10,7 @@ require (
 	github.com/emiago/sipgo v0.22.0
 	github.com/go-gst/go-gst v1.0.0
 	github.com/google/uuid v1.6.0
-	github.com/gorilla/websocket v1.5.1
+	github.com/gorilla/websocket v1.5.3
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
 	github.com/pion/rtcp v1.2.14
 	github.com/pion/rtp v1.8.6
