@@ -8,8 +8,8 @@ github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSV
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/emiago/sipgo v0.22.0 h1:GaQ51m26M9QnVBVY2aDJ/mXqq/BDfZ1A+nW7XgU/4Ts=
-github.com/emiago/sipgo v0.22.0/go.mod h1:a77FgPEEjJvfYWYfP3p53u+dNhWEMb/VGVS6guvBzx0=
+github.com/emiago/sipgo v0.22.1 h1:imidktnLwl+fUKPAUUhxQJ4E3sDDaMBvoEvUOMJaSOI=
+github.com/emiago/sipgo v0.22.1/go.mod h1:a77FgPEEjJvfYWYfP3p53u+dNhWEMb/VGVS6guvBzx0=
 github.com/go-gst/go-glib v1.0.0 h1:/Gl3lk3M3MmWoSEtOyH3bpUxMUvO1gUL35A2drbr/K0=
 github.com/go-gst/go-glib v1.0.0/go.mod h1:7Ehl6klsMBT94bf+Bic9qRyEkXARhhqpiZnU2PXeO6I=
 github.com/go-gst/go-gst v1.0.0 h1:YBzE3JVZvbrnWWb/iGCXuiaOvHQ7HW+xXUBR++EgEtQ=
