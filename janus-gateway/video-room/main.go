@@ -39,6 +39,7 @@ func watchHandle(handle *janus.Handle) {
 }
 
 func main() {
+	gst.Init(nil)
 	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Prepare the configuration
