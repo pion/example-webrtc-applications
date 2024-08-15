@@ -194,16 +194,18 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 	// Set a handler for when a new remote track starts, this handler copies inbound RTP packets,
 	// replaces the SSRC and sends them back
 	peerConnection.OnTrack(func(track *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
-		// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
-		go func() {
-			ticker := time.NewTicker(time.Second * 3)
-			for range ticker.C {
-				errSend := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
-				if errSend != nil {
-					fmt.Println(errSend)
+		if track.Kind() == webrtc.RTPCodecTypeVideo {
+			// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
+			go func() {
+				ticker := time.NewTicker(time.Second * 3)
+				for range ticker.C {
+					errSend := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
+					if errSend != nil {
+						fmt.Println(errSend)
+					}
 				}
-			}
-		}()
+			}()
+		}
 
 		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), track.Codec().RTPCodecCapability.MimeType)
 		for {
