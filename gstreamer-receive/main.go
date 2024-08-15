@@ -43,16 +43,18 @@ func main() {
 	// Set a handler for when a new remote track starts, this handler creates a gstreamer pipeline
 	// for the given codec
 	peerConnection.OnTrack(func(track *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
-		// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
-		go func() {
-			ticker := time.NewTicker(time.Second * 3)
-			for range ticker.C {
-				rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
-				if rtcpSendErr != nil {
-					fmt.Println(rtcpSendErr)
+		if track.Kind() == webrtc.RTPCodecTypeVideo {
+			// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
+			go func() {
+				ticker := time.NewTicker(time.Second * 3)
+				for range ticker.C {
+					rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
+					if rtcpSendErr != nil {
+						fmt.Println(rtcpSendErr)
+					}
 				}
-			}
-		}()
+			}()
+		}
 
 		codecName := strings.Split(track.Codec().RTPCodecCapability.MimeType, "/")[1]
 		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), codecName)

@@ -44,16 +44,18 @@ func signaling(w http.ResponseWriter, r *http.Request) {
 	// Set a handler for when a new remote track starts, this handler saves buffers to SampleBuilder
 	// so we can generate a snapshot
 	peerConnection.OnTrack(func(track *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
-		// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
-		go func() {
-			ticker := time.NewTicker(time.Second * 3)
-			for range ticker.C {
-				errSend := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
-				if errSend != nil {
-					fmt.Println(errSend)
+		if track.Kind() == webrtc.RTPCodecTypeVideo {
+			// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
+			go func() {
+				ticker := time.NewTicker(time.Second * 3)
+				for range ticker.C {
+					errSend := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
+					if errSend != nil {
+						fmt.Println(errSend)
+					}
 				}
-			}
-		}()
+			}()
+		}
 
 		for {
 			// Read RTP Packets in a loop
