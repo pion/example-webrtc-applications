@@ -19,7 +19,7 @@ func HTTPSDPServer() chan string {
 	sdpChan := make(chan string)
 	http.HandleFunc("/sdp", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := io.ReadAll(r.Body)
-		fmt.Fprintf(w, "done")
+		fmt.Fprintf(w, "done") // nolint
 		sdpChan <- string(body)
 	})
 
