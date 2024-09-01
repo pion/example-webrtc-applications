@@ -18,7 +18,7 @@ require (
 	github.com/pion/webrtc/v3 v3.3.0
 	gocv.io/x/gocv v0.37.0
 	golang.org/x/image v0.19.0
-	golang.org/x/net v0.27.0
+	golang.org/x/net v0.28.0
 )
 
 require (
@@ -50,8 +50,8 @@ require (
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/wlynxg/anet v0.0.3 // indirect
-	golang.org/x/crypto v0.25.0 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
