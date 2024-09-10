@@ -1,5 +1,5 @@
 # c-data-channels
-c-data-channels is a Pion WebRTC application that shows how you can send/recv DataChannel messages from a web browser that's 
+c-data-channels is a Pion WebRTC application that shows how you can send/recv DataChannel messages from a web browser that's
 mostly identical to the pure Go implementation, https://github.com/pion/webrtc/tree/master/examples/data-channels.
 The main difference is that the OnDataChannel is fully implemented in C.
 
@@ -47,7 +47,7 @@ Congrats, you have used Pion WebRTC! Now start building something cool
 ### bridge.go
 This file contains all of the bridging between Go and C. This is the only file that contains cgo stuff.
 
-### webrtc.go
+### main.go
 This file is pure Go. It is mostly identical to the original data-channel example.
 
 ### Reference

@@ -8,12 +8,16 @@
 package main
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
+	"net/http"
+	"strconv"
 
 	"github.com/go-gst/go-gst/gst"
 	"github.com/go-gst/go-gst/gst/app"
-	"github.com/pion/example-webrtc-applications/v3/internal/signal"
 	"github.com/pion/webrtc/v3"
 	"github.com/pion/webrtc/v3/pkg/media"
 )
@@ -21,7 +25,10 @@ import (
 func main() {
 	audioSrc := flag.String("audio-src", "audiotestsrc", "GStreamer audio src")
 	videoSrc := flag.String("video-src", "videotestsrc", "GStreamer video src")
-	sdpChan := signal.HTTPSDPServer()
+	port := flag.Int("port", 8080, "http server port")
+	flag.Parse()
+
+	sdpChan := httpSDPServer(*port)
 
 	// Initialize GStreamer
 	gst.Init(nil)
@@ -85,11 +92,11 @@ func main() {
 	<-gatherComplete
 
 	// Output the offer in base64 so we can paste it in browser
-	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))
+	fmt.Println(encode(peerConnection.LocalDescription()))
 
 	// Wait for the answer to be submitted via HTTP
 	answer := webrtc.SessionDescription{}
-	signal.Decode(<-sdpChan, &answer)
+	decode(<-sdpChan, &answer)
 
 	// Set the remote SessionDescription
 	err = peerConnection.SetRemoteDescription(answer)
@@ -163,4 +170,43 @@ func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample,
 			return gst.FlowOK
 		},
 	})
+}
+
+// JSON encode + base64 a SessionDescription
+func encode(obj *webrtc.SessionDescription) string {
+	b, err := json.Marshal(obj)
+	if err != nil {
+		panic(err)
+	}
+
+	return base64.StdEncoding.EncodeToString(b)
+}
+
+// Decode a base64 and unmarshal JSON into a SessionDescription
+func decode(in string, obj *webrtc.SessionDescription) {
+	b, err := base64.StdEncoding.DecodeString(in)
+	if err != nil {
+		panic(err)
+	}
+
+	if err = json.Unmarshal(b, obj); err != nil {
+		panic(err)
+	}
+}
+
+// httpSDPServer starts a HTTP Server that consumes SDPs
+func httpSDPServer(port int) chan string {
+	sdpChan := make(chan string)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		fmt.Fprintf(w, "done") //nolint: errcheck
+		sdpChan <- string(body)
+	})
+
+	go func() {
+		// nolint: gosec
+		panic(http.ListenAndServe(":"+strconv.Itoa(port), nil))
+	}()
+
+	return sdpChan
 }
