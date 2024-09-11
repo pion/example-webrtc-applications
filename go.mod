@@ -8,7 +8,7 @@ require (
 	github.com/asticode/go-astiav v0.18.0
 	github.com/at-wat/ebml-go v0.17.1
 	github.com/emiago/sipgo v0.23.0
-	github.com/go-gst/go-gst v1.2.1
+	github.com/go-gst/go-gst v1.3.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
@@ -24,7 +24,7 @@ require (
 require (
 	github.com/asticode/go-astikit v0.42.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-gst/go-glib v1.2.1 // indirect
+	github.com/go-gst/go-glib v1.3.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.3.2 // indirect
