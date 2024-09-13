@@ -23,16 +23,14 @@ type websocketMessage struct {
 	Count                 int                     `json:"count"`
 	SDP                   string                  `json:"sdp"`
 	Candidate             webrtc.ICECandidateInit `json:"candidate"`
+	IDs                   []string                `json:"ids"`
+	StreamerId            string                  `json:"streamerId"`
 }
 
 func main() {
-	url := flag.String("url", "", "URL to UE4 Pixel Streaming WebSocket endpoint")
-	origin := flag.String("origin", "", "Origin that is passed in HTTP header")
+	url := flag.String("url", "ws://localhost/", "URL to UE5 Pixel Streaming WebSocket endpoint")
+	origin := flag.String("origin", "http://localhost", "Origin that is passed in HTTP header")
 	flag.Parse()
-
-	if *url == "" || *origin == "" {
-		panic("both url and origin are required arguments")
-	}
 
 	conn, err := websocket.Dial(*url, "", *origin)
 	if err != nil {
@@ -45,7 +43,12 @@ func main() {
 		}
 	}()
 
+	if err = websocket.JSON.Send(conn, websocketMessage{Type: "listStreamers"}); err != nil {
+		panic(err)
+	}
+
 	peerConnection := &webrtc.PeerConnection{}
+	peerConnectionConfig := webrtc.Configuration{}
 	data := []byte{}
 	jsonMessage := websocketMessage{}
 
@@ -58,22 +61,25 @@ func main() {
 
 		switch jsonMessage.Type {
 		case "config":
-			peerConnection = createPeerConnection(conn, jsonMessage.PeerConnectionOptions)
+			peerConnectionConfig = jsonMessage.PeerConnectionOptions
 
-			offer, offerErr := peerConnection.CreateOffer(nil)
-			if offerErr != nil {
-				panic(offerErr)
-			}
+		case "offer":
+			peerConnection = createPeerConnection(conn, peerConnectionConfig)
 
-			if err = peerConnection.SetLocalDescription(offer); err != nil {
+			if err = peerConnection.SetRemoteDescription(webrtc.SessionDescription{Type: webrtc.SDPTypeOffer, SDP: jsonMessage.SDP}); err != nil {
 				panic(err)
 			}
 
-			if err = websocket.JSON.Send(conn, offer); err != nil {
+			answer, err := peerConnection.CreateAnswer(nil)
+			if err != nil {
 				panic(err)
 			}
-		case "answer":
-			if err = peerConnection.SetRemoteDescription(webrtc.SessionDescription{Type: webrtc.SDPTypeAnswer, SDP: jsonMessage.SDP}); err != nil {
+
+			if err = peerConnection.SetLocalDescription(answer); err != nil {
+				panic(err)
+			}
+
+			if err = websocket.JSON.Send(conn, answer); err != nil {
 				panic(err)
 			}
 		case "iceCandidate":
@@ -82,6 +88,12 @@ func main() {
 			}
 		case "playerCount":
 			fmt.Println("Player Count", jsonMessage.Count)
+		case "streamerList":
+			if len(jsonMessage.IDs) >= 1 {
+				if err = websocket.JSON.Send(conn, websocketMessage{Type: "subscribe", StreamerId: jsonMessage.IDs[0]}); err != nil {
+					panic(err)
+				}
+			}
 		default:
 			fmt.Println("Unhandled type", jsonMessage.Type)
 		}
