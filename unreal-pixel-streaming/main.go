@@ -24,7 +24,7 @@ type websocketMessage struct {
 	SDP                   string                  `json:"sdp"`
 	Candidate             webrtc.ICECandidateInit `json:"candidate"`
 	IDs                   []string                `json:"ids"`
-	StreamerId            string                  `json:"streamerId"`
+	StreamerID            string                  `json:"streamerId"`
 }
 
 func main() {
@@ -70,9 +70,9 @@ func main() {
 				panic(err)
 			}
 
-			answer, err := peerConnection.CreateAnswer(nil)
-			if err != nil {
-				panic(err)
+			answer, answerErr := peerConnection.CreateAnswer(nil)
+			if answerErr != nil {
+				panic(answerErr)
 			}
 
 			if err = peerConnection.SetLocalDescription(answer); err != nil {
@@ -90,7 +90,7 @@ func main() {
 			fmt.Println("Player Count", jsonMessage.Count)
 		case "streamerList":
 			if len(jsonMessage.IDs) >= 1 {
-				if err = websocket.JSON.Send(conn, websocketMessage{Type: "subscribe", StreamerId: jsonMessage.IDs[0]}); err != nil {
+				if err = websocket.JSON.Send(conn, websocketMessage{Type: "subscribe", StreamerID: jsonMessage.IDs[0]}); err != nil {
 					panic(err)
 				}
 			}
