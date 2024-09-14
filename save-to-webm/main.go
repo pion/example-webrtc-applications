@@ -20,11 +20,17 @@ import (
 	"time"
 
 	"github.com/at-wat/ebml-go/webm"
+	"github.com/pion/interceptor/pkg/jitterbuffer"
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
 	"github.com/pion/webrtc/v3"
 	"github.com/pion/webrtc/v3/pkg/media/samplebuilder"
+)
+
+const (
+	naluTypeBitmask = 0b11111
+	naluTypeSPS     = 7
 )
 
 func main() {
@@ -43,14 +49,18 @@ func main() {
 
 type webmSaver struct {
 	audioWriter, videoWriter       webm.BlockWriteCloser
-	audioBuilder, videoBuilder     *samplebuilder.SampleBuilder
+	audioBuilder, vp8Builder       *samplebuilder.SampleBuilder
 	audioTimestamp, videoTimestamp time.Duration
+
+	h264JitterBuffer   *jitterbuffer.JitterBuffer
+	lastVideoTimestamp uint32
 }
 
 func newWebmSaver() *webmSaver {
 	return &webmSaver{
-		audioBuilder: samplebuilder.New(10, &codecs.OpusPacket{}, 48000),
-		videoBuilder: samplebuilder.New(10, &codecs.VP8Packet{}, 90000),
+		audioBuilder:     samplebuilder.New(10, &codecs.OpusPacket{}, 48000),
+		vp8Builder:       samplebuilder.New(10, &codecs.VP8Packet{}, 90000),
+		h264JitterBuffer: jitterbuffer.New(),
 	}
 }
 
@@ -85,11 +95,69 @@ func (s *webmSaver) PushOpus(rtpPacket *rtp.Packet) {
 	}
 }
 
+func (s *webmSaver) PushH264(rtpPacket *rtp.Packet) {
+	s.h264JitterBuffer.Push(rtpPacket)
+
+	pkt, err := s.h264JitterBuffer.Peek(true)
+	if err != nil {
+		return
+	}
+
+	pkts := []*rtp.Packet{pkt}
+	for {
+		pkt, err = s.h264JitterBuffer.PeekAtSequence(pkts[len(pkts)-1].SequenceNumber + 1)
+		if err != nil {
+			return
+		}
+
+		// We have popped a whole frame, lets write it
+		if pkts[0].Timestamp != pkt.Timestamp {
+			break
+		}
+
+		pkts = append(pkts, pkt)
+	}
+
+	h264Packet := &codecs.H264Packet{}
+	data := []byte{}
+	for i := range pkts {
+		if _, err = s.h264JitterBuffer.PopAtSequence(pkts[i].SequenceNumber); err != nil {
+			panic(err)
+		}
+
+		out, err := h264Packet.Unmarshal(pkts[i].Payload)
+		if err != nil {
+			panic(err)
+		}
+		data = append(data, out...)
+	}
+
+	videoKeyframe := (data[4] & naluTypeBitmask) == naluTypeSPS
+	if s.videoWriter == nil && videoKeyframe {
+		if s.videoWriter == nil || s.audioWriter == nil {
+			s.InitWriter(true, 1280, 720)
+		}
+	}
+
+	samples := uint32(0)
+	if s.lastVideoTimestamp != 0 {
+		samples = pkts[0].Timestamp - s.lastVideoTimestamp
+	}
+	s.lastVideoTimestamp = pkts[0].Timestamp
+
+	if s.videoWriter != nil {
+		s.videoTimestamp += time.Duration(float64(samples) / float64(90000) * float64(time.Second))
+		if _, err := s.videoWriter.Write(videoKeyframe, int64(s.videoTimestamp/time.Millisecond), data); err != nil {
+			panic(err)
+		}
+	}
+}
+
 func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
-	s.videoBuilder.Push(rtpPacket)
+	s.vp8Builder.Push(rtpPacket)
 
 	for {
-		sample := s.videoBuilder.Pop()
+		sample := s.vp8Builder.Pop()
 		if sample == nil {
 			return
 		}
@@ -102,8 +170,7 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 			height := int((raw >> 16) & 0x3FFF)
 
 			if s.videoWriter == nil || s.audioWriter == nil {
-				// Initialize WebM saver using received frame size.
-				s.InitWriter(width, height)
+				s.InitWriter(false, width, height)
 			}
 		}
 		if s.videoWriter != nil {
@@ -115,10 +182,15 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 	}
 }
 
-func (s *webmSaver) InitWriter(width, height int) {
+func (s *webmSaver) InitWriter(isH264 bool, width, height int) {
 	w, err := os.OpenFile("test.webm", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o600)
 	if err != nil {
 		panic(err)
+	}
+
+	videoMimeType := "V_VP8"
+	if isH264 {
+		videoMimeType = "V_MPEG4/ISO/AVC"
 	}
 
 	ws, err := webm.NewSimpleBlockWriter(w,
@@ -138,7 +210,7 @@ func (s *webmSaver) InitWriter(width, height int) {
 				Name:            "Video",
 				TrackNumber:     2,
 				TrackUID:        67890,
-				CodecID:         "V_VP8",
+				CodecID:         videoMimeType,
 				TrackType:       1,
 				DefaultDuration: 33333333,
 				Video: &webm.Video{
@@ -171,15 +243,21 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 	m := &webrtc.MediaEngine{}
 
 	// Setup the codecs you want to use.
-	// Only support VP8 and OPUS, this makes our WebM muxer code simpler
+	// This example supports VP8 or H264. Some browsers may only support one (or the other)
 	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
-		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "video/VP8", ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeVP8, ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
 		PayloadType:        96,
 	}, webrtc.RTPCodecTypeVideo); err != nil {
 		panic(err)
 	}
 	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
-		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "audio/opus", ClockRate: 48000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264, ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+		PayloadType:        98,
+	}, webrtc.RTPCodecTypeVideo); err != nil {
+		panic(err)
+	}
+	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus, ClockRate: 48000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
 		PayloadType:        111,
 	}, webrtc.RTPCodecTypeAudio); err != nil {
 		panic(err)
@@ -220,11 +298,14 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 				}
 				panic(readErr)
 			}
-			switch track.Kind() {
-			case webrtc.RTPCodecTypeAudio:
+
+			switch track.Codec().MimeType {
+			case webrtc.MimeTypeOpus:
 				saver.PushOpus(rtp)
-			case webrtc.RTPCodecTypeVideo:
+			case webrtc.MimeTypeVP8:
 				saver.PushVP8(rtp)
+			case webrtc.MimeTypeH264:
+				saver.PushH264(rtp)
 			}
 		}
 	})
