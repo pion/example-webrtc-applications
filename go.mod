@@ -17,7 +17,7 @@ require (
 	github.com/pion/rtp v1.8.9
 	github.com/pion/sdp/v3 v3.0.9
 	github.com/pion/webrtc/v3 v3.3.2
-	gocv.io/x/gocv v0.37.0
+	gocv.io/x/gocv v0.38.0
 	golang.org/x/image v0.19.0
 	golang.org/x/net v0.28.0
 )
