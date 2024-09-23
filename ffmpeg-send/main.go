@@ -4,7 +4,7 @@
 //go:build !js
 // +build !js
 
-// gstreamer-send is a simple application that shows how to send video to your browser using Pion WebRTC and GStreamer.
+// ffmpeg-send is a simple application that shows how to send video to your browser using Pion WebRTC and FFmpeg.
 package main
 
 import (
