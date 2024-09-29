@@ -7,7 +7,7 @@ toolchain go1.23.1
 require (
 	github.com/asticode/go-astiav v0.19.0
 	github.com/at-wat/ebml-go v0.17.1
-	github.com/emiago/sipgo v0.23.0
+	github.com/emiago/sipgo v0.24.0
 	github.com/go-gst/go-gst v1.3.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
@@ -46,12 +46,12 @@ require (
 	github.com/pion/turn/v2 v2.1.6 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rs/xid v1.5.0 // indirect
-	github.com/rs/zerolog v1.32.0 // indirect
+	github.com/rs/zerolog v1.33.0 // indirect
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/wlynxg/anet v0.0.3 // indirect
 	golang.org/x/crypto v0.26.0 // indirect
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
-	golang.org/x/sys v0.23.0 // indirect
+	golang.org/x/sys v0.24.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
