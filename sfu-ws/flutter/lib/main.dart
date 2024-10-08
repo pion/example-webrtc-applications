@@ -95,7 +95,7 @@ class _GetMyAppState extends State<MyApp> {
         case 'candidate':
           Map<String, dynamic> parsed = jsonDecode(msg['data']);
           _peerConnection
-              .addCandidate(RTCIceCandidate(parsed['candidate'], null, 0));
+              .addCandidate(RTCIceCandidate(parsed['candidate'], '', 0));
           return;
         case 'offer':
           Map<String, dynamic> offer = jsonDecode(msg['data']);
