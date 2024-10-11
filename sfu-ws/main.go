@@ -19,6 +19,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/pion/rtcp"
+	"github.com/pion/rtp"
 	"github.com/pion/webrtc/v3"
 )
 
@@ -301,13 +302,23 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 		defer removeTrack(trackLocal)
 
 		buf := make([]byte, 1500)
+		rtpPkt := &rtp.Packet{}
+
 		for {
 			i, _, err := t.Read(buf)
 			if err != nil {
 				return
 			}
 
-			if _, err = trackLocal.Write(buf[:i]); err != nil {
+			if err = rtpPkt.Unmarshal(buf[:i]); err != nil {
+				log.Println(err)
+				return
+			}
+
+			rtpPkt.Extension = false
+			rtpPkt.Extensions = nil
+
+			if err = trackLocal.WriteRTP(rtpPkt); err != nil {
 				return
 			}
 		}
