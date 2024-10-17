@@ -5,7 +5,7 @@ go 1.22
 toolchain go1.23.2
 
 require (
-	github.com/asticode/go-astiav v0.19.0
+	github.com/asticode/go-astiav v0.23.0
 	github.com/at-wat/ebml-go v0.17.1
 	github.com/emiago/sipgo v0.24.1
 	github.com/go-gst/go-gst v1.3.0
