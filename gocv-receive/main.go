@@ -23,8 +23,8 @@ import (
 	"time"
 
 	"github.com/pion/rtcp"
-	"github.com/pion/webrtc/v3"
-	"github.com/pion/webrtc/v3/pkg/media/ivfwriter"
+	"github.com/pion/webrtc/v4"
+	"github.com/pion/webrtc/v4/pkg/media/ivfwriter"
 	"gocv.io/x/gocv"
 )
 

@@ -15,8 +15,8 @@ import (
 	"github.com/go-gst/go-gst/gst"
 	"github.com/go-gst/go-gst/gst/app"
 	janus "github.com/notedit/janus-go"
-	"github.com/pion/webrtc/v3"
-	"github.com/pion/webrtc/v3/pkg/media"
+	"github.com/pion/webrtc/v4"
+	"github.com/pion/webrtc/v4/pkg/media"
 )
 
 func watchHandle(handle *janus.Handle) {

@@ -42,7 +42,7 @@ inline void bridge_on_message(GoOnMessageFunc cb, GoDataChannel d, GoDataChannel
 import "C"
 
 import (
-	"github.com/pion/webrtc/v3"
+	"github.com/pion/webrtc/v4"
 )
 
 // nolint

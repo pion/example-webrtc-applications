@@ -21,8 +21,8 @@ import (
 
 	"github.com/at-wat/ebml-go"
 	"github.com/at-wat/ebml-go/webm"
-	"github.com/pion/webrtc/v3"
-	"github.com/pion/webrtc/v3/pkg/media"
+	"github.com/pion/webrtc/v4"
+	"github.com/pion/webrtc/v4/pkg/media"
 )
 
 const (
