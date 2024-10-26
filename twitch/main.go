@@ -23,8 +23,8 @@ import (
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
-	"github.com/pion/webrtc/v3"
-	"github.com/pion/webrtc/v3/pkg/media/samplebuilder"
+	"github.com/pion/webrtc/v4"
+	"github.com/pion/webrtc/v4/pkg/media/samplebuilder"
 )
 
 // nolint
@@ -105,10 +105,9 @@ func main() {
 				}
 				panic(readErr)
 			}
-			switch track.Kind() {
-			case webrtc.RTPCodecTypeAudio:
+			if track.Kind() == webrtc.RTPCodecTypeAudio {
 				pushOpus(rtp)
-			case webrtc.RTPCodecTypeVideo:
+			} else if track.Kind() == webrtc.RTPCodecTypeVideo {
 				pushVP8(rtp)
 			}
 		}

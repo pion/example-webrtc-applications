@@ -13,7 +13,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pion/webrtc/v3"
+	"github.com/pion/webrtc/v4"
 )
 
 // Run contains pure Go codes to do the heavy lifting. In fact, the codes

@@ -13,8 +13,8 @@ import (
 
 	"github.com/pion/example-webrtc-applications/v3/sip-over-websocket-to-webrtc/softphone"
 	"github.com/pion/sdp/v3"
-	"github.com/pion/webrtc/v3"
-	"github.com/pion/webrtc/v3/pkg/media/oggwriter"
+	"github.com/pion/webrtc/v4"
+	"github.com/pion/webrtc/v4/pkg/media/oggwriter"
 )
 
 // nolint
