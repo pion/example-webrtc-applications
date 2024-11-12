@@ -106,16 +106,18 @@ var (
 	err error
 )
 
-const h264FrameDuration = time.Millisecond * 20
-
 func writeH264ToTrack(track *webrtc.TrackLocalStaticSample) {
 	astiav.RegisterAllDevices()
 
 	initTestSrc()
 	defer freeVideoCoding()
 
+	h264FrameDuration := time.Duration(float64(time.Second) / videoStream.AvgFrameRate().Float64())
+
 	ticker := time.NewTicker(h264FrameDuration)
 	for ; true; <-ticker.C {
+		decodePacket.Unref()
+
 		// Read frame from lavfi
 		if err = inputFormatContext.ReadFrame(decodePacket); err != nil {
 			if errors.Is(err, astiav.ErrEof) {
@@ -236,7 +238,12 @@ func initVideoEncoding() {
 	encodeCodecContext.SetWidth(decodeCodecContext.Width())
 	encodeCodecContext.SetHeight(decodeCodecContext.Height())
 
-	if err = encodeCodecContext.Open(h264Encoder, nil); err != nil {
+	encodeCodecContextDictionary := astiav.NewDictionary()
+	if err = encodeCodecContextDictionary.Set("bf", "0", astiav.NewDictionaryFlags()); err != nil {
+		panic(err)
+	}
+
+	if err = encodeCodecContext.Open(h264Encoder, encodeCodecContextDictionary); err != nil {
 		panic(err)
 	}
 
