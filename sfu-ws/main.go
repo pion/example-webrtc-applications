@@ -181,7 +181,7 @@ func signalPeerConnections() {
 				return true
 			}
 
-			log.Infof("Send offer to client: %v\n", offer)
+			log.Infof("Send offer to client: %v", offer)
 
 			if err = peerConnections[i].websocket.WriteJSON(&websocketMessage{
 				Event: "offer",
@@ -282,7 +282,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Infof("Send candidate to client: %s\n", candidateString)
+		log.Infof("Send candidate to client: %s", candidateString)
 
 		if writeErr := c.WriteJSON(&websocketMessage{
 			Event: "candidate",
@@ -294,7 +294,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	// If PeerConnection is closed remove it from global list
 	peerConnection.OnConnectionStateChange(func(p webrtc.PeerConnectionState) {
-		log.Infof("Connection state change: %s\n", p)
+		log.Infof("Connection state change: %s", p)
 
 		switch p {
 		case webrtc.PeerConnectionStateFailed:
@@ -308,7 +308,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	peerConnection.OnTrack(func(t *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
-		log.Infof("Got remote track: Kind=%s, ID=%s, PayloadType=%d\n", t.Kind(), t.ID(), t.PayloadType())
+		log.Infof("Got remote track: Kind=%s, ID=%s, PayloadType=%d", t.Kind(), t.ID(), t.PayloadType())
 
 		// Create a track to fan out our incoming video to all peers
 		trackLocal := addTrack(t)
@@ -338,7 +338,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	peerConnection.OnICEConnectionStateChange(func(is webrtc.ICEConnectionState) {
-		log.Infof("ICE connection state changed: %s\n", is)
+		log.Infof("ICE connection state changed: %s", is)
 	})
 
 	// Signal for the new PeerConnection
@@ -367,7 +367,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			log.Infof("Got candidate: %v\n", candidate)
+			log.Infof("Got candidate: %v", candidate)
 
 			if err := peerConnection.AddICECandidate(candidate); err != nil {
 				log.Errorf("Failed to add ICE candidate: %v", err)
@@ -380,7 +380,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			log.Infof("Got answer: %v\n", answer)
+			log.Infof("Got answer: %v", answer)
 
 			if err := peerConnection.SetRemoteDescription(answer); err != nil {
 				log.Errorf("Failed to set remote description: %v", err)
