@@ -19,7 +19,7 @@ require (
 	github.com/pion/sdp/v3 v3.0.9
 	github.com/pion/webrtc/v4 v4.0.5
 	gocv.io/x/gocv v0.39.0
-	golang.org/x/image v0.21.0
+	golang.org/x/image v0.22.0
 	golang.org/x/net v0.31.0
 )
 
