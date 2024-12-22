@@ -7,7 +7,7 @@ toolchain go1.23.4
 require (
 	github.com/asticode/go-astiav v0.19.0
 	github.com/at-wat/ebml-go v0.17.1
-	github.com/emiago/sipgo v0.27.0
+	github.com/emiago/sipgo v0.27.1
 	github.com/go-gst/go-gst v1.3.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
