@@ -36,6 +36,12 @@
 		"type": "browser"
 	},
 	{
+		"title": "Text to Speech",
+		"link": "text-to-speech",
+		"description": "text-to-speech converts text with eSpeak NG and streams the encoded Opus audio to a browser over WebRTC.",
+		"type": "browser"
+	},
+	{
 		"title": "C DataChannels",
 		"link": "#",
 		"description": "C DataChannels demonstrates how to use CGo so you can add Pion to your existing C applications.",
