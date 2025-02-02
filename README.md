@@ -17,6 +17,7 @@ If you have a request please make an issue, we also love contributions more exam
 * [Janus Gateway](janus-gateway): Example janus-gateway is a collection of examples showing how to use Pion WebRTC with [janus-gateway](https://github.com/meetecho/janus-gateway).
 * [SFU Websocket](sfu-ws): The SFU example demonstrates a conference system that uses WebSocket for signaling. It also includes a flutter client for Android, iOS and Native.
 * [Save to WebM](save-to-webm): Example save-to-webm shows how to receive audio and video using Pion and then save to WebM/Matroska container.
+* [Text to Speech](text-to-speech): Example text-to-speech converts text with eSpeak NG and streams the encoded Opus audio to a browser over WebRTC.
 * [Twitch](twitch): Example twitch shows how to send audio/video from WebRTC to https://www.twitch.tv/ via RTMP.
 * [C DataChannels](c-data-channels) Example c-data-channels shows how you can use Pion WebRTC from a C program
 * [Snapshot](snapshot) Example snapshot shows how you can convert incoming video frames to jpeg and serve them via HTTP.

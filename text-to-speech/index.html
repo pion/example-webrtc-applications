@@ -1,0 +1,86 @@
+<html>
+  <!--
+		SPDX-FileCopyrightText: 2026 The Pion community <https://pion.ly>
+		SPDX-License-Identifier: MIT
+	-->
+  <head>
+    <title>text-to-speech</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        div {
+            margin-bottom: 15px;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+  </head>
+
+  <body>
+    <h3> ICE Connection States </h3>
+    <div id="iceConnectionStates"></div>
+    <div>
+        <textarea id="textInput" rows="4" placeholder="Enter text to convert to speech"></textarea>
+    </div>
+    <div>
+        <button id="convertButton" onclick="window.sendTextToSpeechRequest(document.getElementById('textInput').value)">Convert to Speech</button>
+    </div>
+  </body>
+
+  <script>
+    let peerConnection = new RTCPeerConnection()
+    let dataChannel = peerConnection.createDataChannel('data')
+    peerConnection.addTransceiver('audio', {direction: 'recvonly'})
+
+    peerConnection.oniceconnectionstatechange = () => {
+      let el = document.createElement('p')
+      el.appendChild(document.createTextNode(peerConnection.iceConnectionState))
+      document.getElementById('iceConnectionStates').appendChild(el);
+    }
+
+    peerConnection.ontrack = function (event) {
+      const el = document.createElement(event.track.kind)
+      el.srcObject = event.streams[0]
+      el.autoplay = true
+      el.controls = true
+
+      document.body.appendChild(el)
+    }
+
+
+    window.sendTextToSpeechRequest = text => {
+      dataChannel.send(text)
+    }
+
+    peerConnection.createOffer()
+      .then(offer => {
+        peerConnection.setLocalDescription(offer)
+
+        return fetch(`/doSignaling`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(offer)
+        })
+      })
+      .then(res => res.json())
+      .then(res => peerConnection.setRemoteDescription(res))
+      .catch(alert)
+  </script>
+</html>
