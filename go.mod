@@ -1,14 +1,14 @@
 module github.com/pion/example-webrtc-applications/v3
 
-go 1.22
+go 1.23.1
 
-toolchain go1.23.6
+toolchain go1.24.0
 
 require (
 	github.com/asticode/go-astiav v0.19.0
 	github.com/at-wat/ebml-go v0.17.1
 	github.com/emiago/sipgo v0.29.0
-	github.com/go-gst/go-gst v1.3.0
+	github.com/go-gst/go-gst v1.4.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
@@ -25,7 +25,7 @@ require (
 
 require (
 	github.com/asticode/go-astikit v0.42.0 // indirect
-	github.com/go-gst/go-glib v1.3.0 // indirect
+	github.com/go-gst/go-glib v1.4.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.3.2 // indirect
@@ -48,6 +48,6 @@ require (
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b // indirect
 	github.com/wlynxg/anet v0.0.5 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
-	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
+	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 )
