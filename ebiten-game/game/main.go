@@ -72,6 +72,9 @@ type Game struct {
 
 	lobby_id string
 	isHost   bool
+
+	localDebugInformation  string
+	remoteDebugInformation string
 }
 
 func NewGame() (*Game, error) {
@@ -120,7 +123,9 @@ func (g *Game) Update() error {
 // which will probably be at least 60 times per second
 func (g *Game) Draw(screen *ebiten.Image) {
 	// prints something on the screen
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f", ebiten.ActualFPS()))
+	debugString := fmt.Sprintf("FPS: %f", ebiten.ActualFPS())
+	debugString += "\n" + g.localDebugInformation + "\n" + g.remoteDebugInformation
+	ebitenutil.DebugPrint(screen, debugString)
 
 	// draw image
 	op := &ebiten.DrawImageOptions{}
@@ -237,10 +242,10 @@ func startConnection(game *Game) {
 				}
 
 				// Handle reading from the data channel
-				go ReadLoop(raw)
+				go ReadLoop(game, raw)
 
 				// Handle writing to the data channel
-				go WriteLoop(raw)
+				go WriteLoop(game, raw)
 			})
 		})
 
@@ -374,10 +379,10 @@ func startConnection(game *Game) {
 			}
 
 			// Handle reading from the data channel
-			go ReadLoop(raw)
+			go ReadLoop(game, raw)
 
 			// Handle writing to the data channel
-			go WriteLoop(raw)
+			go WriteLoop(game, raw)
 		})
 
 		// Create an offer to send to the browser
@@ -483,7 +488,7 @@ type Packet struct {
 }
 
 // ReadLoop shows how to read from the datachannel directly
-func ReadLoop(d io.Reader) {
+func ReadLoop(g *Game, d io.Reader) {
 	for {
 		buffer := make([]byte, messageSize)
 		_, err := io.ReadFull(d, buffer)
@@ -501,17 +506,17 @@ func ReadLoop(d io.Reader) {
 		remote_pos_x = packet.Pos_x
 		remote_pos_y = packet.Pos_y
 
-		fmt.Printf("Message from DataChannel: %f %f\n", packet.Pos_x, packet.Pos_y)
+		g.remoteDebugInformation = fmt.Sprintf("Message from DataChannel: %f %f", packet.Pos_x, packet.Pos_y)
 	}
 }
 
 // WriteLoop shows how to write to the datachannel directly
-func WriteLoop(d io.Writer) {
+func WriteLoop(g *Game, d io.Writer) {
 	ticker := time.NewTicker(time.Millisecond * 20)
 	defer ticker.Stop()
 	for range ticker.C {
 		packet := &Packet{pos_x, pos_y}
-		fmt.Printf("Sending x:%f y:%f\n", packet.Pos_x, packet.Pos_y)
+		g.localDebugInformation = fmt.Sprintf("Sending x:%f y:%f", packet.Pos_x, packet.Pos_y)
 		encoded, err := binary.Marshal(packet)
 		if err != nil {
 			panic(err)
