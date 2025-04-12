@@ -40,8 +40,6 @@ require (
 	github.com/hajimehoshi/bitmapfont/v3 v3.2.1 // indirect
 	github.com/icholy/digest v1.1.0 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
-	github.com/mattn/go-colorable v0.1.14 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-pointer v0.0.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/pion/datachannel v1.5.10 // indirect
@@ -56,7 +54,6 @@ require (
 	github.com/pion/turn/v4 v4.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rs/xid v1.6.0 // indirect
-	github.com/rs/zerolog v1.34.0 // indirect
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b // indirect
 	github.com/wlynxg/anet v0.0.5 // indirect
 	golang.org/x/crypto v0.37.0 // indirect
