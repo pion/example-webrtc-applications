@@ -1,8 +1,5 @@
-// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
-// SPDX-License-Identifier: MIT
-
-// SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2024 The Ebitengine Authors
+// SPDX-License-Identifier: MIT
 
 package main
 

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+// SPDX-FileCopyrightText: 2025 The Pion community <https://pion.ly>
 // SPDX-License-Identifier: MIT
 
 package main
@@ -19,7 +19,7 @@ import (
 
 type ClientConnection struct {
 	IsHost bool
-	Offer *webrtc.SessionDescription
+	Offer  *webrtc.SessionDescription
 	Answer *webrtc.SessionDescription
 }
 
@@ -41,11 +41,11 @@ var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 func generateNewLobbyId() string {
 	// have random size for lobby id
 	size := 6
-    buffer := make([]rune, size)
-    for i := range buffer {
-        buffer[i] = letters[rand.Intn(len(letters))]
-    }
-    id := string(buffer)
+	buffer := make([]rune, size)
+	for i := range buffer {
+		buffer[i] = letters[rand.Intn(len(letters))]
+	}
+	id := string(buffer)
 
 	// check if room id is already in lobby_list
 	_, ok := lobby_list[id]
@@ -90,10 +90,10 @@ func main() {
 
 	fmt.Println("Server started on port 3000")
 	// cors.Default() setup the middleware with default options being
-    // all origins accepted with simple methods (GET, POST). See
-    // documentation below for more options.
-    handler := cors.Default().Handler(mux)
-    http.ListenAndServe(":3000", handler)
+	// all origins accepted with simple methods (GET, POST). See
+	// documentation below for more options.
+	handler := cors.Default().Handler(mux)
+	http.ListenAndServe(":3000", handler)
 }
 
 func lobbyHost(w http.ResponseWriter, r *http.Request) {
@@ -106,7 +106,7 @@ func lobbyHost(w http.ResponseWriter, r *http.Request) {
 	// return lobby id to host
 	io.Writer.Write(w, []byte(lobby_id))
 	fmt.Println("lobbyHost")
-	fmt.Printf("lobby added: %s\n",lobby_id)
+	fmt.Printf("lobby added: %s\n", lobby_id)
 	// print all lobbies
 	fmt.Printf("lobby_list:%s\n", getLobbyIds())
 }
@@ -124,7 +124,7 @@ func lobbyJoin(w http.ResponseWriter, r *http.Request) {
 	lobby, ok := lobby_list[lobby_id]
 	// If the key doesn't exist, return error
 	if !ok {
-    	w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("404 - Lobby not found"))
 		return
 	}
@@ -172,7 +172,7 @@ func lobbyUnregisteredPlayers(w http.ResponseWriter, r *http.Request) {
 	lobby := lobby_list[lobby_id]
 	lobby.mutex.Lock()
 	defer lobby.mutex.Unlock()
-	
+
 	// get all players who haven't been registered yet
 	player_ids := []int{}
 	for i, client := range lobby.Clients {
@@ -198,18 +198,18 @@ func validatePlayer(w http.ResponseWriter, r *http.Request) (*Lobby, int, error)
 	defer lobby.mutex.Unlock()
 	// If the key doesn't exist, return error
 	if !ok {
-    	w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("404 - Lobby not found"))
 		return nil, 0, errors.New("Lobby not found")
 	}
 
 	player_id_string := r.URL.Query().Get("player_id")
 	player_id, err := strconv.Atoi(player_id_string)
-    if err != nil {
-        w.WriteHeader(http.StatusNotFound)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("404 - Player not found"))
 		return nil, 0, errors.New("Player not found")
-    }
+	}
 	//fmt.Printf("player_id: %d\n", player_id)
 	//fmt.Printf("length of lobby.Clients: %d\n", len(lobby_list[lobby_id].Clients))
 	//fmt.Println(lobby.Clients)
@@ -245,14 +245,14 @@ func offerGet(w http.ResponseWriter, r *http.Request) {
 	io.Writer.Write(w, jsonValue)
 
 	/*
-	fmt.Println("offerGet")
-	fmt.Println(jsonValue)
+		fmt.Println("offerGet")
+		fmt.Println(jsonValue)
 	*/
 }
 
 func offerPost(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("offerPost")
-	
+
 	lobby, player_id, err := validatePlayer(w, r)
 	if err != nil {
 		return
