@@ -319,7 +319,7 @@ func (game *Game) startConnection() {
 			for {
 				select {
 				case t := <-ticker.C:
-					game.writeLog(fmt.Sprintln("Tick at", t))
+					game.writeLog(fmt.Sprintln("Polling for lobby ID {", lobby_id, "} at", t))
 					idUrl := getSignalingURL() + "/lobby/unregisteredPlayers?id=" + lobby_id
 					game.writeLog(fmt.Sprintln(idUrl))
 					id_resp, err := httpClient.Get(idUrl)
