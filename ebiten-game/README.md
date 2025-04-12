@@ -20,4 +20,6 @@ or
 
 Click "Host Game" to get the lobby id, and then share that with the other clients to get connected
 
+To play: Just move around with the arrow keys once you have connected!
+
 Right now this only supports two clients in the same lobby
