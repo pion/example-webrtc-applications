@@ -63,31 +63,19 @@ func init() {
 
 // implements ebiten.Game interface
 type Game struct {
-	vx                int
-	vy                int
-	needResetPosition bool
-
 	debugUI             debugui.DebugUI
 	inputCapturingState debugui.InputCapturingState
 
 	logBuf       string
 	logSubmitBuf string
 	logUpdated   bool
-	bg           [3]int
-	checks       [3]bool
 
 	lobby_id string
 	isHost   bool
 }
 
 func NewGame() (*Game, error) {
-	g := &Game{
-		vx:                2,
-		vy:                2,
-		bg:                [3]int{90, 95, 100},
-		checks:            [3]bool{true, false, true},
-		needResetPosition: true,
-	}
+	g := &Game{}
 
 	return g, nil
 }
