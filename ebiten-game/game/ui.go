@@ -32,7 +32,7 @@ func (g *Game) logWindow(ctx *debugui.Context) {
 		ctx.GridCell(func(bounds image.Rectangle) {
 			submit_open := func() {
 				g.isHost = true
-				startConnection(g)
+				g.startConnection()
 			}
 
 			submit_join := func() {
@@ -42,7 +42,7 @@ func (g *Game) logWindow(ctx *debugui.Context) {
 				}
 				g.lobby_id = g.logSubmitBuf
 				g.logSubmitBuf = ""
-				startConnection(g)
+				g.startConnection()
 			}
 
 			ctx.SetGridLayout([]int{-1, -1, -1, -1}, nil)

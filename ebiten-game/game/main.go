@@ -151,7 +151,7 @@ type PlayerData struct {
 	Id int
 }
 
-func startConnection(game *Game) {
+func (game *Game) startConnection() {
 	// Since this behavior diverges from the WebRTC API it has to be
 	// enabled using a settings engine. Mixing both detached and the
 	// OnMessage DataChannel API is not supported.
@@ -186,19 +186,19 @@ func startConnection(game *Game) {
 	// Set the handler for Peer connection state
 	// This will notify you when the peer has connected/disconnected
 	peerConnection.OnConnectionStateChange(func(s webrtc.PeerConnectionState) {
-		fmt.Printf("Peer Connection State has changed: %s\n", s.String())
+		game.writeLog(fmt.Sprintf("Peer Connection State has changed: %s\n", s.String()))
 
 		if s == webrtc.PeerConnectionStateFailed {
 			// Wait until PeerConnection has had no network activity for 30 seconds or another failure. It may be reconnected using an ICE Restart.
 			// Use webrtc.PeerConnectionStateDisconnected if you are interested in detecting faster timeout.
 			// Note that the PeerConnection may come back from PeerConnectionStateDisconnected.
-			fmt.Println("Peer Connection has gone to failed exiting")
+			game.writeLog(fmt.Sprintln("Peer Connection has gone to failed exiting"))
 			os.Exit(0)
 		}
 
 		if s == webrtc.PeerConnectionStateClosed {
 			// PeerConnection was explicitly closed. This usually happens from a DTLS CloseNotify
-			fmt.Println("Peer Connection has gone to closed exiting")
+			game.writeLog(fmt.Sprintln("Peer Connection has gone to closed exiting"))
 			os.Exit(0)
 		}
 	})
@@ -206,7 +206,7 @@ func startConnection(game *Game) {
 	// Set the handler for ICE connection state
 	// This will notify you when the peer has connected/disconnected
 	peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
-		fmt.Printf("ICE Connection State has changed: %s\n", connectionState.String())
+		game.writeLog(fmt.Sprintf("ICE Connection State has changed: %s\n", connectionState.String()))
 	})
 
 	// the one that gives the answer is the host
@@ -227,7 +227,7 @@ func startConnection(game *Game) {
 
 		// Register data channel creation handling
 		peerConnection.OnDataChannel(func(d *webrtc.DataChannel) {
-			fmt.Printf("New DataChannel %s %d\n", d.Label(), d.ID())
+			game.writeLog(fmt.Sprintf("New DataChannel %s %d\n", d.Label(), d.ID()))
 
 			// Register channel opening handling
 			d.OnOpen(func() {
@@ -255,11 +255,11 @@ func startConnection(game *Game) {
 			for {
 				select {
 				case t := <-ticker.C:
-					fmt.Println("Tick at", t)
-					fmt.Printf("Polling for offer for %d\n", player_id)
+					game.writeLog(fmt.Sprintln("Tick at", t))
+					game.writeLog(fmt.Sprintf("Polling for offer for %d\n", player_id))
 					// hardcode that there is only one other player and they have player_id 1
 					getUrl := getSignalingURL() + "/offer/get?lobby_id=" + lobby_id + "&player_id=" + strconv.Itoa(player_id)
-					fmt.Println(getUrl)
+					game.writeLog(fmt.Sprintln(getUrl))
 					offer_resp, err := httpClient.Get(getUrl)
 					if err != nil {
 						panic(err)
@@ -269,7 +269,7 @@ func startConnection(game *Game) {
 					}
 					body := new(bytes.Buffer)
 					body.ReadFrom(offer_resp.Body)
-					fmt.Printf("Got offer %v\n", body.String())
+					game.writeLog(fmt.Sprintf("Got offer %v\n", body.String()))
 					offer := webrtc.SessionDescription{}
 					err = json.NewDecoder(body).Decode(&offer)
 					if err != nil {
@@ -305,7 +305,7 @@ func startConnection(game *Game) {
 						panic(err)
 					}
 					postUrl := getSignalingURL() + "/answer/post?lobby_id=" + lobby_id + "&player_id=" + strconv.Itoa(player_id)
-					fmt.Println(postUrl)
+					game.writeLog(fmt.Sprintln(postUrl))
 					httpClient.Post(postUrl, "application/json", bytes.NewBuffer(answerJson))
 					// if we have successfully set the remote description, we can break out of the loop
 					ticker.Stop()
@@ -319,9 +319,9 @@ func startConnection(game *Game) {
 			for {
 				select {
 				case t := <-ticker.C:
-					fmt.Println("Tick at", t)
+					game.writeLog(fmt.Sprintln("Tick at", t))
 					idUrl := getSignalingURL() + "/lobby/unregisteredPlayers?id=" + lobby_id
-					fmt.Println(idUrl)
+					game.writeLog(fmt.Sprintln(idUrl))
 					id_resp, err := httpClient.Get(idUrl)
 					if err != nil {
 						panic(err)
@@ -334,7 +334,7 @@ func startConnection(game *Game) {
 					if err != nil {
 						panic(err)
 					}
-					fmt.Printf("Player IDs: %v\n", player_ids)
+					game.writeLog(fmt.Sprintf("Player IDs: %v\n", player_ids))
 					// poll for all of the unregistered players
 					for _, player_id := range player_ids {
 						// only start goroutine if player_id hasn't been registered yet
@@ -360,7 +360,7 @@ func startConnection(game *Game) {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("Player ID: %v\n", player_data)
+		game.writeLog(fmt.Sprintf("Player ID: %v\n", player_data))
 		// Create a datachannel with label 'data'
 		dataChannel, err := peerConnection.CreateDataChannel("data", nil)
 		if err != nil {
@@ -405,7 +405,7 @@ func startConnection(game *Game) {
 					panic(err)
 				}
 				postUrl := getSignalingURL() + "/offer/post?lobby_id=" + lobby_id + "&player_id=" + strconv.Itoa(player_data.Id)
-				fmt.Println(postUrl)
+				game.writeLog(fmt.Sprintln(postUrl))
 				httpClient.Post(postUrl, "application/json", bytes.NewBuffer(offerJson))
 			}
 		})
@@ -417,8 +417,8 @@ func startConnection(game *Game) {
 			for {
 				select {
 				case t := <-ticker.C:
-					fmt.Println("Tick at", t)
-					fmt.Println("Polling for answer")
+					game.writeLog(fmt.Sprintln("Tick at", t))
+					game.writeLog(fmt.Sprintln("Polling for answer"))
 					url := getSignalingURL() + "/answer/get?lobby_id=" + lobby_id + "&player_id=" + strconv.Itoa(player_data.Id)
 					fmt.Println(url)
 					answer_resp, err := httpClient.Get(url)
@@ -430,7 +430,7 @@ func startConnection(game *Game) {
 					}
 					body := new(bytes.Buffer)
 					body.ReadFrom(answer_resp.Body)
-					fmt.Printf("Got answer %v\n", body.String())
+					game.writeLog(fmt.Sprintf("Got answer %v\n", body.String()))
 					err = json.NewDecoder(body).Decode(&answer)
 					if err != nil {
 						panic(err)
@@ -493,7 +493,7 @@ func ReadLoop(g *Game, d io.Reader) {
 		buffer := make([]byte, messageSize)
 		_, err := io.ReadFull(d, buffer)
 		if err != nil {
-			fmt.Println("Datachannel closed; Exit the readloop:", err)
+			g.writeLog(fmt.Sprintln("Datachannel closed; Exit the readloop:", err))
 			return
 		}
 
