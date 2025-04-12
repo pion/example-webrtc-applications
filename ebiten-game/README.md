@@ -10,10 +10,6 @@ you can then run the game by going in /game and doing either
 
 ``go run .`` for running the game on desktop
 
-or
-``.\build_wasm.ps1`` to run the game on WASM
-
-
 (see [this tutorial for more information on how to build for WebAssembly](https://ebitengine.org/en/documents/webassembly.html))
 
 Click "Host Game" to get the lobby id, and then share that with the other clients to get connected
