@@ -63,14 +63,9 @@ func init() {
 
 // implements ebiten.Game interface
 type Game struct {
-	x                 int
-	y                 int
 	vx                int
 	vy                int
-	hiRes             bool
 	needResetPosition bool
-	screenWidth       int
-	screenHeight      int
 
 	debugUI             debugui.DebugUI
 	inputCapturingState debugui.InputCapturingState
@@ -80,12 +75,6 @@ type Game struct {
 	logUpdated   bool
 	bg           [3]int
 	checks       [3]bool
-	num1_1       int
-	num1_2       int
-	num2         int
-	num3_1       float64
-	num3_2       float64
-	num4         float64
 
 	lobby_id string
 	isHost   bool
@@ -229,7 +218,7 @@ func startConnection(game *Game) {
 
 	// the one that gives the answer is the host
 	if game.isHost {
-
+		game.writeLog("Hosting a lobby")
 		// Host creates lobby
 		lobby_resp, err := httpClient.Get(getSignalingURL() + "/lobby/host")
 		if err != nil {
@@ -249,7 +238,9 @@ func startConnection(game *Game) {
 
 			// Register channel opening handling
 			d.OnOpen(func() {
-				fmt.Printf("Data channel '%s'-'%d' open.\n", d.Label(), d.ID())
+
+				s := fmt.Sprintf("Data channel '%s'-'%d' open on host side!", d.Label(), d.ID())
+				game.writeLog(s)
 
 				// Detach the data channel
 				raw, dErr := d.Detach()
@@ -363,6 +354,7 @@ func startConnection(game *Game) {
 			}
 		}()
 	} else {
+		game.writeLog("Joining lobby: " + lobby_id)
 		// the following is for the client joining the lobby
 		// get lobby id from text input
 		lobby_id = game.lobby_id
@@ -384,7 +376,8 @@ func startConnection(game *Game) {
 
 		// Register channel opening handling
 		dataChannel.OnOpen(func() {
-			fmt.Printf("Data channel '%s'-'%d' open.\n", dataChannel.Label(), dataChannel.ID())
+			s := fmt.Sprintf("Data channel '%s'-'%d' open on client side!", dataChannel.Label(), dataChannel.ID())
+			game.writeLog(s)
 
 			// Detach the data channel
 			raw, dErr := dataChannel.Detach()

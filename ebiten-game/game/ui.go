@@ -45,7 +45,8 @@ func (g *Game) logWindow(ctx *debugui.Context) {
 				startConnection(g)
 			}
 
-			ctx.SetGridLayout([]int{-3, -1, -1}, nil)
+			ctx.SetGridLayout([]int{-1, -1, -1, -1}, nil)
+			ctx.Text("Lobby ID:")
 			ctx.TextField(&g.logSubmitBuf).On(func() {
 				if ebiten.IsKeyPressed(ebiten.KeyEnter) {
 					submit_join()
