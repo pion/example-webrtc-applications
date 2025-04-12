@@ -2,8 +2,6 @@
 
 This is a pretty nifty demo on how to use [ebitengine](https://ebitengine.org/) and [pion](https://github.com/pion/webrtc) to pull off a cross platform game!
 
-(UI is done using [ebitenui](https://github.com/ebitenui/ebitenui))
-
 You can have a client running on the browser and one running on a desktop and they can talk to each other, provided they are connected to the same signaling server
 
 Requires the signaling server to be running. To do go, just go inside the folder /signaling-server and do ``go run .``
