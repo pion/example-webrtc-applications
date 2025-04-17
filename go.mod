@@ -1,6 +1,6 @@
 module github.com/pion/example-webrtc-applications/v3
 
-go 1.22
+go 1.23.0
 
 toolchain go1.23.6
 
@@ -20,7 +20,7 @@ require (
 	github.com/pion/webrtc/v4 v4.0.9
 	gocv.io/x/gocv v0.40.0
 	golang.org/x/image v0.23.0
-	golang.org/x/net v0.34.0
+	golang.org/x/net v0.38.0
 )
 
 require (
@@ -47,7 +47,7 @@ require (
 	github.com/rs/zerolog v1.33.0 // indirect
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b // indirect
 	github.com/wlynxg/anet v0.0.5 // indirect
-	golang.org/x/crypto v0.32.0 // indirect
+	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
-	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
 )
