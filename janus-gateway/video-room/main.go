@@ -38,7 +38,7 @@ func watchHandle(handle *janus.Handle) {
 	}
 }
 
-func main() {
+func main() { // nolint
 	gst.Init(nil)
 	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
@@ -167,16 +167,16 @@ func main() {
 	select {}
 }
 
-// Create the appropriate GStreamer pipeline depending on what codec we are working with
-func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample, pipelineSrc string) {
+// Create the appropriate GStreamer pipeline depending on what codec we are working with.
+func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample, pipelineSrc string) { // nolint
 	pipelineStr := "appsink name=appsink"
 	switch codecName {
 	case "vp8":
-		pipelineStr = pipelineSrc + " ! vp8enc error-resilient=partitions keyframe-max-dist=10 auto-alt-ref=true cpu-used=5 deadline=1 ! " + pipelineStr
+		pipelineStr = pipelineSrc + " ! vp8enc error-resilient=partitions keyframe-max-dist=10 auto-alt-ref=true cpu-used=5 deadline=1 ! " + pipelineStr // nolint
 	case "vp9":
 		pipelineStr = pipelineSrc + " ! vp9enc ! " + pipelineStr
 	case "h264":
-		pipelineStr = pipelineSrc + " ! video/x-raw,format=I420 ! x264enc speed-preset=ultrafast tune=zerolatency key-int-max=20 ! video/x-h264,stream-format=byte-stream ! " + pipelineStr
+		pipelineStr = pipelineSrc + " ! video/x-raw,format=I420 ! x264enc speed-preset=ultrafast tune=zerolatency key-int-max=20 ! video/x-h264,stream-format=byte-stream ! " + pipelineStr // nolint
 	case "opus":
 		pipelineStr = pipelineSrc + " ! opusenc ! " + pipelineStr
 	case "pcmu":

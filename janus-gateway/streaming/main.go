@@ -18,7 +18,7 @@ import (
 	"github.com/pion/webrtc/v4/pkg/media/oggwriter"
 )
 
-func saveToDisk(i media.Writer, track *webrtc.TrackRemote) {
+func saveToDisk(i media.Writer, track *webrtc.TrackRemote) { // nolint
 	defer func() {
 		if err := i.Close(); err != nil {
 			panic(err)
@@ -56,7 +56,7 @@ func watchHandle(handle *janus.Handle) {
 	}
 }
 
-func main() {
+func main() { // nolint
 	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Janus
@@ -96,7 +96,7 @@ func main() {
 		panic(err)
 	}
 
-	if msg.Jsep != nil {
+	if msg.Jsep != nil { // nolint
 		sdpVal, ok := msg.Jsep["sdp"].(string)
 		if !ok {
 			panic("failed to cast")

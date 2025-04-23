@@ -51,8 +51,8 @@ func serve(addr string) error {
 
 	// Serve the required pages
 	// DIY 'mux' to avoid additional dependencies
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		url := r.URL.Path
+	http.HandleFunc("/", func(httpWriter http.ResponseWriter, httpReader *http.Request) {
+		url := httpReader.URL.Path
 		// Split up the URL. Expected parts:
 		// 1: Base url
 		// 2: "example"
@@ -70,7 +70,8 @@ func serve(addr string) error {
 				}
 				fiddle := filepath.Join(exampleLink, "jsfiddle")
 				if len(parts[4]) != 0 {
-					http.StripPrefix("/example/"+exampleType+"/"+exampleLink+"/", http.FileServer(http.Dir(fiddle))).ServeHTTP(w, r)
+					http.StripPrefix("/example/"+exampleType+"/"+exampleLink+"/", http.FileServer(http.Dir(fiddle))).ServeHTTP(httpWriter, httpReader) // nolint
+
 					return
 				}
 
@@ -88,16 +89,17 @@ func serve(addr string) error {
 					exampleType == "js",
 				}
 
-				err = temp.Execute(w, data)
+				err = temp.Execute(httpWriter, data)
 				if err != nil {
 					panic(err)
 				}
+
 				return
 			}
 		}
 
 		// Serve the main page
-		err = homeTemplate.Execute(w, examples)
+		err = homeTemplate.Execute(httpWriter, examples)
 		if err != nil {
 			panic(err)
 		}

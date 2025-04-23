@@ -20,7 +20,7 @@ import (
 // are almost identical to the data-channel example that is written in pure Go,
 // https://github.com/pion/webrtc/tree/master/examples/data-channels.
 // The only difference is that Run lets you to define the OnDataChannel callback in C.
-func Run(f func(*webrtc.DataChannel)) {
+func Run(f func(*webrtc.DataChannel)) { // nolint
 	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Prepare the configuration
@@ -86,7 +86,7 @@ func Run(f func(*webrtc.DataChannel)) {
 
 func main() {}
 
-// Read from stdin until we get a newline
+// Read from stdin until we get a newline.
 func readUntilNewline() (in string) {
 	var err error
 
@@ -103,10 +103,11 @@ func readUntilNewline() (in string) {
 	}
 
 	fmt.Println("")
+
 	return
 }
 
-// JSON encode + base64 a SessionDescription
+// JSON encode + base64 a SessionDescription.
 func encode(obj *webrtc.SessionDescription) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
@@ -116,7 +117,7 @@ func encode(obj *webrtc.SessionDescription) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-// Decode a base64 and unmarshal JSON into a SessionDescription
+// Decode a base64 and unmarshal JSON into a SessionDescription.
 func decode(in string, obj *webrtc.SessionDescription) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {

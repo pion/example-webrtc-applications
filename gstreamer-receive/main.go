@@ -4,7 +4,8 @@
 //go:build !js
 // +build !js
 
-// gstreamer-receive is a simple application that shows how to receive media using Pion WebRTC and play live using GStreamer.
+// gstreamer-receive is a simple application that shows how to
+// receive media using Pion WebRTC and play live using GStreamer.
 package main
 
 import (
@@ -53,7 +54,7 @@ func main() {
 			go func() {
 				ticker := time.NewTicker(time.Second * 3)
 				for range ticker.C {
-					rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
+					rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}}) // nolint
 					if rtcpSendErr != nil {
 						fmt.Println(rtcpSendErr)
 					}
@@ -119,14 +120,14 @@ func main() {
 	select {}
 }
 
-// Create the appropriate GStreamer pipeline depending on what codec we are working with
+// Create the appropriate GStreamer pipeline depending on what codec we are working with.
 func pipelineForCodec(track *webrtc.TrackRemote, codecName string) *app.Source {
 	pipelineString := "appsrc format=time is-live=true do-timestamp=true name=src ! application/x-rtp"
 	switch strings.ToLower(codecName) {
 	case "vp8":
-		pipelineString += fmt.Sprintf(", payload=%d, encoding-name=VP8-DRAFT-IETF-01 ! rtpvp8depay ! decodebin ! autovideosink", track.PayloadType())
+		pipelineString += fmt.Sprintf(", payload=%d, encoding-name=VP8-DRAFT-IETF-01 ! rtpvp8depay ! decodebin ! autovideosink", track.PayloadType()) // nolint
 	case "opus":
-		pipelineString += fmt.Sprintf(", payload=%d, encoding-name=OPUS ! rtpopusdepay ! decodebin ! autoaudiosink", track.PayloadType())
+		pipelineString += fmt.Sprintf(", payload=%d, encoding-name=OPUS ! rtpopusdepay ! decodebin ! autoaudiosink", track.PayloadType()) // nolint
 	case "vp9":
 		pipelineString += " ! rtpvp9depay ! decodebin ! autovideosink"
 	case "h264":
@@ -154,7 +155,7 @@ func pipelineForCodec(track *webrtc.TrackRemote, codecName string) *app.Source {
 	return app.SrcFromElement(appSrc)
 }
 
-// Read from stdin until we get a newline
+// Read from stdin until we get a newline.
 func readUntilNewline() (in string) {
 	var err error
 
@@ -171,10 +172,11 @@ func readUntilNewline() (in string) {
 	}
 
 	fmt.Println("")
+
 	return
 }
 
-// JSON encode + base64 a SessionDescription
+// JSON encode + base64 a SessionDescription.
 func encode(obj *webrtc.SessionDescription) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
@@ -184,7 +186,7 @@ func encode(obj *webrtc.SessionDescription) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-// Decode a base64 and unmarshal JSON into a SessionDescription
+// Decode a base64 and unmarshal JSON into a SessionDescription.
 func decode(in string, obj *webrtc.SessionDescription) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {
