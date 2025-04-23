@@ -86,8 +86,8 @@ func main() {
 	}
 }
 
-// Add to list of tracks and fire renegotation for all PeerConnections
-func addTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP {
+// Add to list of tracks and fire renegotation for all PeerConnections.
+func addTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP { // nolint
 	listLock.Lock()
 	defer func() {
 		listLock.Unlock()
@@ -101,10 +101,11 @@ func addTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP {
 	}
 
 	trackLocals[t.ID()] = trackLocal
+
 	return trackLocal
 }
 
-// Remove from list of tracks and fire renegotation for all PeerConnections
+// Remove from list of tracks and fire renegotation for all PeerConnections.
 func removeTrack(t *webrtc.TrackLocalStaticRTP) {
 	listLock.Lock()
 	defer func() {
@@ -115,8 +116,8 @@ func removeTrack(t *webrtc.TrackLocalStaticRTP) {
 	delete(trackLocals, t.ID())
 }
 
-// signalPeerConnections updates each PeerConnection so that it is getting all the expected media tracks
-func signalPeerConnections() {
+// signalPeerConnections updates each PeerConnection so that it is getting all the expected media tracks.
+func signalPeerConnections() { // nolint
 	listLock.Lock()
 	defer func() {
 		listLock.Unlock()
@@ -127,6 +128,7 @@ func signalPeerConnections() {
 		for i := range peerConnections {
 			if peerConnections[i].peerConnection.ConnectionState() == webrtc.PeerConnectionStateClosed {
 				peerConnections = append(peerConnections[:i], peerConnections[i+1:]...)
+
 				return true // We modified the slice, start from the beginning
 			}
 
@@ -178,6 +180,7 @@ func signalPeerConnections() {
 			offerString, err := json.Marshal(offer)
 			if err != nil {
 				log.Errorf("Failed to marshal offer to json: %v", err)
+
 				return true
 			}
 
@@ -191,7 +194,7 @@ func signalPeerConnections() {
 			}
 		}
 
-		return
+		return tryAgain
 	}
 
 	for syncAttempt := 0; ; syncAttempt++ {
@@ -201,6 +204,7 @@ func signalPeerConnections() {
 				time.Sleep(time.Second * 3)
 				signalPeerConnections()
 			}()
+
 			return
 		}
 
@@ -210,7 +214,7 @@ func signalPeerConnections() {
 	}
 }
 
-// dispatchKeyFrame sends a keyframe to all PeerConnections, used everytime a new user joins the call
+// dispatchKeyFrame sends a keyframe to all PeerConnections, used everytime a new user joins the call.
 func dispatchKeyFrame() {
 	listLock.Lock()
 	defer listLock.Unlock()
@@ -230,16 +234,17 @@ func dispatchKeyFrame() {
 	}
 }
 
-// Handle incoming websockets
-func websocketHandler(w http.ResponseWriter, r *http.Request) {
+// Handle incoming websockets.
+func websocketHandler(w http.ResponseWriter, r *http.Request) { // nolint
 	// Upgrade HTTP request to Websocket
 	unsafeConn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Errorf("Failed to upgrade HTTP to Websocket: ", err)
+
 		return
 	}
 
-	c := &threadSafeWriter{unsafeConn, sync.Mutex{}}
+	c := &threadSafeWriter{unsafeConn, sync.Mutex{}} // nolint
 
 	// When this frame returns close the Websocket
 	defer c.Close() //nolint
@@ -248,6 +253,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{})
 	if err != nil {
 		log.Errorf("Failed to creates a PeerConnection: %v", err)
+
 		return
 	}
 
@@ -260,6 +266,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 			Direction: webrtc.RTPTransceiverDirectionRecvonly,
 		}); err != nil {
 			log.Errorf("Failed to add transceiver: %v", err)
+
 			return
 		}
 	}
@@ -279,6 +286,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 		candidateString, err := json.Marshal(i.ToJSON())
 		if err != nil {
 			log.Errorf("Failed to marshal candidate to json: %v", err)
+
 			return
 		}
 
@@ -325,6 +333,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 
 			if err = rtpPkt.Unmarshal(buf[:i]); err != nil {
 				log.Errorf("Failed to unmarshal incoming RTP packet: %v", err)
+
 				return
 			}
 
@@ -349,6 +358,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 		_, raw, err := c.ReadMessage()
 		if err != nil {
 			log.Errorf("Failed to read message: %v", err)
+
 			return
 		}
 
@@ -356,6 +366,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err := json.Unmarshal(raw, &message); err != nil {
 			log.Errorf("Failed to unmarshal json to message: %v", err)
+
 			return
 		}
 
@@ -364,6 +375,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 			candidate := webrtc.ICECandidateInit{}
 			if err := json.Unmarshal([]byte(message.Data), &candidate); err != nil {
 				log.Errorf("Failed to unmarshal json to candidate: %v", err)
+
 				return
 			}
 
@@ -371,12 +383,14 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 
 			if err := peerConnection.AddICECandidate(candidate); err != nil {
 				log.Errorf("Failed to add ICE candidate: %v", err)
+
 				return
 			}
 		case "answer":
 			answer := webrtc.SessionDescription{}
 			if err := json.Unmarshal([]byte(message.Data), &answer); err != nil {
 				log.Errorf("Failed to unmarshal json to answer: %v", err)
+
 				return
 			}
 
@@ -384,6 +398,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 
 			if err := peerConnection.SetRemoteDescription(answer); err != nil {
 				log.Errorf("Failed to set remote description: %v", err)
+
 				return
 			}
 		default:
@@ -392,7 +407,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Helper to make Gorilla Websockets threadsafe
+// Helper to make Gorilla Websockets threadsafe.
 type threadSafeWriter struct {
 	*websocket.Conn
 	sync.Mutex

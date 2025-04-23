@@ -35,7 +35,7 @@ var (
 	streamKey                      string
 )
 
-func main() {
+func main() { // nolint
 	if len(os.Args) != 2 {
 		panic("example requires stream-key to be passed as an argument")
 	}
@@ -52,18 +52,18 @@ func main() {
 	}
 
 	// Create a MediaEngine object to configure the supported codec
-	m := &webrtc.MediaEngine{}
+	mediaEngine := &webrtc.MediaEngine{}
 
 	// Setup the codecs you want to use.
 	// Only support VP8 and OPUS, this makes our WebM muxer code simpler
-	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
-		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "video/VP8", ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+	if err := mediaEngine.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeVP8},
 		PayloadType:        96,
 	}, webrtc.RTPCodecTypeVideo); err != nil {
 		panic(err)
 	}
-	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
-		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "audio/opus", ClockRate: 48000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+	if err := mediaEngine.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus},
 		PayloadType:        111,
 	}, webrtc.RTPCodecTypeAudio); err != nil {
 		panic(err)
@@ -73,7 +73,7 @@ func main() {
 	videoBuilder = samplebuilder.New(10, &codecs.VP8Packet{}, 90000)
 
 	// Create the API object with the MediaEngine
-	api := webrtc.NewAPI(webrtc.WithMediaEngine(m))
+	api := webrtc.NewAPI(webrtc.WithMediaEngine(mediaEngine))
 
 	// Create a new RTCPeerConnection
 	peerConnection, err := api.NewPeerConnection(config)
@@ -87,7 +87,9 @@ func main() {
 			go func() {
 				ticker := time.NewTicker(time.Second * 3)
 				for range ticker.C {
-					rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{MediaSSRC: uint32(track.SSRC())}})
+					rtcpSendErr := peerConnection.WriteRTCP([]rtcp.Packet{&rtcp.PictureLossIndication{
+						MediaSSRC: uint32(track.SSRC()),
+					}})
 					if rtcpSendErr != nil {
 						fmt.Println(rtcpSendErr)
 					}
@@ -95,7 +97,7 @@ func main() {
 			}()
 		}
 
-		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), track.Codec().RTPCodecCapability.MimeType)
+		fmt.Printf("Track has started, of type %d: %s \n", track.PayloadType(), track.Codec().MimeType)
 		for {
 			// Read RTP packets being sent to Pion
 			rtp, _, readErr := track.ReadRTP()
@@ -185,8 +187,8 @@ func startFFmpeg(width, height int) {
 				TrackType:       1,
 				DefaultDuration: 33333333,
 				Video: &webm.Video{
-					PixelWidth:  uint64(width),
-					PixelHeight: uint64(height),
+					PixelWidth:  uint64(width),  // nolint
+					PixelHeight: uint64(height), // nolint
 				},
 			},
 		})
@@ -199,7 +201,7 @@ func startFFmpeg(width, height int) {
 	videoWriter = ws[1]
 }
 
-// Parse Opus audio and Write to WebM
+// Parse Opus audio and Write to WebM.
 func pushOpus(rtpPacket *rtp.Packet) {
 	audioBuilder.Push(rtpPacket)
 
@@ -217,7 +219,7 @@ func pushOpus(rtpPacket *rtp.Packet) {
 	}
 }
 
-// Parse VP8 video and Write to WebM
+// Parse VP8 video and Write to WebM.
 func pushVP8(rtpPacket *rtp.Packet) {
 	videoBuilder.Push(rtpPacket)
 
@@ -231,8 +233,8 @@ func pushVP8(rtpPacket *rtp.Packet) {
 		if videoKeyframe {
 			// Keyframe has frame information.
 			raw := uint(sample.Data[6]) | uint(sample.Data[7])<<8 | uint(sample.Data[8])<<16 | uint(sample.Data[9])<<24
-			width := int(raw & 0x3FFF)
-			height := int((raw >> 16) & 0x3FFF)
+			width := int(raw & 0x3FFF)          // nolint
+			height := int((raw >> 16) & 0x3FFF) // nolint
 
 			if videoWriter == nil || audioWriter == nil {
 				// Initialize WebM saver using received frame size.
@@ -248,7 +250,7 @@ func pushVP8(rtpPacket *rtp.Packet) {
 	}
 }
 
-// Read from stdin until we get a newline
+// Read from stdin until we get a newline.
 func readUntilNewline() (in string) {
 	var err error
 
@@ -265,10 +267,11 @@ func readUntilNewline() (in string) {
 	}
 
 	fmt.Println("")
+
 	return
 }
 
-// JSON encode + base64 a SessionDescription
+// JSON encode + base64 a SessionDescription.
 func encode(obj *webrtc.SessionDescription) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
@@ -278,7 +281,7 @@ func encode(obj *webrtc.SessionDescription) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-// Decode a base64 and unmarshal JSON into a SessionDescription
+// Decode a base64 and unmarshal JSON into a SessionDescription.
 func decode(in string, obj *webrtc.SessionDescription) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {

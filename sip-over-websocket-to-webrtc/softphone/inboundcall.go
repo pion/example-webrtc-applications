@@ -29,11 +29,11 @@ func (softphone *Softphone) OpenToInvite() {
 			sipMessage.address = msg.Hdr.From
 			sipMessage.headers = make(map[string]string)
 			sipMessage.headers["Via"] = fmt.Sprintf("SIP/2.0/WSS %s;branch=%s", softphone.fakeDomain, branch())
-			sipMessage.headers["From"] = fmt.Sprintf("<sip:%s@%s>;tag=%s", softphone.sipInfo.Username, softphone.sipInfo.Domain, softphone.fromTag)
+			sipMessage.headers["From"] = fmt.Sprintf("<sip:%s@%s>;tag=%s", softphone.sipInfo.Username, softphone.sipInfo.Domain, softphone.fromTag) // nolint
 			sipMessage.headers["To"] = fmt.Sprintf("<sip:%s>", msg.Hdr.From)
 			sipMessage.headers["Content-Type"] = "x-rc/agent"
 			sipMessage.addCseq(softphone).addCallID(*softphone).addUserAgent()
-			sipMessage.Body = fmt.Sprintf(`<Msg><Hdr SID="%s" Req="%s" From="%s" To="%s" Cmd="17"/><Bdy Cln="%s"/></Msg>`, msg.Hdr.SID, msg.Hdr.Req, msg.Hdr.To, msg.Hdr.From, softphone.sipInfo.AuthorizationID)
+			sipMessage.Body = fmt.Sprintf(`<Msg><Hdr SID="%s" Req="%s" From="%s" To="%s" Cmd="17"/><Bdy Cln="%s"/></Msg>`, msg.Hdr.SID, msg.Hdr.Req, msg.Hdr.To, msg.Hdr.From, softphone.sipInfo.AuthorizationID) // nolint
 			softphone.request(sipMessage, nil)
 
 			softphone.OnInvite(inviteMessage)

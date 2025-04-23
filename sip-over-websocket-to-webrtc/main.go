@@ -26,7 +26,7 @@ var (
 	port      = flag.String("port", "5066", "Port that websocket is available on")
 )
 
-func main() {
+func main() { // nolint
 	flag.Parse()
 
 	if *host == "" || *port == "" || *password == "" {

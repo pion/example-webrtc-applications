@@ -24,7 +24,7 @@ import (
 	"github.com/pion/webrtc/v4/pkg/media"
 )
 
-func main() {
+func main() { // nolint
 	audioSrc := flag.String("audio-src", "audiotestsrc", "GStreamer audio src")
 	videoSrc := flag.String("video-src", "videotestsrc", "GStreamer video src")
 	flag.Parse()
@@ -50,7 +50,7 @@ func main() {
 	})
 
 	// Create a audio track
-	audioTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "audio/opus"}, "audio", "pion1")
+	audioTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "audio/opus"}, "audio", "pion1") // nolint
 	if err != nil {
 		panic(err)
 	}
@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// Create a video track
-	firstVideoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pion2")
+	firstVideoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pion2") // nolint
 	if err != nil {
 		panic(err)
 	}
@@ -70,7 +70,7 @@ func main() {
 	}
 
 	// Create a second video track
-	secondVideoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pion3")
+	secondVideoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pion3") // nolint
 	if err != nil {
 		panic(err)
 	}
@@ -117,16 +117,16 @@ func main() {
 	select {}
 }
 
-// Create the appropriate GStreamer pipeline depending on what codec we are working with
-func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample, pipelineSrc string) {
+// Create the appropriate GStreamer pipeline depending on what codec we are working with.
+func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample, pipelineSrc string) { // nolint
 	pipelineStr := "appsink name=appsink"
 	switch codecName {
 	case "vp8":
-		pipelineStr = pipelineSrc + " ! vp8enc error-resilient=partitions keyframe-max-dist=10 auto-alt-ref=true cpu-used=5 deadline=1 ! " + pipelineStr
+		pipelineStr = pipelineSrc + " ! vp8enc error-resilient=partitions keyframe-max-dist=10 auto-alt-ref=true cpu-used=5 deadline=1 ! " + pipelineStr // nolint
 	case "vp9":
 		pipelineStr = pipelineSrc + " ! vp9enc ! " + pipelineStr
 	case "h264":
-		pipelineStr = pipelineSrc + " ! video/x-raw,format=I420 ! x264enc speed-preset=ultrafast tune=zerolatency key-int-max=20 ! video/x-h264,stream-format=byte-stream ! " + pipelineStr
+		pipelineStr = pipelineSrc + " ! video/x-raw,format=I420 ! x264enc speed-preset=ultrafast tune=zerolatency key-int-max=20 ! video/x-h264,stream-format=byte-stream ! " + pipelineStr // nolint
 	case "opus":
 		pipelineStr = pipelineSrc + " ! opusenc ! " + pipelineStr
 	case "pcmu":
@@ -177,7 +177,7 @@ func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample,
 	})
 }
 
-// Read from stdin until we get a newline
+// Read from stdin until we get a newline.
 func readUntilNewline() (in string) {
 	var err error
 
@@ -194,10 +194,11 @@ func readUntilNewline() (in string) {
 	}
 
 	fmt.Println("")
+
 	return
 }
 
-// JSON encode + base64 a SessionDescription
+// JSON encode + base64 a SessionDescription.
 func encode(obj *webrtc.SessionDescription) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
@@ -207,7 +208,7 @@ func encode(obj *webrtc.SessionDescription) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-// Decode a base64 and unmarshal JSON into a SessionDescription
+// Decode a base64 and unmarshal JSON into a SessionDescription.
 func decode(in string, obj *webrtc.SessionDescription) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {

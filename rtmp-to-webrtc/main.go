@@ -99,7 +99,7 @@ func main() {
 	rtpToTrack(audioTrack, &codecs.OpusPacket{}, 48000, 5006)
 }
 
-// Listen for incoming packets on a port and write them to a Track
+// Listen for incoming packets on a port and write them to a Track.
 func rtpToTrack(track *webrtc.TrackLocalStaticSample, depacketizer rtp.Depacketizer, sampleRate uint32, port int) {
 	// Open a UDP Listener for RTP Packets on port 5004
 	listener, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: port})
@@ -157,7 +157,7 @@ func processRTCP(rtpSender *webrtc.RTPSender) {
 	}()
 }
 
-// Read from stdin until we get a newline
+// Read from stdin until we get a newline.
 func readUntilNewline() (in string) {
 	var err error
 
@@ -174,10 +174,11 @@ func readUntilNewline() (in string) {
 	}
 
 	fmt.Println("")
+
 	return
 }
 
-// JSON encode + base64 a SessionDescription
+// JSON encode + base64 a SessionDescription.
 func encode(obj *webrtc.SessionDescription) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
@@ -187,7 +188,7 @@ func encode(obj *webrtc.SessionDescription) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-// Decode a base64 and unmarshal JSON into a SessionDescription
+// Decode a base64 and unmarshal JSON into a SessionDescription.
 func decode(in string, obj *webrtc.SessionDescription) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {

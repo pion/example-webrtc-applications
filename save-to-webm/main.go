@@ -4,7 +4,8 @@
 //go:build !js
 // +build !js
 
-// save-to-webm is a simple application that shows how to receive audio and video using Pion and then save to WebM container.
+// save-to-webm is a simple application that shows how to receive
+// audio and video using Pion and then save to WebM container.
 package main
 
 import (
@@ -95,7 +96,7 @@ func (s *webmSaver) PushOpus(rtpPacket *rtp.Packet) {
 	}
 }
 
-func (s *webmSaver) PushH264(rtpPacket *rtp.Packet) {
+func (s *webmSaver) PushH264(rtpPacket *rtp.Packet) { // nolint
 	s.h264JitterBuffer.Push(rtpPacket)
 
 	pkt, err := s.h264JitterBuffer.Peek(true)
@@ -166,8 +167,8 @@ func (s *webmSaver) PushVP8(rtpPacket *rtp.Packet) {
 		if videoKeyframe {
 			// Keyframe has frame information.
 			raw := uint(sample.Data[6]) | uint(sample.Data[7])<<8 | uint(sample.Data[8])<<16 | uint(sample.Data[9])<<24
-			width := int(raw & 0x3FFF)
-			height := int((raw >> 16) & 0x3FFF)
+			width := int(raw & 0x3FFF)          // nolint
+			height := int((raw >> 16) & 0x3FFF) // nolint
 
 			if s.videoWriter == nil || s.audioWriter == nil {
 				s.InitWriter(false, width, height)
@@ -214,8 +215,8 @@ func (s *webmSaver) InitWriter(isH264 bool, width, height int) {
 				TrackType:       1,
 				DefaultDuration: 33333333,
 				Video: &webm.Video{
-					PixelWidth:  uint64(width),
-					PixelHeight: uint64(height),
+					PixelWidth:  uint64(width),  // nolint
+					PixelHeight: uint64(height), // nolint
 				},
 			},
 		})
@@ -227,7 +228,7 @@ func (s *webmSaver) InitWriter(isH264 bool, width, height int) {
 	s.videoWriter = ws[1]
 }
 
-func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
+func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection { // nolint
 	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
 	// Prepare the configuration
@@ -240,31 +241,31 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 	}
 
 	// Create a MediaEngine object to configure the supported codec
-	m := &webrtc.MediaEngine{}
+	mediaEngine := &webrtc.MediaEngine{}
 
 	// Setup the codecs you want to use.
 	// This example supports VP8 or H264. Some browsers may only support one (or the other)
-	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
-		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeVP8, ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+	if err := mediaEngine.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeVP8, ClockRate: 90000},
 		PayloadType:        96,
 	}, webrtc.RTPCodecTypeVideo); err != nil {
 		panic(err)
 	}
-	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
-		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264, ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+	if err := mediaEngine.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264, ClockRate: 90000},
 		PayloadType:        98,
 	}, webrtc.RTPCodecTypeVideo); err != nil {
 		panic(err)
 	}
-	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
-		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus, ClockRate: 48000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+	if err := mediaEngine.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus, ClockRate: 48000},
 		PayloadType:        111,
 	}, webrtc.RTPCodecTypeAudio); err != nil {
 		panic(err)
 	}
 
 	// Create the API object with the MediaEngine
-	api := webrtc.NewAPI(webrtc.WithMediaEngine(m))
+	api := webrtc.NewAPI(webrtc.WithMediaEngine(mediaEngine))
 
 	// Create a new RTCPeerConnection
 	peerConnection, err := api.NewPeerConnection(config)
@@ -351,7 +352,7 @@ func createWebRTCConn(saver *webmSaver) *webrtc.PeerConnection {
 	return peerConnection
 }
 
-// Read from stdin until we get a newline
+// Read from stdin until we get a newline.
 func readUntilNewline() (in string) {
 	var err error
 
@@ -368,10 +369,11 @@ func readUntilNewline() (in string) {
 	}
 
 	fmt.Println("")
+
 	return
 }
 
-// JSON encode + base64 a SessionDescription
+// JSON encode + base64 a SessionDescription.
 func encode(obj *webrtc.SessionDescription) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
@@ -381,7 +383,7 @@ func encode(obj *webrtc.SessionDescription) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-// Decode a base64 and unmarshal JSON into a SessionDescription
+// Decode a base64 and unmarshal JSON into a SessionDescription.
 func decode(in string, obj *webrtc.SessionDescription) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {

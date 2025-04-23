@@ -112,16 +112,16 @@ func main() {
 	select {}
 }
 
-// Create the appropriate GStreamer pipeline depending on what codec we are working with
-func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample, pipelineSrc string) {
+// Create the appropriate GStreamer pipeline depending on what codec we are working with.
+func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample, pipelineSrc string) { // nolint
 	pipelineStr := "appsink name=appsink"
 	switch codecName {
 	case "vp8":
-		pipelineStr = pipelineSrc + " ! vp8enc error-resilient=partitions keyframe-max-dist=10 auto-alt-ref=true cpu-used=5 deadline=1 ! " + pipelineStr
+		pipelineStr = pipelineSrc + " ! vp8enc error-resilient=partitions keyframe-max-dist=10 auto-alt-ref=true cpu-used=5 deadline=1 ! " + pipelineStr // nolint
 	case "vp9":
 		pipelineStr = pipelineSrc + " ! vp9enc ! " + pipelineStr
 	case "h264":
-		pipelineStr = pipelineSrc + " ! video/x-raw,format=I420 ! x264enc speed-preset=ultrafast tune=zerolatency key-int-max=20 ! video/x-h264,stream-format=byte-stream ! " + pipelineStr
+		pipelineStr = pipelineSrc + " ! video/x-raw,format=I420 ! x264enc speed-preset=ultrafast tune=zerolatency key-int-max=20 ! video/x-h264,stream-format=byte-stream ! " + pipelineStr // nolint
 	case "opus":
 		pipelineStr = pipelineSrc + " ! opusenc ! " + pipelineStr
 	case "pcmu":
@@ -172,7 +172,7 @@ func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample,
 	})
 }
 
-// JSON encode + base64 a SessionDescription
+// JSON encode + base64 a SessionDescription.
 func encode(obj *webrtc.SessionDescription) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
@@ -182,7 +182,7 @@ func encode(obj *webrtc.SessionDescription) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-// Decode a base64 and unmarshal JSON into a SessionDescription
+// Decode a base64 and unmarshal JSON into a SessionDescription.
 func decode(in string, obj *webrtc.SessionDescription) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {
@@ -194,7 +194,7 @@ func decode(in string, obj *webrtc.SessionDescription) {
 	}
 }
 
-// httpSDPServer starts a HTTP Server that consumes SDPs
+// httpSDPServer starts a HTTP Server that consumes SDPs.
 func httpSDPServer(port int) chan string {
 	sdpChan := make(chan string)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

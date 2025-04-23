@@ -22,7 +22,7 @@ type SIPInfoResponse struct {
 	SwitchBackInterval int    `json:"switchBackInterval"`
 }
 
-func generateResponse(username, password, realm, method, uri, nonce string) string { // ONLY REGISTRATION WITH QOP=AUTH !
+func generateResponse(username, password, realm, method, uri, nonce string) string { // nolint
 	ha1 := md5.Sum([]byte(fmt.Sprintf("%s:%s:%s", username, realm, password)))                                                 //nolint
 	ha2 := md5.Sum([]byte(fmt.Sprintf("%s:%s", method, uri)))                                                                  //nolint
 	response := md5.Sum([]byte(fmt.Sprintf("%x:%s:00000001:%s:auth:%x", ha1, nonce, "0e6758e1adfccffbd0ad9ffdde3ef655", ha2))) //nolint
@@ -32,17 +32,17 @@ func generateResponse(username, password, realm, method, uri, nonce string) stri
 
 func generateAuthorization(sipInfo SIPInfoResponse, method, nonce string) string {
 	return fmt.Sprintf(
-		`Digest username="%s",realm="%s",nonce="%s",uri="sip:%s",response="%s",algorithm=MD5,cnonce="%s",qop=auth,nc=00000001`,
+		`Digest username="%s",realm="%s",nonce="%s",uri="sip:%s",response="%s",algorithm=MD5,cnonce="%s",qop=auth,nc=00000001`, // nolint
 		sipInfo.Username, sipInfo.Domain, nonce, sipInfo.Domain,
-		generateResponse(sipInfo.Username, sipInfo.Password, sipInfo.Domain, method, "sip:"+sipInfo.Domain, nonce), "0e6758e1adfccffbd0ad9ffdde3ef655",
+		generateResponse(sipInfo.Username, sipInfo.Password, sipInfo.Domain, method, "sip:"+sipInfo.Domain, nonce), "0e6758e1adfccffbd0ad9ffdde3ef655", // nolint
 	)
 }
 
 func generateProxyAuthorization(sipInfo SIPInfoResponse, method, targetUser, nonce string) string {
 	return fmt.Sprintf(
-		`Digest username="%s", realm="%s", nonce="%s", uri="sip:%s@%s", response="%s",algorithm=MD5,cnonce="%s",qop=auth,nc=00000001`,
+		`Digest username="%s", realm="%s", nonce="%s", uri="sip:%s@%s", response="%s",algorithm=MD5,cnonce="%s",qop=auth,nc=00000001`, // nolint
 		sipInfo.AuthorizationID, sipInfo.Domain, nonce, targetUser, sipInfo.Domain,
-		generateResponse(sipInfo.AuthorizationID, sipInfo.Password, sipInfo.Domain, method, "sip:"+targetUser+"@"+sipInfo.Domain, nonce), "0e6758e1adfccffbd0ad9ffdde3ef655",
+		generateResponse(sipInfo.AuthorizationID, sipInfo.Password, sipInfo.Domain, method, "sip:"+targetUser+"@"+sipInfo.Domain, nonce), "0e6758e1adfccffbd0ad9ffdde3ef655", // nolint
 	)
 }
 
