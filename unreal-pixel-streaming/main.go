@@ -4,7 +4,8 @@
 //go:build !js
 // +build !js
 
-// unreal-pixel-streaming demonstrates how to connect to a Unreal Pixel Streaming instance and accept the inbound audio/video
+// unreal-pixel-streaming demonstrates how to connect to a Unreal Pixel Streaming
+// instance and accept the inbound audio/video
 package main
 
 import (
@@ -27,7 +28,7 @@ type websocketMessage struct {
 	StreamerID            string                  `json:"streamerId"`
 }
 
-func main() {
+func main() { // nolint
 	url := flag.String("url", "ws://localhost/", "URL to UE5 Pixel Streaming WebSocket endpoint")
 	origin := flag.String("origin", "http://localhost", "Origin that is passed in HTTP header")
 	flag.Parse()
@@ -66,7 +67,7 @@ func main() {
 		case "offer":
 			peerConnection = createPeerConnection(conn, peerConnectionConfig)
 
-			if err = peerConnection.SetRemoteDescription(webrtc.SessionDescription{Type: webrtc.SDPTypeOffer, SDP: jsonMessage.SDP}); err != nil {
+			if err = peerConnection.SetRemoteDescription(webrtc.SessionDescription{Type: webrtc.SDPTypeOffer, SDP: jsonMessage.SDP}); err != nil { // nolint
 				panic(err)
 			}
 
@@ -90,7 +91,7 @@ func main() {
 			fmt.Println("Player Count", jsonMessage.Count)
 		case "streamerList":
 			if len(jsonMessage.IDs) >= 1 {
-				if err = websocket.JSON.Send(conn, websocketMessage{Type: "subscribe", StreamerID: jsonMessage.IDs[0]}); err != nil {
+				if err = websocket.JSON.Send(conn, websocketMessage{Type: "subscribe", StreamerID: jsonMessage.IDs[0]}); err != nil { // nolint
 					panic(err)
 				}
 			}

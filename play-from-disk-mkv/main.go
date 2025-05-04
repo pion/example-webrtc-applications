@@ -38,7 +38,7 @@ const (
 // nolint: gochecknoglobals
 var annexBPrefix = []byte{0x00, 0x00, 0x01}
 
-func main() {
+func main() { // nolint
 	// Assert that the MKV exists
 	_, err := os.Stat(mkvFileName)
 	if os.IsNotExist(err) {
@@ -63,7 +63,7 @@ func main() {
 	}()
 
 	// Create a Audio Track
-	audioTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus}, "audio", "pion")
+	audioTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus}, "audio", "pion") // nolint
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +76,7 @@ func main() {
 	rtcpReader(rtpSender)
 
 	// Create a Video Track
-	videoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264}, "video", "pion")
+	videoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264}, "video", "pion") // nolint
 	if err != nil {
 		panic(err)
 	}
@@ -104,9 +104,10 @@ func main() {
 		fmt.Printf("Peer Connection State has changed: %s\n", s.String())
 
 		if s == webrtc.PeerConnectionStateFailed {
-			// Wait until PeerConnection has had no network activity for 30 seconds or another failure. It may be reconnected using an ICE Restart.
-			// Use webrtc.PeerConnectionStateDisconnected if you are interested in detecting faster timeout.
-			// Note that the PeerConnection may come back from PeerConnectionStateDisconnected.
+			// Wait until PeerConnection has had no network activity for 30 seconds or another failure.
+			// It may be reconnected using an ICE Restart. Use webrtc.PeerConnectionStateDisconnected
+			// if you are interested in detecting faster timeout. Note that the PeerConnection may
+			// come back from PeerConnectionStateDisconnected.
 			fmt.Println("Peer Connection has gone to failed exiting")
 			os.Exit(0)
 		}
@@ -148,7 +149,7 @@ func main() {
 }
 
 // Write the audio samples to the video and audio track. Record how long we have been sleeping
-// time.Sleep may sleep longer then expected
+// time.Sleep may sleep longer then expected.
 func chanToTrack(sampleChan chan media.Sample, track *webrtc.TrackLocalStaticSample) {
 	var (
 		sleepWanted time.Duration
@@ -166,7 +167,7 @@ func chanToTrack(sampleChan chan media.Sample, track *webrtc.TrackLocalStaticSam
 	}
 }
 
-func sendMkv(mkvFile *os.File, audioTrack, videoTrack *webrtc.TrackLocalStaticSample) {
+func sendMkv(mkvFile *os.File, audioTrack, videoTrack *webrtc.TrackLocalStaticSample) { //nolint
 	var unmarshaled struct {
 		Header  webm.EBMLHeader `ebml:"EBML"`
 		Segment webm.Segment    `ebml:"Segment"`
@@ -208,7 +209,7 @@ func sendMkv(mkvFile *os.File, audioTrack, videoTrack *webrtc.TrackLocalStaticSa
 	// and push onto channels. These channels pace the send of audio and video
 	for _, cluster := range unmarshaled.Segment.Cluster {
 		for _, block := range cluster.SimpleBlock {
-			timecode := (cluster.Timecode + uint64(block.Timecode)) * unmarshaled.Segment.Info.TimecodeScale
+			timecode := (cluster.Timecode + uint64(block.Timecode)) * unmarshaled.Segment.Info.TimecodeScale // nolint
 
 			if block.TrackNumber == videoTrackNumber {
 				// Convert H264 from AVC bitstream to Annex-B
@@ -235,17 +236,17 @@ func sendMkv(mkvFile *os.File, audioTrack, videoTrack *webrtc.TrackLocalStaticSa
 
 				// Send to video goroutine for paced sending
 				lastVideoTimeCode, oldTimeCode = timecode, lastVideoTimeCode
-				videoQueue <- media.Sample{Data: annexBSlice, Duration: time.Duration(timecode - oldTimeCode)}
+				videoQueue <- media.Sample{Data: annexBSlice, Duration: time.Duration(timecode - oldTimeCode)} // nolint
 			} else {
 				// Send to audio goroutine for paced sending
 				lastAudioTimeCode, oldTimeCode = timecode, lastAudioTimeCode
-				audioQueue <- media.Sample{Data: block.Data[0], Duration: time.Duration(timecode - oldTimeCode)}
+				audioQueue <- media.Sample{Data: block.Data[0], Duration: time.Duration(timecode - oldTimeCode)} // nolint
 			}
 		}
 	}
 }
 
-// Convert AVC Extradata to Annex-B SPS and PPS
+// Convert AVC Extradata to Annex-B SPS and PPS.
 func extractMetadata(codecData []byte) (out []byte) {
 	spsCount := codecData[spsCountOffset] & naluTypeBitmask
 	offset := 6
@@ -292,7 +293,7 @@ func rtcpReader(rtpSender *webrtc.RTPSender) {
 	}()
 }
 
-// Read from stdin until we get a newline
+// Read from stdin until we get a newline.
 func readUntilNewline() (in string) {
 	var err error
 
@@ -309,10 +310,11 @@ func readUntilNewline() (in string) {
 	}
 
 	fmt.Println("")
+
 	return
 }
 
-// JSON encode + base64 a SessionDescription
+// JSON encode + base64 a SessionDescription.
 func encode(obj *webrtc.SessionDescription) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
@@ -322,7 +324,7 @@ func encode(obj *webrtc.SessionDescription) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-// Decode a base64 and unmarshal JSON into a SessionDescription
+// Decode a base64 and unmarshal JSON into a SessionDescription.
 func decode(in string, obj *webrtc.SessionDescription) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {

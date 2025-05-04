@@ -24,11 +24,10 @@ import (
 	"golang.org/x/image/vp8"
 )
 
-// Channel for PeerConnection to push RTP Packets
-// This is the read from HTTP Handler for generating jpeg
+// This is the read from HTTP Handler for generating jpeg.
 var rtpChan chan *rtp.Packet // nolint:gochecknoglobals
 
-func signaling(w http.ResponseWriter, r *http.Request) {
+func signaling(w http.ResponseWriter, r *http.Request) { // nolint
 	// Create a new PeerConnection
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
@@ -116,7 +115,7 @@ func signaling(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func snapshot(w http.ResponseWriter, _ *http.Request) {
+func snapshot(httpWriter http.ResponseWriter, _ *http.Request) {
 	// Initialized with 20 maxLate, my samples sometimes 10-15 packets
 	sampleBuilder := samplebuilder.New(20, &codecs.VP8Packet{}, 90000)
 	decoder := vp8.NewDecoder()
@@ -158,13 +157,14 @@ func snapshot(w http.ResponseWriter, _ *http.Request) {
 		}
 
 		// Serve image
-		w.Header().Set("Content-Type", "image/jpeg")
-		w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
+		httpWriter.Header().Set("Content-Type", "image/jpeg")
+		httpWriter.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
 
 		// Write jpeg as HTTP Response
-		if _, err = w.Write(buffer.Bytes()); err != nil {
+		if _, err = httpWriter.Write(buffer.Bytes()); err != nil {
 			panic(err)
 		}
+
 		return
 	}
 }

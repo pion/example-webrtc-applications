@@ -63,9 +63,9 @@ func main() { //nolint
 
 	iceConnectedCtx, iceConnectedCtxCancel := context.WithCancel(context.Background())
 
-	if haveVideoFile {
+	if haveVideoFile { // nolint
 		// Create a video track
-		videoTrack, videoTrackErr := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264}, "video", "pion")
+		videoTrack, videoTrackErr := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264}, "video", "pion") // nolint
 		if videoTrackErr != nil {
 			panic(videoTrackErr)
 		}
@@ -126,9 +126,9 @@ func main() { //nolint
 		}()
 	}
 
-	if haveAudioFile {
+	if haveAudioFile { // nolint
 		// Create a audio track
-		audioTrack, audioTrackErr := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus}, "audio", "pion")
+		audioTrack, audioTrackErr := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeOpus}, "audio", "pion") // nolint
 		if audioTrackErr != nil {
 			panic(audioTrackErr)
 		}
@@ -211,9 +211,10 @@ func main() { //nolint
 		fmt.Printf("Peer Connection State has changed: %s\n", s.String())
 
 		if s == webrtc.PeerConnectionStateFailed {
-			// Wait until PeerConnection has had no network activity for 30 seconds or another failure. It may be reconnected using an ICE Restart.
-			// Use webrtc.PeerConnectionStateDisconnected if you are interested in detecting faster timeout.
-			// Note that the PeerConnection may come back from PeerConnectionStateDisconnected.
+			// Wait until PeerConnection has had no network activity for 30 seconds or another failure.
+			// It may be reconnected using an ICE Restart. Use webrtc.PeerConnectionStateDisconnected
+			// if you are interested in detecting faster timeout. Note that the PeerConnection may come
+			// back from PeerConnectionStateDisconnected.
 			fmt.Println("Peer Connection has gone to failed exiting")
 			os.Exit(0)
 		}
@@ -254,7 +255,7 @@ func main() { //nolint
 	select {}
 }
 
-// Read from stdin until we get a newline
+// Read from stdin until we get a newline.
 func readUntilNewline() (in string) {
 	var err error
 
@@ -271,10 +272,11 @@ func readUntilNewline() (in string) {
 	}
 
 	fmt.Println("")
+
 	return
 }
 
-// JSON encode + base64 a SessionDescription
+// JSON encode + base64 a SessionDescription.
 func encode(obj *webrtc.SessionDescription) string {
 	b, err := json.Marshal(obj)
 	if err != nil {
@@ -284,7 +286,7 @@ func encode(obj *webrtc.SessionDescription) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-// Decode a base64 and unmarshal JSON into a SessionDescription
+// Decode a base64 and unmarshal JSON into a SessionDescription.
 func decode(in string, obj *webrtc.SessionDescription) {
 	b, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {
