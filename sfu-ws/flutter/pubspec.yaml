@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_webrtc: ^0.12.0
+  flutter_webrtc: ^0.14.0
   web_socket_channel: ^3.0.0
 
 dev_dependencies:
