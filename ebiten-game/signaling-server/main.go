@@ -17,61 +17,69 @@ import (
 	"github.com/rs/cors"
 )
 
-type ClientConnection struct {
+type clientConnection struct {
 	IsHost bool
 	Offer  *webrtc.SessionDescription
 	Answer *webrtc.SessionDescription
 }
 
-type Lobby struct {
+type lobby struct {
 	mutex sync.Mutex
 	// host is first client in lobby.Clients
-	Clients []ClientConnection
+	Clients []clientConnection
 }
 
-var lobby_list = map[string]*Lobby{}
+var lobbyList = map[string]*lobby{}
 
-type PlayerData struct {
+type playerData struct {
 	// player id is index in lobby.Clients
 	Id int
 }
 
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var (
+	errLobbyNotFound  = errors.New("lobby not found")
+	errPlayerNotFound = errors.New("player not found")
+)
 
-func generateNewLobbyId() string {
+func generateNewLobbyID() string {
+	letters := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
 	// have random size for lobby id
 	size := 6
 	buffer := make([]rune, size)
 	for i := range buffer {
-		buffer[i] = letters[rand.Intn(len(letters))]
+		buffer[i] = letters[rand.Intn(len(letters))] //nolint:gosec
 	}
 	id := string(buffer)
 
 	// check if room id is already in lobby_list
-	_, ok := lobby_list[id]
+	_, ok := lobbyList[id]
 	if ok {
 		// if it already exists, call function again
-		return generateNewLobbyId()
+		return generateNewLobbyID()
 	}
+
 	return id
 }
 
 func makeLobby() string {
-	lobby := Lobby{}
-	lobby.Clients = []ClientConnection{}
+	lobby := lobby{}
+	lobby.Clients = []clientConnection{}
 	// first client is always host
-	lobby_id := generateNewLobbyId()
-	lobby_list[lobby_id] = &lobby
-	return lobby_id
+	lobbyID := generateNewLobbyID()
+	lobbyList[lobbyID] = &lobby
+
+	return lobbyID
 }
 
-func getLobbyIds() []string {
-	lobbies := make([]string, len(lobby_list))
+func getLobbyIDs() []string {
+	lobbies := make([]string, len(lobbyList))
 	i := 0
-	for k := range lobby_list {
+	for k := range lobbyList {
 		lobbies[i] = k
 		i++
 	}
+
 	return lobbies
 }
 
@@ -93,167 +101,235 @@ func main() {
 	// all origins accepted with simple methods (GET, POST). See
 	// documentation below for more options.
 	handler := cors.Default().Handler(mux)
-	http.ListenAndServe(":3000", handler)
+	err := http.ListenAndServe(":3000", handler) //nolint:gosec
+	if err != nil {
+		fmt.Printf("Failed to start server: %s", err)
+
+		return
+	}
 }
 
-func lobbyHost(w http.ResponseWriter, r *http.Request) {
-	lobby_id := makeLobby()
-	lobby := lobby_list[lobby_id]
+func lobbyHost(res http.ResponseWriter, _ *http.Request) {
+	lobbyID := makeLobby()
+	lobby := lobbyList[lobbyID]
 	lobby.mutex.Lock()
 	defer lobby.mutex.Unlock()
 	// host is first client in lobby.Clients
-	lobby.Clients = append(lobby.Clients, ClientConnection{IsHost: true})
+	lobby.Clients = append(lobby.Clients, clientConnection{IsHost: true})
 	// return lobby id to host
-	io.Writer.Write(w, []byte(lobby_id))
+	_, err := io.Writer.Write(res, []byte(lobbyID))
+	if err != nil {
+		fmt.Printf("Failed to write lobby_id: %s", err)
+
+		return
+	}
 	fmt.Println("lobbyHost")
-	fmt.Printf("lobby added: %s\n", lobby_id)
+	fmt.Printf("lobby added: %s\n", lobbyID)
 	// print all lobbies
-	fmt.Printf("lobby_list:%s\n", getLobbyIds())
+	fmt.Printf("lobby_list:%s\n", getLobbyIDs())
 }
 
-// call "/lobby?id={lobby_id}" to connect to lobby
-func lobbyJoin(w http.ResponseWriter, r *http.Request) {
+// call "/lobby?id={lobby_id}" to connect to lobby.
+func lobbyJoin(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("lobbyJoin")
-	w.Header().Set("Content-Type", "application/json")
+	res.Header().Set("Content-Type", "application/json")
 	// https://freshman.tech/snippets/go/extract-url-query-params/
 	// get lobby id from query params
-	lobby_id := r.URL.Query().Get("id")
-	fmt.Printf("lobby_id: %s\n", lobby_id)
+	lobbyID := req.URL.Query().Get("id")
+	fmt.Printf("lobby_id: %s\n", lobbyID)
 
 	// only continue with connection if lobby exists
-	lobby, ok := lobby_list[lobby_id]
+	lobby, ok := lobbyList[lobbyID]
 	// If the key doesn't exist, return error
 	if !ok {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("404 - Lobby not found"))
+		res.WriteHeader(http.StatusNotFound)
+		_, err := res.Write([]byte("404 - Lobby not found"))
+		if err != nil {
+			fmt.Printf("Failed to write lobby_not_found: %s", err)
+
+			return
+		}
+
 		return
 	}
 	lobby.mutex.Lock()
 	defer lobby.mutex.Unlock()
 
-	body, err := io.ReadAll(r.Body)
+	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		fmt.Printf("Failed to read body: %s", err)
+
 		return
 	}
 
 	fmt.Printf("body: %s", body)
 
 	// send player id once generated
-	lobby.Clients = append(lobby.Clients, ClientConnection{IsHost: false})
+	lobby.Clients = append(lobby.Clients, clientConnection{IsHost: false})
 	// player id is index in lobby.Clients
-	player_id := len(lobby.Clients) - 1
-	fmt.Printf("player_id: %d\n", player_id)
+	playerID := len(lobby.Clients) - 1
+	fmt.Printf("player_id: %d\n", playerID)
 	fmt.Println(lobby.Clients)
-	player_data := PlayerData{Id: player_id}
-	jsonValue, _ := json.Marshal(player_data)
-	io.Writer.Write(w, jsonValue)
+	playerData := playerData{Id: playerID}
+
+	jsonValue, err := json.Marshal(playerData)
+	if err != nil {
+		fmt.Printf("Failed to marshal player_data: %s", err)
+
+		return
+	}
+
+	_, err = io.Writer.Write(res, jsonValue)
+	if err != nil {
+		fmt.Printf("Failed to write player_data: %s", err)
+
+		return
+	}
 }
 
-func lobbyDelete(w http.ResponseWriter, r *http.Request) {
+func lobbyDelete(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("lobbyDelete")
-	w.Header().Set("Content-Type", "application/json")
+	res.Header().Set("Content-Type", "application/json")
 	// https://freshman.tech/snippets/go/extract-url-query-params/
 	// get lobby id from query params
-	lobby_id := r.URL.Query().Get("id")
-	fmt.Printf("lobby_id: %s\n", lobby_id)
+	lobbyID := req.URL.Query().Get("id")
+	fmt.Printf("lobby_id: %s\n", lobbyID)
 	// delete lobby
-	delete(lobby_list, lobby_id)
-	fmt.Printf("lobby_list:%s\n", getLobbyIds())
+	delete(lobbyList, lobbyID)
+	fmt.Printf("lobby_list:%s\n", getLobbyIDs())
 }
 
-// return players who haven't been registered yet by the host
-func lobbyUnregisteredPlayers(w http.ResponseWriter, r *http.Request) {
+// return players who haven't been registered yet by the host.
+func lobbyUnregisteredPlayers(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("UnregisteredPlayers")
-	w.Header().Set("Content-Type", "application/json")
+	res.Header().Set("Content-Type", "application/json")
 	// https://freshman.tech/snippets/go/extract-url-query-params/
 	// get lobby id from query params
-	lobby_id := r.URL.Query().Get("id")
-	lobby := lobby_list[lobby_id]
+	lobbyID := req.URL.Query().Get("id")
+	lobby := lobbyList[lobbyID]
 	lobby.mutex.Lock()
 	defer lobby.mutex.Unlock()
 
 	// get all players who haven't been registered yet
-	player_ids := []int{}
+	playerIDs := []int{}
 	for i, client := range lobby.Clients {
 		if !client.IsHost && client.Answer == nil {
-			player_ids = append(player_ids, i)
+			playerIDs = append(playerIDs, i)
 		}
 	}
 
 	// return lobby id to host
-	jsonValue, _ := json.Marshal(player_ids)
-	io.Writer.Write(w, jsonValue)
-	fmt.Printf("player_ids %v\n", player_ids)
+	jsonValue, err := json.Marshal(playerIDs)
+	if err != nil {
+		fmt.Printf("Failed to marshal player_ids: %s", err)
+
+		return
+	}
+
+	_, err = io.Writer.Write(res, jsonValue)
+	if err != nil {
+		fmt.Printf("Failed to write player_ids: %s", err)
+
+		return
+	}
+
+	fmt.Printf("player_ids %v\n", playerIDs)
 }
 
-func validatePlayer(w http.ResponseWriter, r *http.Request) (*Lobby, int, error) {
+func validatePlayer(res http.ResponseWriter, req *http.Request) (*lobby, int, error) {
 	fmt.Println("validatePlayer")
-	lobby_id := r.URL.Query().Get("lobby_id")
-	//fmt.Printf("lobby_id: %s\n", lobby_id)
+	lobbyID := req.URL.Query().Get("lobby_id")
 
 	// only continue with connection if lobby exists
-	lobby, ok := lobby_list[lobby_id]
+	lobby, ok := lobbyList[lobbyID]
 	lobby.mutex.Lock()
 	defer lobby.mutex.Unlock()
 	// If the key doesn't exist, return error
 	if !ok {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("404 - Lobby not found"))
-		return nil, 0, errors.New("Lobby not found")
+		res.WriteHeader(http.StatusNotFound)
+		_, err := res.Write([]byte("404 - Lobby not found"))
+		if err != nil {
+			fmt.Printf("Failed to write lobby_not_found: %s", err)
+
+			return nil, 0, errLobbyNotFound
+		}
+
+		return nil, 0, errLobbyNotFound
 	}
 
-	player_id_string := r.URL.Query().Get("player_id")
-	player_id, err := strconv.Atoi(player_id_string)
+	playerIDString := req.URL.Query().Get("player_id")
+	playerID, err := strconv.Atoi(playerIDString)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("404 - Player not found"))
-		return nil, 0, errors.New("Player not found")
+		res.WriteHeader(http.StatusNotFound)
+		_, err = res.Write([]byte("404 - Player not found"))
+		if err != nil {
+			fmt.Printf("Failed to write player_not_found: %s", err)
+
+			return nil, 0, errPlayerNotFound
+		}
+
+		return nil, 0, errPlayerNotFound
 	}
-	//fmt.Printf("player_id: %d\n", player_id)
-	//fmt.Printf("length of lobby.Clients: %d\n", len(lobby_list[lobby_id].Clients))
-	//fmt.Println(lobby.Clients)
+
 	// check if player actually exists
-	if player_id < 0 || player_id >= len(lobby.Clients) {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("404 - Player not found"))
-		return nil, 0, errors.New("Player not found")
+	if playerID < 0 || playerID >= len(lobby.Clients) {
+		res.WriteHeader(http.StatusNotFound)
+		_, err = res.Write([]byte("404 - Player not found"))
+		if err != nil {
+			fmt.Printf("Failed to write player_not_found: %s", err)
+
+			return nil, 0, errPlayerNotFound
+		}
+
+		return nil, 0, errPlayerNotFound
 	}
-	return lobby, player_id, nil
+
+	return lobby, playerID, nil
 }
 
-func offerGet(w http.ResponseWriter, r *http.Request) {
+func offerGet(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("offerGet")
-	w.Header().Set("Content-Type", "application/json")
+	res.Header().Set("Content-Type", "application/json")
 
-	lobby, player_id, err := validatePlayer(w, r)
+	lobby, playerID, err := validatePlayer(res, req)
 	if err != nil {
 		return
 	}
 	lobby.mutex.Lock()
 	defer lobby.mutex.Unlock()
 
-	offer := lobby.Clients[player_id].Offer
+	offer := lobby.Clients[playerID].Offer
 	if offer == nil {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("404 - Offer not found"))
+		res.WriteHeader(http.StatusNotFound)
+		_, err = res.Write([]byte("404 - Offer not found"))
+		if err != nil {
+			fmt.Printf("Failed to write offer: %s", err)
+
+			return
+		}
+
 		return
 	}
 
-	jsonValue, _ := json.Marshal(offer)
+	jsonValue, err := json.Marshal(offer)
+	if err != nil {
+		fmt.Printf("Failed to marshal offer: %s", err)
 
-	io.Writer.Write(w, jsonValue)
+		return
+	}
 
-	/*
-		fmt.Println("offerGet")
-		fmt.Println(jsonValue)
-	*/
+	_, err = io.Writer.Write(res, jsonValue)
+	if err != nil {
+		fmt.Printf("Failed to write offer: %s", err)
+
+		return
+	}
 }
 
-func offerPost(w http.ResponseWriter, r *http.Request) {
+func offerPost(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("offerPost")
 
-	lobby, player_id, err := validatePlayer(w, r)
+	lobby, playerID, err := validatePlayer(res, req)
 	if err != nil {
 		return
 	}
@@ -264,21 +340,22 @@ func offerPost(w http.ResponseWriter, r *http.Request) {
 
 	// Try to decode the request body into the struct. If there is an error,
 	// respond to the client with the error message and a 400 status code.
-	err = json.NewDecoder(r.Body).Decode(&sdp)
+	err = json.NewDecoder(req.Body).Decode(&sdp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(res, err.Error(), http.StatusBadRequest)
+
 		return
 	}
 
-	lobby.Clients[player_id].Offer = &sdp
+	lobby.Clients[playerID].Offer = &sdp
 	fmt.Printf("Lobby: %+v\n", lobby.Clients)
 }
 
-func answerGet(w http.ResponseWriter, r *http.Request) {
+func answerGet(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("answerGet")
-	w.Header().Set("Content-Type", "application/json")
+	res.Header().Set("Content-Type", "application/json")
 
-	lobby, player_id, err := validatePlayer(w, r)
+	lobby, playerID, err := validatePlayer(res, req)
 	if err != nil {
 		return
 	}
@@ -286,23 +363,39 @@ func answerGet(w http.ResponseWriter, r *http.Request) {
 	lobby.mutex.Lock()
 	defer lobby.mutex.Unlock()
 
-	answer := lobby.Clients[player_id].Answer
+	answer := lobby.Clients[playerID].Answer
 	if answer == nil {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("404 - Answer not found"))
+		res.WriteHeader(http.StatusNotFound)
+		_, err = res.Write([]byte("404 - Answer not found"))
+		if err != nil {
+			fmt.Printf("Failed to write answer: %s", err)
+
+			return
+		}
+
 		return
 	}
 
-	jsonValue, _ := json.Marshal(answer)
+	jsonValue, err := json.Marshal(answer)
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
 
-	io.Writer.Write(w, jsonValue)
+		return
+	}
+
+	_, err = io.Writer.Write(res, jsonValue)
+	if err != nil {
+		fmt.Printf("Failed to write answer: %s", err)
+
+		return
+	}
 }
 
-func answerPost(w http.ResponseWriter, r *http.Request) {
+func answerPost(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("answerPost")
-	w.Header().Set("Content-Type", "application/json")
+	res.Header().Set("Content-Type", "application/json")
 
-	lobby, player_id, err := validatePlayer(w, r)
+	lobby, playerID, err := validatePlayer(res, req)
 	if err != nil {
 		return
 	}
@@ -314,17 +407,17 @@ func answerPost(w http.ResponseWriter, r *http.Request) {
 
 	// Try to decode the request body into the struct. If there is an error,
 	// respond to the client with the error message and a 400 status code.
-	err = json.NewDecoder(r.Body).Decode(&sdp)
+	err = json.NewDecoder(req.Body).Decode(&sdp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(res, err.Error(), http.StatusBadRequest)
+
 		return
 	}
 
-	lobby.Clients[player_id].Answer = &sdp
+	lobby.Clients[playerID].Answer = &sdp
 	fmt.Printf("Lobby: %+v\n", lobby.Clients)
 }
 
-func ice(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement the ice handler
+func ice(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 }

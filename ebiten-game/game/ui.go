@@ -10,7 +10,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func (g *Game) writeLog(text string) {
+func (g *game) writeLog(text string) {
 	if len(g.logBuf) > 0 {
 		g.logBuf += "\n"
 	}
@@ -18,7 +18,7 @@ func (g *Game) writeLog(text string) {
 	g.logUpdated = true
 }
 
-func (g *Game) logWindow(ctx *debugui.Context) {
+func (g *game) logWindow(ctx *debugui.Context) {
 	ctx.Window("Log Window", image.Rect(350, 40, 650, 290), func(layout debugui.ContainerLayout) {
 		ctx.SetGridLayout([]int{-1}, []int{-1, 0})
 		ctx.Panel(func(layout debugui.ContainerLayout) {
@@ -30,17 +30,17 @@ func (g *Game) logWindow(ctx *debugui.Context) {
 			}
 		})
 		ctx.GridCell(func(bounds image.Rectangle) {
-			submit_open := func() {
+			submitOpen := func() {
 				g.isHost = true
 				g.startConnection()
 			}
 
-			submit_join := func() {
+			submitJoin := func() {
 				g.isHost = false
 				if g.logSubmitBuf == "" {
 					return
 				}
-				g.lobby_id = g.logSubmitBuf
+				g.lobbyID = g.logSubmitBuf
 				g.logSubmitBuf = ""
 				g.startConnection()
 			}
@@ -49,15 +49,15 @@ func (g *Game) logWindow(ctx *debugui.Context) {
 			ctx.Text("Lobby ID:")
 			ctx.TextField(&g.logSubmitBuf).On(func() {
 				if ebiten.IsKeyPressed(ebiten.KeyEnter) {
-					submit_join()
+					submitJoin()
 					ctx.SetTextFieldValue(g.logSubmitBuf)
 				}
 			})
 			ctx.Button("Open").On(func() {
-				submit_open()
+				submitOpen()
 			})
 			ctx.Button("Join").On(func() {
-				submit_join()
+				submitJoin()
 			})
 		})
 	})
