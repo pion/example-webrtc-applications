@@ -21,8 +21,9 @@ require (
 	github.com/pion/rtp v1.8.15
 	github.com/pion/sdp/v3 v3.0.11
 	github.com/pion/webrtc/v4 v4.1.0
+	github.com/rs/cors v1.11.1
 	gocv.io/x/gocv v0.40.0
-	golang.org/x/image v0.23.0
+	golang.org/x/image v0.25.0
 	golang.org/x/net v0.35.0
 )
 
@@ -56,6 +57,8 @@ require (
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b // indirect
 	github.com/wlynxg/anet v0.0.5 // indirect
 	golang.org/x/crypto v0.33.0 // indirect
-	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
-	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0 // indirect
+	golang.org/x/sync v0.12.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 )
