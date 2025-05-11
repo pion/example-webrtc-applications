@@ -1,0 +1,21 @@
+<!--
+    SPDX-FileCopyrightText: 2025 The Pion community <https://pion.ly>
+    SPDX-License-Identifier: MIT
+-->
+
+<!DOCTYPE html>
+<script src="wasm_exec.js"></script>
+<script>
+// Polyfill
+if (!WebAssembly.instantiateStreaming) {
+    WebAssembly.instantiateStreaming = async (resp, importObject) => {
+        const source = await (await resp).arrayBuffer();
+        return await WebAssembly.instantiate(source, importObject);
+    };
+}
+
+const go = new Go();
+WebAssembly.instantiateStreaming(fetch("gopher-combat.wasm"), go.importObject).then(result => {
+    go.run(result.instance);
+});
+</script>
