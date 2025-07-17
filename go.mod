@@ -16,7 +16,7 @@ require (
 	github.com/pion/logging v0.2.4
 	github.com/pion/rtcp v1.2.15
 	github.com/pion/rtp v1.8.20
-	github.com/pion/sdp/v3 v3.0.14
+	github.com/pion/sdp/v3 v3.0.15
 	github.com/pion/webrtc/v4 v4.1.3
 	gocv.io/x/gocv v0.40.0
 	golang.org/x/image v0.23.0
