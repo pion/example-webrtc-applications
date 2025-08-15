@@ -17,10 +17,10 @@ require (
 	github.com/pion/interceptor v0.1.40
 	github.com/pion/logging v0.2.4
 	github.com/pion/rtcp v1.2.15
-	github.com/pion/rtp v1.8.19
-	github.com/pion/sdp/v3 v3.0.14
-	github.com/pion/webrtc/v4 v4.1.2
-	gocv.io/x/gocv v0.40.0
+	github.com/pion/rtp v1.8.21
+	github.com/pion/sdp/v3 v3.0.15
+	github.com/pion/webrtc/v4 v4.1.3
+	gocv.io/x/gocv v0.42.0
 	golang.org/x/image v0.23.0
 	golang.org/x/net v0.35.0
 )
@@ -46,7 +46,7 @@ require (
 	github.com/pion/mdns/v2 v2.0.7 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
 	github.com/pion/sctp v1.8.39 // indirect
-	github.com/pion/srtp/v3 v3.0.5 // indirect
+	github.com/pion/srtp/v3 v3.0.6 // indirect
 	github.com/pion/stun/v3 v3.0.0 // indirect
 	github.com/pion/transport/v3 v3.0.7 // indirect
 	github.com/pion/turn/v4 v4.0.0 // indirect
