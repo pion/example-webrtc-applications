@@ -80,7 +80,7 @@ func main() { // nolint
 	go watchHandle(handle)
 
 	// Get streaming list
-	_, err = handle.Request(map[string]interface{}{
+	_, err = handle.Request(map[string]any{
 		"request": "list",
 	})
 	if err != nil {
@@ -88,7 +88,7 @@ func main() { // nolint
 	}
 
 	// Watch the second stream
-	msg, err := handle.Message(map[string]interface{}{
+	msg, err := handle.Message(map[string]any{
 		"request": "watch",
 		"id":      1,
 	}, nil)
@@ -177,9 +177,9 @@ func main() { // nolint
 		<-gatherComplete
 
 		// now we start
-		_, err = handle.Message(map[string]interface{}{
+		_, err = handle.Message(map[string]any{
 			"request": "start",
-		}, map[string]interface{}{
+		}, map[string]any{
 			"type":    "answer",
 			"sdp":     peerConnection.LocalDescription().SDP,
 			"trickle": false,

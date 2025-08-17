@@ -220,11 +220,7 @@ func sendMkv(mkvFile *os.File, audioTrack, videoTrack *webrtc.TrackLocalStaticSa
 					annexBSlice = append(annexBSlice, spsAndPPS...)
 				}
 
-				for {
-					if len(block.Data[0]) == 0 {
-						break
-					}
-
+				for len(block.Data[0]) > 0 {
 					naluSize := binary.BigEndian.Uint32(block.Data[0])
 					block.Data[0] = block.Data[0][4:]
 

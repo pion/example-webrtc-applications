@@ -122,7 +122,7 @@ func main() { // nolint
 
 	go watchHandle(handle)
 
-	_, err = handle.Message(map[string]interface{}{
+	_, err = handle.Message(map[string]any{
 		"request": "join",
 		"ptype":   "publisher",
 		"room":    1234,
@@ -132,12 +132,12 @@ func main() { // nolint
 		panic(err)
 	}
 
-	msg, err := handle.Message(map[string]interface{}{
+	msg, err := handle.Message(map[string]any{
 		"request": "publish",
 		"audio":   true,
 		"video":   true,
 		"data":    false,
-	}, map[string]interface{}{
+	}, map[string]any{
 		"type":    "offer",
 		"sdp":     peerConnection.LocalDescription().SDP,
 		"trickle": false,

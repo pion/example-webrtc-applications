@@ -413,7 +413,7 @@ type threadSafeWriter struct {
 	sync.Mutex
 }
 
-func (t *threadSafeWriter) WriteJSON(v interface{}) error {
+func (t *threadSafeWriter) WriteJSON(v any) error {
 	t.Lock()
 	defer t.Unlock()
 
