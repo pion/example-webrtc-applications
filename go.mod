@@ -1,6 +1,6 @@
 module github.com/pion/example-webrtc-applications/v3
 
-go 1.22
+go 1.23.0
 
 toolchain go1.23.6
 
@@ -19,7 +19,7 @@ require (
 	github.com/pion/sdp/v3 v3.0.15
 	github.com/pion/webrtc/v4 v4.1.4
 	gocv.io/x/gocv v0.42.0
-	golang.org/x/image v0.23.0
+	golang.org/x/image v0.30.0
 	golang.org/x/net v0.35.0
 )
 
