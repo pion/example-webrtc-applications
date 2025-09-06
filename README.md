@@ -21,6 +21,7 @@ Have any questions? Join [the Slack channel](https://pion.ly/slack) to follow de
 * [C DataChannels](c-data-channels) Example c-data-channels shows how you can use Pion WebRTC from a C program
 * [Snapshot](snapshot) Example snapshot shows how you can convert incoming video frames to jpeg and serve them via HTTP.
 * [SIP to WebRTC](sip-to-webrtc) Example sip-to-webrtc shows how to bridge WebRTC and SIP traffic.
+* [GoCV to WebRTC](gocv-to-webrtc): Example gocv-to-webrtc captures webcam and performs motion detection in Go, it then sends results to view in the browser.
 
 
 ### Usage

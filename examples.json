@@ -70,5 +70,11 @@
 		"link": "sip-to-webrtc",
 		"description": "sip-to-webrtc demonstrates how to bridge WebRTC and SIP traffic using Pion.",
 		"type": "browser"
+	},
+	{
+		"title": "GoCV to WebRTC",
+		"link": "gocv-to-webrtc",
+		"description": "gocv-to-webrtc captures webcam and performs motion detection in Go, it then sends results to view in the browser.",
+		"type": "browser"
 	}
 ]
