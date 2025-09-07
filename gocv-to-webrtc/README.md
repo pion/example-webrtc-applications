@@ -11,6 +11,8 @@ This is implemented using the following pieces.
 - **Stream**: Uses [Pion WebRTC](https://github.com/pion/webrtc) to send encoded video frames to a browser client.
 - **Frontend**: Minimal HTML/JS page that negotiates WebRTC Offer/Answer and displays incoming video.
 
+<video src="https://github.com/user-attachments/assets/edee46c5-079a-46ad-94e1-5b9ab1262756" autoplay loop muted> </video>
+
 ## Instructions
 ### Install Dependencies
 This example requires you have GoCV and ffmpeg installed, these are the supported platforms
