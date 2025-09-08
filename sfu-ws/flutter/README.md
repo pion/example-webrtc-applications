@@ -31,7 +31,7 @@ Add the following to the bottom of the `./ios/Podfile`:
 
 ## Android
 
-Add the following entry to your Android Manifest file, located in `./android/app/src/main/AndroidManifest.xml:
+Add the following entry to your Android Manifest file, located in `./android/app/src/main/AndroidManifest.xml`:
 
 ```xml
 <uses-feature android:name="android.hardware.camera" />
@@ -47,7 +47,7 @@ Add the following entry to your Android Manifest file, located in `./android/app
 </application>
 ```
 
-Edit`android/app/build.gradle`, modify minSdkVersion to 18
+Edit `android/app/build.gradle`, modify minSdkVersion to 18
 
 ```gradle
     defaultConfig {

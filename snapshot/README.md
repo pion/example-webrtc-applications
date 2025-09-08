@@ -3,7 +3,7 @@ snapshot shows how you can convert incoming video frames to jpeg and serve them 
 
 ## Instructions
 
-### Download snapshow
+### Download snapshot
 This example requires you to clone the repo since it is serving static HTML.
 
 ```

@@ -5,7 +5,7 @@
 The following are a collection of example applications built by Pion users.  These applications show real world usage of Pion,
 and should serve as a good starting point for your next project. For more minimal examples check out [examples](https://github.com/pion/webrtc/tree/master/examples) in the Pion WebRTC repository
 
-If you have a request please make an issue, we also love contributions more examples are always welcome.
+If you have a request please make an issue, we also love contributions more examples, are always welcome.
 
 Have any questions? Join [the Slack channel](https://pion.ly/slack) to follow development and speak with the maintainers.
 
@@ -22,7 +22,7 @@ Have any questions? Join [the Slack channel](https://pion.ly/slack) to follow de
 * [Snapshot](snapshot) Example snapshot shows how you can convert incoming video frames to jpeg and serve them via HTTP.
 * [SIP to WebRTC](sip-to-webrtc) Example sip-to-webrtc shows how to bridge WebRTC and SIP traffic.
 * [GoCV to WebRTC](gocv-to-webrtc): Example gocv-to-webrtc captures webcam and performs motion detection in Go, it then sends results to view in the browser.
-* [Ebiten Gmae](ebiten-game): Example ebiten-game a cross-platform WebRTC game demo using [Ebitengine](https://ebitengine.org/).
+* [Ebiten Game](ebiten-game): Example ebiten-game a cross-platform WebRTC game demo using [Ebitengine](https://ebitengine.org/).
 
 ### Usage
 We've made it easy to run the browser based examples on your local machine.

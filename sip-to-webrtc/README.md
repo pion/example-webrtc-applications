@@ -1,5 +1,5 @@
 # sip-to-webrtc
-SIP is an example of accepting inbounding SIP traffic (Invites) and bridging it with WebRTC.
+SIP is an example of accepting inbound SIP traffic (Invites) and bridging it with WebRTC.
 This is the most common way to connect phone calls with your WebRTC application.
 This is possible because of the excellent [emiago/sipgo](https://github.com/emiago/sipgo) library.
 

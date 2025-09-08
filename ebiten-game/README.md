@@ -4,7 +4,7 @@ This is a pretty nifty demo on how to use [ebitengine](https://ebitengine.org/) 
 
 You can have a client running on the browser and one running on a desktop and they can talk to each other, provided they are connected to the same signaling server
 
-Requires the signaling server to be running. To do go, just go inside the folder /signaling-server and do ``go run .``
+Requires the signaling server to be running. To do so, just go inside the folder /signaling-server and do ``go run .``
 
 you can then run the game by going in /game and doing either
 

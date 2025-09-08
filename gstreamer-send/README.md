@@ -39,7 +39,7 @@ Congrats, you have used Pion WebRTC! Now start building something cool
 ## Customizing your video or audio
 `gstreamer-send` also accepts the command line arguments `-video-src` and `-audio-src` allowing you to provide custom inputs.
 
-When prototyping with GStreamer it is highly recommended that you enable debug output, this is done by setting the `GST_DEBUG` enviroment variable.
+When prototyping with GStreamer it is highly recommended that you enable debug output, this is done by setting the `GST_DEBUG` environment variable.
 You can read about that [here](https://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-running.html) a good default value is `GST_DEBUG=*:3`
 
 You can also prototype a GStreamer pipeline by using `gst-launch-1.0` to see how things look before trying them with `gstreamer-send` for the examples below you
