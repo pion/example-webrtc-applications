@@ -22,7 +22,7 @@ Have any questions? Join [the Slack channel](https://pion.ly/slack) to follow de
 * [Snapshot](snapshot) Example snapshot shows how you can convert incoming video frames to jpeg and serve them via HTTP.
 * [SIP to WebRTC](sip-to-webrtc) Example sip-to-webrtc shows how to bridge WebRTC and SIP traffic.
 * [GoCV to WebRTC](gocv-to-webrtc): Example gocv-to-webrtc captures webcam and performs motion detection in Go, it then sends results to view in the browser.
-
+* [Ebiten Gmae](ebiten-game): Example ebiten-game a cross-platform WebRTC game demo using [Ebitengine](https://ebitengine.org/).
 
 ### Usage
 We've made it easy to run the browser based examples on your local machine.

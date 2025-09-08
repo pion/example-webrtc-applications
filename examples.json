@@ -76,5 +76,11 @@
 		"link": "gocv-to-webrtc",
 		"description": "gocv-to-webrtc captures webcam and performs motion detection in Go, it then sends results to view in the browser.",
 		"type": "browser"
+	},
+	{
+		"title": "Ebiten Game",
+		"link": "ebiten-game",
+		"description": "ebiten-game is a game demo using Ebiten and Pion to make a cross-platform game.",
+		"type": "browser"
 	}
 ]
