@@ -53,7 +53,7 @@ func (g *game) logWindow(ctx *debugui.Context) {
 					ctx.SetTextFieldValue(g.logSubmitBuf)
 				}
 			})
-			ctx.Button("Open").On(func() {
+			ctx.Button("Host Game").On(func() {
 				submitOpen()
 			})
 			ctx.Button("Join").On(func() {

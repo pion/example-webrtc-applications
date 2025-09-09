@@ -15,7 +15,7 @@ if (!WebAssembly.instantiateStreaming) {
 }
 
 const go = new Go();
-WebAssembly.instantiateStreaming(fetch("gopher-combat.wasm"), go.importObject).then(result => {
+WebAssembly.instantiateStreaming(fetch("game.wasm"), go.importObject).then(result => {
     go.run(result.instance);
 });
 </script>
