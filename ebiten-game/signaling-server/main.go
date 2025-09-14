@@ -4,15 +4,20 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
 	"sync"
+	"time"
 
+	"github.com/coder/websocket"
+	"github.com/coder/websocket/wsjson"
 	"github.com/pion/webrtc/v4"
 	"github.com/rs/cors"
 )
@@ -112,6 +117,7 @@ func main() {
 			fmt.Printf("Failed to write response: %s", err)
 		}
 	})
+	mux.HandleFunc("/lobbies", db.lobbies)
 
 	fmt.Println("Server started on port 3000")
 	// cors.Default() setup the middleware with default options being
@@ -124,6 +130,29 @@ func main() {
 
 		return
 	}
+}
+
+func (db *lobbyDatabase) lobbies(w http.ResponseWriter, r *http.Request) {
+	c, err := websocket.Accept(w, r, nil)
+	if err != nil {
+		println("Failed to accept websocket:", err.Error())
+	}
+	defer c.CloseNow()
+
+	// Set the context as needed. Use of r.Context() is not recommended
+	// to avoid surprising behavior (see http.Hijacker).
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+	var v any
+	err = wsjson.Read(ctx, c, &v)
+	if err != nil {
+		println("Failed to read websocket message:", err.Error())
+	}
+
+	log.Printf("received: %v", v)
+
+	c.Close(websocket.StatusNormalClosure, "")
 }
 
 func (db *lobbyDatabase) lobbyHost(res http.ResponseWriter, _ *http.Request) {

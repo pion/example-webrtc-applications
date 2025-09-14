@@ -19,6 +19,8 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 
+	"github.com/coder/websocket"
+	"github.com/coder/websocket/wsjson"
 	"github.com/ebitengine/debugui"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -299,7 +301,26 @@ func (g *game) onHostReceivedDataChannel(d *webrtc.DataChannel) {
 	})
 }
 
+func (g *game) openWebsocket() {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	c, _, err := websocket.Dial(ctx, fmt.Sprintf("ws://%s:%d/lobbies", g.signalingIP, g.port), nil)
+	if err != nil {
+		println("Failed to connect to websocket:", err.Error())
+	}
+	defer c.CloseNow()
+
+	err = wsjson.Write(ctx, c, "open websocket")
+	if err != nil {
+		println("Failed to write websocket message:", err.Error())
+	}
+
+	c.Close(websocket.StatusNormalClosure, "")
+}
+
 func (g *game) startHost() {
+	g.openWebsocket()
 	g.writeLog("Hosting a lobby")
 	// Host creates lobby.
 	req, err := http.NewRequestWithContext(context.Background(), "GET", g.getSignalingURL()+"/lobby/host", nil)
