@@ -32,7 +32,7 @@ func (g *game) logWindow(ctx *debugui.Context) {
 		ctx.GridCell(func(bounds image.Rectangle) {
 			submitOpen := func() {
 				g.isHost = true
-				g.startConnection()
+				g.openWebsocket()
 			}
 
 			submitJoin := func() {

@@ -305,22 +305,26 @@ func (g *game) openWebsocket() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	c, _, err := websocket.Dial(ctx, fmt.Sprintf("ws://%s:%d/lobbies", g.signalingIP, g.port), nil)
+	c, _, err := websocket.Dial(ctx, fmt.Sprintf("ws://%s:%d/host", g.signalingIP, g.port), nil)
 	if err != nil {
 		println("Failed to connect to websocket:", err.Error())
 	}
 	defer c.CloseNow()
 
-	err = wsjson.Write(ctx, c, "open websocket")
-	if err != nil {
-		println("Failed to write websocket message:", err.Error())
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		err = wsjson.Write(ctx, c, fmt.Sprintf("ping from client at %s", time.Now().String()))
+		if err != nil {
+			println("Failed to write websocket message:", err.Error())
+		}
 	}
 
 	c.Close(websocket.StatusNormalClosure, "")
 }
 
 func (g *game) startHost() {
-	g.openWebsocket()
 	g.writeLog("Hosting a lobby")
 	// Host creates lobby.
 	req, err := http.NewRequestWithContext(context.Background(), "GET", g.getSignalingURL()+"/lobby/host", nil)
