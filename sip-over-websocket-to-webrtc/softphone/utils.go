@@ -23,9 +23,9 @@ type SIPInfoResponse struct {
 }
 
 func generateResponse(username, password, realm, method, uri, nonce string) string { // nolint
-	ha1 := md5.Sum([]byte(fmt.Sprintf("%s:%s:%s", username, realm, password)))                                                 //nolint
-	ha2 := md5.Sum([]byte(fmt.Sprintf("%s:%s", method, uri)))                                                                  //nolint
-	response := md5.Sum([]byte(fmt.Sprintf("%x:%s:00000001:%s:auth:%x", ha1, nonce, "0e6758e1adfccffbd0ad9ffdde3ef655", ha2))) //nolint
+	ha1 := md5.Sum(fmt.Appendf(nil, "%s:%s:%s", username, realm, password))                                                 //nolint
+	ha2 := md5.Sum(fmt.Appendf(nil, "%s:%s", method, uri))                                                                  //nolint
+	response := md5.Sum(fmt.Appendf(nil, "%x:%s:00000001:%s:auth:%x", ha1, nonce, "0e6758e1adfccffbd0ad9ffdde3ef655", ha2)) //nolint
 
 	return fmt.Sprintf("%x", response)
 }
