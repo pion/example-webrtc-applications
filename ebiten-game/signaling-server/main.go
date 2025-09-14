@@ -4,21 +4,26 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"errors"
 	"fmt"
-	"io"
+	"log"
 	"math/rand"
 	"net/http"
-	"strconv"
 	"sync"
+	"time"
 
+	"github.com/coder/websocket"
+	"github.com/coder/websocket/wsjson"
 	"github.com/pion/webrtc/v4"
 	"github.com/rs/cors"
 )
 
+type hostConnection struct {
+	Offer  *webrtc.SessionDescription
+	Answer *webrtc.SessionDescription
+}
 type clientConnection struct {
-	IsHost bool
 	Offer  *webrtc.SessionDescription
 	Answer *webrtc.SessionDescription
 }
@@ -26,6 +31,7 @@ type clientConnection struct {
 type lobby struct {
 	mutex sync.Mutex
 	// host is first client in lobby.Clients
+	Host    hostConnection
 	Clients []clientConnection
 }
 
@@ -78,6 +84,12 @@ func (db *lobbyDatabase) makeLobby() string {
 	return lobbyID
 }
 
+func (db *lobbyDatabase) deleteLobby(lobbyID string) {
+	db.mutex.Lock()
+	defer db.mutex.Unlock()
+	delete(db.lobbyList, lobbyID)
+}
+
 func (db *lobbyDatabase) getLobbyIDs() []string {
 	db.mutex.Lock()
 	defer db.mutex.Unlock()
@@ -97,21 +109,13 @@ func main() {
 	}
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
-	mux.HandleFunc("/lobby/host", db.lobbyHost)
-	mux.HandleFunc("/lobby/join", db.lobbyJoin)
-	mux.HandleFunc("/lobby/delete", db.lobbyDelete)
-	mux.HandleFunc("/lobby/unregisteredPlayers", db.lobbyUnregisteredPlayers)
-	mux.HandleFunc("/offer/get", db.offerGet)
-	mux.HandleFunc("/offer/post", db.offerPost)
-	mux.HandleFunc("/answer/get", db.answerGet)
-	mux.HandleFunc("/answer/post", db.answerPost)
-	mux.HandleFunc("/ice", db.ice)
 	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("pong"))
 		if err != nil {
 			fmt.Printf("Failed to write response: %s", err)
 		}
 	})
+	mux.HandleFunc("/host", db.hostHandler)
 
 	fmt.Println("Server started on port 3000")
 	// cors.Default() setup the middleware with default options being
@@ -126,313 +130,28 @@ func main() {
 	}
 }
 
-func (db *lobbyDatabase) lobbyHost(res http.ResponseWriter, _ *http.Request) {
+func (db *lobbyDatabase) hostHandler(w http.ResponseWriter, r *http.Request) {
+	// create new lobby
 	lobbyID := db.makeLobby()
-	lobby := db.lobbyList[lobbyID]
-	// host is first client in lobby.Clients
-	lobby.Clients = append(lobby.Clients, clientConnection{IsHost: true})
-	// return lobby id to host
-	_, err := res.Write([]byte(lobbyID))
+	log.Printf("New lobby created: %s", lobbyID)
+	defer db.deleteLobby(lobbyID)
+
+	c, err := websocket.Accept(w, r, nil)
 	if err != nil {
-		fmt.Printf("Failed to write lobby_id: %s", err)
-
-		return
+		println("Failed to accept websocket:", err.Error())
 	}
-	fmt.Println("lobbyHost")
-	fmt.Printf("lobby added: %s\n", lobbyID)
-	// print all lobbies
-	fmt.Printf("lobby_list:%s\n", db.getLobbyIDs())
-}
+	defer c.CloseNow()
 
-// call "/lobby?id={lobby_id}" to connect to lobby.
-func (db *lobbyDatabase) lobbyJoin(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("lobbyJoin")
-	res.Header().Set("Content-Type", "application/json")
-	// https://freshman.tech/snippets/go/extract-url-query-params/
-	// get lobby id from query params
-	lobbyID := req.URL.Query().Get("id")
-	fmt.Printf("lobby_id: %s\n", lobbyID)
-
-	// only continue with connection if lobby exists
-	db.mutex.Lock()
-	defer db.mutex.Unlock()
-	lobby, ok := db.lobbyList[lobbyID]
-	// If the key doesn't exist, return error
-	if !ok {
-		res.WriteHeader(http.StatusNotFound)
-		_, err := res.Write([]byte("404 - Lobby not found"))
+	ticker := time.NewTicker(1 * time.Second)
+	for range ticker.C {
+		var v any
+		err = wsjson.Read(context.Background(), c, &v)
 		if err != nil {
-			fmt.Printf("Failed to write lobby_not_found: %s", err)
-
-			return
+			println("Failed to read websocket message:", err.Error())
 		}
 
-		return
-	}
-	lobby.mutex.Lock()
-	defer lobby.mutex.Unlock()
-
-	body, err := io.ReadAll(req.Body)
-	if err != nil {
-		fmt.Printf("Failed to read body: %s", err)
-
-		return
+		log.Printf("received: %v", v)
 	}
 
-	fmt.Printf("body: %s", body)
-
-	// send player id once generated
-	lobby.Clients = append(lobby.Clients, clientConnection{IsHost: false})
-	// player id is index in lobby.Clients
-	playerID := len(lobby.Clients) - 1
-	fmt.Printf("player_id: %d\n", playerID)
-	fmt.Println(lobby.Clients)
-	pData := playerData{ID: playerID}
-	res.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(res).Encode(pData); err != nil {
-		fmt.Printf("Failed to encode player_data: %s", err)
-
-		return
-	}
-}
-
-func (db *lobbyDatabase) lobbyDelete(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("lobbyDelete")
-	res.Header().Set("Content-Type", "application/json")
-	// https://freshman.tech/snippets/go/extract-url-query-params/
-	// get lobby id from query params
-	lobbyID := req.URL.Query().Get("id")
-	fmt.Printf("lobby_id: %s\n", lobbyID)
-	// delete lobby
-	db.mutex.Lock()
-	defer db.mutex.Unlock()
-	delete(db.lobbyList, lobbyID)
-	fmt.Printf("lobby_list:%s\n", db.getLobbyIDs())
-}
-
-// return players who haven't been registered yet by the host.
-func (db *lobbyDatabase) lobbyUnregisteredPlayers(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("UnregisteredPlayers")
-	res.Header().Set("Content-Type", "application/json")
-	// https://freshman.tech/snippets/go/extract-url-query-params/
-	// get lobby id from query params
-	lobbyID := req.URL.Query().Get("id")
-	db.mutex.Lock()
-	defer db.mutex.Unlock()
-	lobby := db.lobbyList[lobbyID]
-	lobby.mutex.Lock()
-	defer lobby.mutex.Unlock()
-
-	// get all players who haven't been registered yet
-	playerIDs := []int{}
-	for i, client := range lobby.Clients {
-		if !client.IsHost && client.Answer == nil {
-			playerIDs = append(playerIDs, i)
-		}
-	}
-
-	// return lobby id to host
-	jsonValue, err := json.Marshal(playerIDs)
-	if err != nil {
-		fmt.Printf("Failed to marshal player_ids: %s", err)
-
-		return
-	}
-
-	_, err = res.Write(jsonValue)
-	if err != nil {
-		fmt.Printf("Failed to write player_ids: %s", err)
-
-		return
-	}
-
-	fmt.Printf("player_ids %v\n", playerIDs)
-}
-
-func (db *lobbyDatabase) validatePlayer(res http.ResponseWriter, req *http.Request) (*lobby, int, error) {
-	fmt.Println("validatePlayer")
-	lobbyID := req.URL.Query().Get("lobby_id")
-
-	// only continue with connection if lobby exists
-	db.mutex.Lock()
-	defer db.mutex.Unlock()
-	lobby, ok := db.lobbyList[lobbyID]
-	lobby.mutex.Lock()
-	defer lobby.mutex.Unlock()
-	// If the key doesn't exist, return error
-	if !ok {
-		res.WriteHeader(http.StatusNotFound)
-		_, err := res.Write([]byte("404 - Lobby not found"))
-		if err != nil {
-			fmt.Printf("Failed to write lobby_not_found: %s", err)
-
-			return nil, 0, errLobbyNotFound
-		}
-
-		return nil, 0, errLobbyNotFound
-	}
-
-	playerIDString := req.URL.Query().Get("player_id")
-	playerID, err := strconv.Atoi(playerIDString)
-	if err != nil {
-		res.WriteHeader(http.StatusNotFound)
-		_, err = res.Write([]byte("404 - Player not found"))
-		if err != nil {
-			fmt.Printf("Failed to write player_not_found: %s", err)
-
-			return nil, 0, errPlayerNotFound
-		}
-
-		return nil, 0, errPlayerNotFound
-	}
-
-	// check if player actually exists
-	if playerID < 0 || playerID >= len(lobby.Clients) {
-		res.WriteHeader(http.StatusNotFound)
-		_, err = res.Write([]byte("404 - Player not found"))
-		if err != nil {
-			fmt.Printf("Failed to write player_not_found: %s", err)
-
-			return nil, 0, errPlayerNotFound
-		}
-
-		return nil, 0, errPlayerNotFound
-	}
-
-	return lobby, playerID, nil
-}
-
-func (db *lobbyDatabase) offerGet(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("offerGet")
-	res.Header().Set("Content-Type", "application/json")
-
-	lobby, playerID, err := db.validatePlayer(res, req)
-	if err != nil {
-		return
-	}
-	lobby.mutex.Lock()
-	defer lobby.mutex.Unlock()
-
-	offer := lobby.Clients[playerID].Offer
-	if offer == nil {
-		res.WriteHeader(http.StatusNotFound)
-		_, err = res.Write([]byte("404 - Offer not found"))
-		if err != nil {
-			fmt.Printf("Failed to write offer: %s", err)
-
-			return
-		}
-
-		return
-	}
-
-	jsonValue, err := json.Marshal(offer)
-	if err != nil {
-		fmt.Printf("Failed to marshal offer: %s", err)
-
-		return
-	}
-
-	_, err = res.Write(jsonValue)
-	if err != nil {
-		fmt.Printf("Failed to write offer: %s", err)
-
-		return
-	}
-}
-
-func (db *lobbyDatabase) offerPost(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("offerPost")
-
-	lobby, playerID, err := db.validatePlayer(res, req)
-	if err != nil {
-		return
-	}
-	lobby.mutex.Lock()
-	defer lobby.mutex.Unlock()
-
-	var sdp webrtc.SessionDescription
-
-	// Try to decode the request body into the struct. If there is an error,
-	// respond to the client with the error message and a 400 status code.
-	err = json.NewDecoder(req.Body).Decode(&sdp)
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusBadRequest)
-
-		return
-	}
-
-	lobby.Clients[playerID].Offer = &sdp
-	fmt.Printf("Lobby: %+v\n", lobby.Clients)
-}
-
-func (db *lobbyDatabase) answerGet(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("answerGet")
-	res.Header().Set("Content-Type", "application/json")
-
-	lobby, playerID, err := db.validatePlayer(res, req)
-	if err != nil {
-		return
-	}
-
-	lobby.mutex.Lock()
-	defer lobby.mutex.Unlock()
-
-	answer := lobby.Clients[playerID].Answer
-	if answer == nil {
-		res.WriteHeader(http.StatusNotFound)
-		_, err = res.Write([]byte("404 - Answer not found"))
-		if err != nil {
-			fmt.Printf("Failed to write answer: %s", err)
-
-			return
-		}
-
-		return
-	}
-
-	jsonValue, err := json.Marshal(answer)
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusInternalServerError)
-
-		return
-	}
-
-	_, err = res.Write(jsonValue)
-	if err != nil {
-		fmt.Printf("Failed to write answer: %s", err)
-
-		return
-	}
-}
-
-func (db *lobbyDatabase) answerPost(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("answerPost")
-	res.Header().Set("Content-Type", "application/json")
-
-	lobby, playerID, err := db.validatePlayer(res, req)
-	if err != nil {
-		return
-	}
-
-	lobby.mutex.Lock()
-	defer lobby.mutex.Unlock()
-
-	var sdp webrtc.SessionDescription
-
-	// Try to decode the request body into the struct. If there is an error,
-	// respond to the client with the error message and a 400 status code.
-	err = json.NewDecoder(req.Body).Decode(&sdp)
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusBadRequest)
-
-		return
-	}
-
-	lobby.Clients[playerID].Answer = &sdp
-	fmt.Printf("Lobby: %+v\n", lobby.Clients)
-}
-
-func (db *lobbyDatabase) ice(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	c.Close(websocket.StatusNormalClosure, "")
 }

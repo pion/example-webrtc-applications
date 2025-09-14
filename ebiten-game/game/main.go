@@ -19,6 +19,8 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 
+	"github.com/coder/websocket"
+	"github.com/coder/websocket/wsjson"
 	"github.com/ebitengine/debugui"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -297,6 +299,29 @@ func (g *game) onHostReceivedDataChannel(d *webrtc.DataChannel) {
 		// Handle writing to the data channel.
 		go WriteLoop(g, raw)
 	})
+}
+
+func (g *game) openWebsocket() {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	c, _, err := websocket.Dial(ctx, fmt.Sprintf("ws://%s:%d/host", g.signalingIP, g.port), nil)
+	if err != nil {
+		println("Failed to connect to websocket:", err.Error())
+	}
+	defer c.CloseNow()
+
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		err = wsjson.Write(ctx, c, fmt.Sprintf("ping from client at %s", time.Now().String()))
+		if err != nil {
+			println("Failed to write websocket message:", err.Error())
+		}
+	}
+
+	c.Close(websocket.StatusNormalClosure, "")
 }
 
 func (g *game) startHost() {
