@@ -7,7 +7,7 @@ and should serve as a good starting point for your next project. For more minima
 
 If you have a request please make an issue, we also love contributions more examples, are always welcome.
 
-Have any questions? Join [the Slack channel](https://pion.ly/slack) to follow development and speak with the maintainers.
+**[FAQ](https://github.com/pion/webrtc/wiki/FAQ)** has answers to common questions. If you have a question not covered please ask in [Discord](https://discord.gg/PngbdqpFbt) we are always looking to expand it.
 
 ## Examples
 * [GoCV Receive](gocv-receive): Example gocv-receive shows how to receive media using Pion and then do motion detection with GoCV.
