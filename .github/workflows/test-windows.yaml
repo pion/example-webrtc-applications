@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+# SPDX-License-Identifier: MIT
+
+name: Test Windows
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test-windows:
+    runs-on: windows-latest
+    name: Go Windows 1.24
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache
+          key: ${{ runner.os }}-windows-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-windows-go-
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+
+      - name: Run tests
+        shell: bash
+        run: |
+          if [ -f .github/.ci.conf ]; then . .github/.ci.conf; fi
+          if [ -n "${SKIP_WINDOWS_TESTS}" ]; then exit 0; fi
+
+          go test ./...
