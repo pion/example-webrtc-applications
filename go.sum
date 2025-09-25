@@ -6,8 +6,8 @@ github.com/at-wat/ebml-go v0.17.2 h1:FJ89W5V6jDklwBNEPQoFKnQnBxbSpXB72qrobW3iIWY
 github.com/at-wat/ebml-go v0.17.2/go.mod h1:w1cJs7zmGsb5nnSvhWGKLCxvfu4FVx5ERvYDIalj1ww=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/ebitengine/debugui v0.1.1 h1:3b4cIujNvKYhozlBjag9TWuuyo67Di3DgXWAz+f7xAY=
-github.com/ebitengine/debugui v0.1.1/go.mod h1:wIKIq5RvNFb3+nFfJcYqSLvpC1ioD/BglWDtuWFSDz0=
+github.com/ebitengine/debugui v0.1.2 h1:7FgzqNz8GQt7eIrTDKPePJx271b5LfjSJYopttZyMbY=
+github.com/ebitengine/debugui v0.1.2/go.mod h1:wIKIq5RvNFb3+nFfJcYqSLvpC1ioD/BglWDtuWFSDz0=
 github.com/ebitengine/gomobile v0.0.0-20240911145611-4856209ac325 h1:Gk1XUEttOk0/hb6Tq3WkmutWa0ZLhNn/6fc6XZpM7tM=
 github.com/ebitengine/gomobile v0.0.0-20240911145611-4856209ac325/go.mod h1:ulhSQcbPioQrallSuIzF8l1NKQoD7xmMZc5NxzibUMY=
 github.com/ebitengine/hideconsole v1.0.0 h1:5J4U0kXF+pv/DhiXt5/lTz0eO5ogJ1iXb8Yj1yReDqE=
