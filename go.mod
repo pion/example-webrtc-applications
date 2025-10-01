@@ -23,7 +23,7 @@ require (
 	github.com/pion/webrtc/v4 v4.1.4
 	github.com/rs/cors v1.11.1
 	gocv.io/x/gocv v0.42.0
-	golang.org/x/image v0.23.0
+	golang.org/x/image v0.31.0
 	golang.org/x/net v0.35.0
 )
 
@@ -57,7 +57,7 @@ require (
 	github.com/wlynxg/anet v0.0.5 // indirect
 	golang.org/x/crypto v0.33.0 // indirect
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
-	golang.org/x/sync v0.12.0 // indirect
+	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/text v0.29.0 // indirect
 )
