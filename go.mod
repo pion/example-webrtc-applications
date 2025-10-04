@@ -7,7 +7,7 @@ toolchain go1.25.1
 require (
 	github.com/asticode/go-astiav v0.19.0
 	github.com/at-wat/ebml-go v0.17.2
-	github.com/ebitengine/debugui v0.1.2
+	github.com/ebitengine/debugui v0.2.0
 	github.com/emiago/sipgo v0.33.0
 	github.com/go-gst/go-gst v1.3.0
 	github.com/google/uuid v1.6.0
@@ -38,10 +38,11 @@ require (
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.3.2 // indirect
 	github.com/hajimehoshi/bitmapfont/v3 v3.2.1 // indirect
+	github.com/hajimehoshi/bitmapfont/v4 v4.1.0 // indirect
 	github.com/icholy/digest v1.1.0 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/mattn/go-pointer v0.0.1 // indirect
-	github.com/pierrec/lz4/v4 v4.1.21 // indirect
+	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/pion/datachannel v1.5.10 // indirect
 	github.com/pion/dtls/v3 v3.0.7 // indirect
 	github.com/pion/ice/v4 v4.0.10 // indirect
@@ -58,6 +59,6 @@ require (
 	golang.org/x/crypto v0.33.0 // indirect
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/sync v0.17.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/sys v0.36.0 // indirect
 	golang.org/x/text v0.29.0 // indirect
 )
