@@ -12,7 +12,7 @@ require (
 	github.com/go-gst/go-gst v1.3.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
-	github.com/hajimehoshi/ebiten/v2 v2.8.9
+	github.com/hajimehoshi/ebiten/v2 v2.9.0
 	github.com/kelindar/binary v1.0.19
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
 	github.com/pion/interceptor v0.1.41
@@ -29,15 +29,14 @@ require (
 
 require (
 	github.com/asticode/go-astikit v0.42.0 // indirect
-	github.com/ebitengine/gomobile v0.0.0-20241016022004-957bd3215dd8 // indirect
+	github.com/ebitengine/gomobile v0.0.0-20250923094054-ea854a63cce1 // indirect
 	github.com/ebitengine/hideconsole v1.0.0 // indirect
-	github.com/ebitengine/purego v0.8.0 // indirect
+	github.com/ebitengine/purego v0.9.0 // indirect
 	github.com/go-gst/go-glib v1.3.0 // indirect
-	github.com/go-text/typesetting v0.2.0 // indirect
+	github.com/go-text/typesetting v0.3.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.3.2 // indirect
-	github.com/hajimehoshi/bitmapfont/v3 v3.2.1 // indirect
 	github.com/hajimehoshi/bitmapfont/v4 v4.1.0 // indirect
 	github.com/icholy/digest v1.1.0 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
