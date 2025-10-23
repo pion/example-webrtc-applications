@@ -29,7 +29,7 @@ This launches the desktop version of the game.
 #### 3. Run the Game (Web)
 To build and serve the web version:
 ```
-./build_wasm.sh
+./build_wasm.sh # or ./build_wasm.ps1 on windows
 python3 -m http.server 8080
 ```
 Then open your browser and go to:http://localhost:8080
