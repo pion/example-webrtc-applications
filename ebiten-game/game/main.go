@@ -410,6 +410,10 @@ func (g *game) startClient() {
 	if err != nil {
 		panic(err)
 	}
+	if response.StatusCode != http.StatusOK {
+		g.writeLog("Failed to join lobby, probably doesn't exist.\n")
+		return
+	}
 	var pData playerData
 	err = json.NewDecoder(response.Body).Decode(&pData)
 	if err != nil {
