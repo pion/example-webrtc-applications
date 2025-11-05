@@ -412,6 +412,7 @@ func (g *game) startClient() {
 	}
 	if response.StatusCode != http.StatusOK {
 		g.writeLog("Failed to join lobby, probably doesn't exist.\n")
+
 		return
 	}
 	var pData playerData
