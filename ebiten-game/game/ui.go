@@ -56,9 +56,11 @@ func (g *game) logWindow(ctx *debugui.Context) {
 			ctx.Button("Host Game").On(func() {
 				submitOpen()
 			})
-			ctx.Button("Join").On(func() {
-				submitJoin()
-			})
+			if !g.isHost {
+				ctx.Button("Join").On(func() {
+					submitJoin()
+				})
+			}
 		})
 	})
 }
