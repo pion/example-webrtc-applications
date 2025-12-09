@@ -47,17 +47,18 @@ Add the following entry to your Android Manifest file, located in `./android/app
 </application>
 ```
 
-Edit `android/app/build.gradle`, modify minSdkVersion to 18
+Edit `android/app/build.gradle`, modify minSdk to 18
 
 ```gradle
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.github.pion.flutter_sfu_wsx_example"
-        minSdkVersion 18 // <-- here
-        targetSdkVersion 28
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        applicationId = "com.github.pion.flutter_sfu_wsx_example"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = 18 // <- here
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 ```
 
