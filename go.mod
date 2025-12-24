@@ -20,7 +20,7 @@ require (
 	github.com/pion/rtcp v1.2.16
 	github.com/pion/rtp v1.8.27
 	github.com/pion/sdp/v3 v3.0.17
-	github.com/pion/webrtc/v4 v4.2.0
+	github.com/pion/webrtc/v4 v4.2.1
 	github.com/rs/cors v1.11.1
 	gocv.io/x/gocv v0.42.0
 	golang.org/x/image v0.33.0
