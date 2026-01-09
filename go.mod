@@ -15,7 +15,7 @@ require (
 	github.com/hajimehoshi/ebiten/v2 v2.9.7
 	github.com/kelindar/binary v1.0.19
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
-	github.com/pion/interceptor v0.1.42
+	github.com/pion/interceptor v0.1.43
 	github.com/pion/logging v0.2.4
 	github.com/pion/rtcp v1.2.16
 	github.com/pion/rtp v1.10.0
