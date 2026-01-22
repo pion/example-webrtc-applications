@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 The Pion community <https://pion.ly>
+# SPDX-FileCopyrightText: 2026 The Pion community <https://pion.ly>
 # SPDX-License-Identifier: MIT
 
 # we have to do this for Go 1.24 and newer
