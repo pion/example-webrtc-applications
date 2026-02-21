@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.25.7
 
 require (
-	github.com/asticode/go-astiav v0.19.0
+	github.com/asticode/go-astiav v0.40.0
 	github.com/at-wat/ebml-go v0.17.2
 	github.com/ebitengine/debugui v0.2.0
 	github.com/emiago/sipgo v0.33.0
