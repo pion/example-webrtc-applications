@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 //go:build !js
-// +build !js
 
 // snapshot shows how you can convert incoming video frames to jpeg and serve them via HTTP.
 package main

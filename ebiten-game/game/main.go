@@ -9,15 +9,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	_ "image/jpeg"
+	_ "image/png"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
-
-	_ "image/jpeg"
-	_ "image/png"
 
 	"github.com/ebitengine/debugui"
 	"github.com/hajimehoshi/ebiten/v2"
