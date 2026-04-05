@@ -13,7 +13,7 @@ import (
 // SIPInfoResponse ...
 type SIPInfoResponse struct {
 	Username           string `json:"username"`
-	Password           string `json:"password"`
+	Password           string `json:"password"` //nolint:gosec
 	AuthorizationID    string `json:"authorizationId"`
 	Domain             string `json:"domain"`
 	OutboundProxy      string `json:"outboundProxy"`

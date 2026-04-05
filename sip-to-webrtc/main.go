@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 //go:build !js
-// +build !js
 
 // sip demonstrates how to bridge SIP traffic and WebRTC
 package main

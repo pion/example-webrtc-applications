@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 //go:build !js
-// +build !js
 
 // save-to-webm is a simple application that shows how to receive
 // audio and video using Pion and then save to WebM container.

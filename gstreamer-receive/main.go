@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 //go:build !js
-// +build !js
 
 // gstreamer-receive is a simple application that shows how to
 // receive media using Pion WebRTC and play live using GStreamer.

@@ -239,7 +239,7 @@ func (db *lobbyDatabase) lobbyUnregisteredPlayers(res http.ResponseWriter, req *
 		return
 	}
 
-	_, err = res.Write(jsonValue)
+	_, err = res.Write(jsonValue) //nolint:gosec
 	if err != nil {
 		fmt.Printf("Failed to write player_ids: %s", err)
 
@@ -333,7 +333,7 @@ func (db *lobbyDatabase) offerGet(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	_, err = res.Write(jsonValue)
+	_, err = res.Write(jsonValue) //nolint:gosec
 	if err != nil {
 		fmt.Printf("Failed to write offer: %s", err)
 
@@ -398,7 +398,7 @@ func (db *lobbyDatabase) answerGet(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	_, err = res.Write(jsonValue)
+	_, err = res.Write(jsonValue) //nolint:gosec
 	if err != nil {
 		fmt.Printf("Failed to write answer: %s", err)
 

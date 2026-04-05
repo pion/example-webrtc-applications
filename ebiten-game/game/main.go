@@ -158,7 +158,7 @@ func (g *game) pollForPlayerOffer(playerID int, ticker *time.Ticker) {
 		if err != nil {
 			panic(err)
 		}
-		offerResp, err := g.httpClient.Do(req)
+		offerResp, err := g.httpClient.Do(req) //nolint:gosec
 		if err != nil {
 			panic(err)
 		}
@@ -223,7 +223,7 @@ func (g *game) pollForPlayerOffer(playerID int, ticker *time.Ticker) {
 				panic(err)
 			}
 			postReq.Header.Set("Content-Type", "application/json")
-			postResponse, err := g.httpClient.Do(postReq)
+			postResponse, err := g.httpClient.Do(postReq) //nolint:gosec
 			if err != nil {
 				panic(err)
 			}
@@ -248,7 +248,7 @@ func (g *game) pollLobbyAsHost() {
 		if err != nil {
 			panic(err)
 		}
-		idResp, err := g.httpClient.Do(idReq)
+		idResp, err := g.httpClient.Do(idReq) //nolint:gosec
 		if err != nil {
 			panic(err)
 		}
@@ -306,7 +306,7 @@ func (g *game) startHost() {
 	if err != nil {
 		panic(err)
 	}
-	lobbyResp, err := g.httpClient.Do(req)
+	lobbyResp, err := g.httpClient.Do(req) //nolint:gosec
 	if err != nil {
 		panic(err)
 	}
@@ -339,7 +339,7 @@ func (g *game) pollLobbyAsClient(ticker *time.Ticker, pData playerData) {
 		if err != nil {
 			panic(err)
 		}
-		answerResp, err := g.httpClient.Do(answerReq)
+		answerResp, err := g.httpClient.Do(answerReq) //nolint:gosec
 		if err != nil {
 			panic(err)
 		}
@@ -386,7 +386,7 @@ func (g *game) onClientReceivedICECandidate(candidate *webrtc.ICECandidate) {
 			panic(err)
 		}
 		postReq.Header.Set("Content-Type", "application/json")
-		postResponse, err := g.httpClient.Do(postReq)
+		postResponse, err := g.httpClient.Do(postReq) //nolint:gosec
 		if err != nil {
 			panic(err)
 		}
@@ -406,7 +406,7 @@ func (g *game) startClient() {
 	if err != nil {
 		panic(err)
 	}
-	response, err := g.httpClient.Do(joinReq)
+	response, err := g.httpClient.Do(joinReq) //nolint:gosec
 	if err != nil {
 		panic(err)
 	}
@@ -550,7 +550,7 @@ func (g *game) closeConnection() {
 		if err != nil {
 			panic(err)
 		}
-		hostResponse, err := g.httpClient.Do(hostReq)
+		hostResponse, err := g.httpClient.Do(hostReq) //nolint:gosec
 		if err != nil {
 			panic(err)
 		}
