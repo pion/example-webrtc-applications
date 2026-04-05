@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 //go:build !js
-// +build !js
 
 // sip-over-websocket-to-webrtc demonstrates how to connect to a SIP Server via Websocket
 package main

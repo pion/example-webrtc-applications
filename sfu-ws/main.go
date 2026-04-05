@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 //go:build !js
-// +build !js
 
 // sfu-ws is a many-to-many websocket based SFU
 package main

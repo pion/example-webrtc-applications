@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 //go:build !js
-// +build !js
 
 // Twitch is an example of ingesting WebRTC and streaming to Twitch
 package main
