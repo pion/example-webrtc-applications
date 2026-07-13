@@ -1,5 +1,5 @@
 # save-to-webm
-save-to-webm is a simple application that shows how to receive audio and video using Pion and then save to WebM container.
+save-to-webm is a simple application that shows how to receive audio and video using Pion and then save to WebM/Matroska container.
 
 ## Instructions
 ### Open save-to-webm example page
