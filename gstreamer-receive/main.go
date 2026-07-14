@@ -18,15 +18,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-gst/go-gst/gst"
-	"github.com/go-gst/go-gst/gst/app"
+	"github.com/go-gst/go-gst/pkg/gst"
+	"github.com/go-gst/go-gst/pkg/gstapp"
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc/v4"
 )
 
 func main() {
 	// Initialize GStreamer
-	gst.Init(nil)
+	gst.Init()
 
 	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
@@ -72,7 +72,7 @@ func main() {
 				panic(err)
 			}
 
-			appSrc.PushBuffer(gst.NewBufferFromBytes(buf[:i]))
+			appSrc.PushBuffer(bufferFromBytes(buf[:i]))
 		}
 	})
 
@@ -120,7 +120,7 @@ func main() {
 }
 
 // Create the appropriate GStreamer pipeline depending on what codec we are working with.
-func pipelineForCodec(track *webrtc.TrackRemote, codecName string) *app.Source {
+func pipelineForCodec(track *webrtc.TrackRemote, codecName string) gstapp.AppSrc {
 	pipelineString := "appsrc format=time is-live=true do-timestamp=true name=src ! application/x-rtp"
 	switch strings.ToLower(codecName) {
 	case "vp8":
@@ -137,21 +137,46 @@ func pipelineForCodec(track *webrtc.TrackRemote, codecName string) *app.Source {
 		panic("Unhandled codec " + codecName) //nolint
 	}
 
-	pipeline, err := gst.NewPipelineFromString(pipelineString)
+	pipeline := startPipeline(pipelineString)
+
+	appSrc, ok := pipeline.GetByName("src").(gstapp.AppSrc)
+	if !ok {
+		panic("failed to find GStreamer appsrc")
+	}
+
+	return appSrc
+}
+
+func startPipeline(pipelineString string) gst.Pipeline {
+	element, err := gst.ParseLaunch(pipelineString)
 	if err != nil {
 		panic(err)
 	}
+	pipeline, ok := element.(gst.Pipeline)
+	if !ok {
+		panic("GStreamer launch description did not produce a pipeline")
+	}
 
-	if err = pipeline.SetState(gst.StatePlaying); err != nil {
+	if pipeline.SetState(gst.StatePlaying) == gst.StateChangeFailure {
+		panic("failed to start GStreamer pipeline")
+	}
+
+	return pipeline
+}
+
+func bufferFromBytes(data []byte) *gst.Buffer {
+	buffer := gst.NewBufferAllocate(nil, uint(len(data)), nil)
+	mapped, ok := buffer.Map(gst.MapWrite)
+	if !ok {
+		panic("failed to map GStreamer buffer")
+	}
+	defer mapped.Unmap()
+
+	if _, err := mapped.Write(data); err != nil {
 		panic(err)
 	}
 
-	appSrc, err := pipeline.GetElementByName("src")
-	if err != nil {
-		panic(err)
-	}
-
-	return app.SrcFromElement(appSrc)
+	return buffer
 }
 
 // Read from stdin until we get a newline.
