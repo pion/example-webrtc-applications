@@ -9,7 +9,7 @@ require (
 	github.com/at-wat/ebml-go v0.18.0
 	github.com/ebitengine/debugui v0.2.0
 	github.com/emiago/sipgo v1.4.3
-	github.com/go-gst/go-gst v1.4.0
+	github.com/go-gst/go-gst v1.4.1
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/hajimehoshi/ebiten/v2 v2.9.9
