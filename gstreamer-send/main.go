@@ -14,11 +14,13 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"strings"
+	"time"
 
-	"github.com/go-gst/go-gst/gst"
-	"github.com/go-gst/go-gst/gst/app"
+	"github.com/go-gst/go-gst/pkg/gst"
+	"github.com/go-gst/go-gst/pkg/gstapp"
 	"github.com/pion/webrtc/v4"
 	"github.com/pion/webrtc/v4/pkg/media"
 )
@@ -29,7 +31,7 @@ func main() { // nolint
 	flag.Parse()
 
 	// Initialize GStreamer
-	gst.Init(nil)
+	gst.Init()
 
 	// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
 
@@ -136,44 +138,57 @@ func pipelineForCodec(codecName string, tracks []*webrtc.TrackLocalStaticSample,
 		panic("Unhandled codec " + codecName) //nolint
 	}
 
-	pipeline, err := gst.NewPipelineFromString(pipelineStr)
+	element, err := gst.ParseLaunch(pipelineStr)
 	if err != nil {
 		panic(err)
 	}
-
-	if err = pipeline.SetState(gst.StatePlaying); err != nil {
-		panic(err)
+	pipeline, ok := element.(gst.Pipeline)
+	if !ok {
+		panic("GStreamer launch description did not produce a pipeline")
 	}
 
-	appSink, err := pipeline.GetElementByName("appsink")
-	if err != nil {
-		panic(err)
+	appSink, ok := pipeline.GetByName("appsink").(gstapp.AppSink)
+	if !ok {
+		panic("failed to find GStreamer appsink")
 	}
 
-	app.SinkFromElement(appSink).SetCallbacks(&app.SinkCallbacks{
-		NewSampleFunc: func(sink *app.Sink) gst.FlowReturn {
-			sample := sink.PullSample()
-			if sample == nil {
-				return gst.FlowEOS
+	appSink.SetEmitSignals(true)
+
+	appSink.ConnectNewSample(func(sink gstapp.AppSink) gst.FlowReturn {
+		sample := sink.PullSample()
+		if sample == nil {
+			return gst.FlowEOS
+		}
+
+		buffer := sample.GetBuffer()
+		if buffer == nil {
+			return gst.FlowError
+		}
+
+		mapped, ok := buffer.Map(gst.MapRead)
+		if !ok {
+			return gst.FlowError
+		}
+		defer mapped.Unmap()
+		samples := mapped.Data()
+
+		var duration time.Duration
+		if d := buffer.Duration(); d <= math.MaxInt64 {
+			duration = time.Duration(d)
+		}
+
+		for _, t := range tracks {
+			if err := t.WriteSample(media.Sample{Data: samples, Duration: duration}); err != nil {
+				panic(err) //nolint
 			}
+		}
 
-			buffer := sample.GetBuffer()
-			if buffer == nil {
-				return gst.FlowError
-			}
-
-			samples := buffer.Map(gst.MapRead).Bytes()
-			defer buffer.Unmap()
-
-			for _, t := range tracks {
-				if err := t.WriteSample(media.Sample{Data: samples, Duration: *buffer.Duration().AsDuration()}); err != nil {
-					panic(err) //nolint
-				}
-			}
-
-			return gst.FlowOK
-		},
+		return gst.FlowOK
 	})
+
+	if pipeline.SetState(gst.StatePlaying) == gst.StateChangeFailure {
+		panic("failed to start GStreamer pipeline")
+	}
 }
 
 // Read from stdin until we get a newline.
