@@ -20,7 +20,7 @@ This example requires you have GoCV and ffmpeg installed, these are the supporte
 * Follow the setup instructions for [GoCV](https://github.com/hybridgroup/gocv)
 * `sudo apt-get install ffmpeg`
 #### macOS
-* `brew install ffmpeg opencv`
+* `brew install ffmpeg opencv@4`
 
 ### Build gocv-to-webrtc
 ```
