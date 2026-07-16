@@ -12,6 +12,7 @@ If you have a request please make an issue, we also love contributions more exam
 ## Examples
 * [GoCV Receive](gocv-receive): Example gocv-receive shows how to receive media using Pion and then do motion detection with GoCV.
 * [Gstreamer Receive](gstreamer-receive): Example gstreamer-receive shows how to receive media from the browser and play it live. This example uses GStreamer for rendering.
+* [FFmpeg Receive](ffmpeg-receive): Example ffmpeg-receive shows how to receive video from the browser and decode it using FFmpeg.
 * [Gstreamer Send](gstreamer-send): Example gstreamer-send shows how to send video to your browser. This example uses GStreamer to process the video.
 * [Gstreamer Send Offer](gstreamer-send-offer): Example gstreamer-send-offer is a variant of gstreamer-send that initiates the WebRTC connection by sending an offer.
 * [Janus Gateway](janus-gateway): Example janus-gateway is a collection of examples showing how to use Pion WebRTC with [janus-gateway](https://github.com/meetecho/janus-gateway).
