@@ -22,6 +22,7 @@ If you have a request please make an issue, we also love contributions more exam
 * [Twitch](twitch): Example twitch shows how to send audio/video from WebRTC to https://www.twitch.tv/ via RTMP.
 * [C DataChannels](c-data-channels) Example c-data-channels shows how you can use Pion WebRTC from a C program
 * [Snapshot](snapshot) Example snapshot shows how you can convert incoming video frames to jpeg and serve them via HTTP.
+* [Play From Disk H265](play-from-disk-h265): Example play-from-disk-h265 shows how to play H265 video and Opus audio from disk.
 * [SIP to WebRTC](sip-to-webrtc) Example sip-to-webrtc shows how to bridge WebRTC and SIP traffic.
 * [GoCV to WebRTC](gocv-to-webrtc): Example gocv-to-webrtc captures webcam and performs motion detection in Go, it then sends results to view in the browser.
 * [Ebiten Game](ebiten-game): Example ebiten-game a cross-platform WebRTC game demo using [Ebitengine](https://ebitengine.org/).
