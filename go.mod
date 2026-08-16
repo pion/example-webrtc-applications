@@ -12,7 +12,7 @@ require (
 	github.com/go-gst/go-gst v0.0.2
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
-	github.com/hajimehoshi/ebiten/v2 v2.9.9
+	github.com/hajimehoshi/ebiten/v2 v2.9.10
 	github.com/kelindar/binary v1.2.0
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
 	github.com/pion/interceptor v0.1.47
@@ -24,7 +24,7 @@ require (
 	github.com/pion/webrtc/v4 v4.2.18
 	github.com/rs/cors v1.11.1
 	gocv.io/x/gocv v0.43.0
-	golang.org/x/image v0.36.0
+	golang.org/x/image v0.43.0
 	golang.org/x/net v0.50.0
 )
 
@@ -56,8 +56,8 @@ require (
 	github.com/rs/xid v1.6.0 // indirect
 	github.com/wlynxg/anet v0.0.5 // indirect
 	golang.org/x/crypto v0.48.0 // indirect
-	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.41.0 // indirect
-	golang.org/x/text v0.34.0 // indirect
+	golang.org/x/sync v0.21.0 // indirect
+	golang.org/x/sys v0.44.0 // indirect
+	golang.org/x/text v0.38.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
 )
