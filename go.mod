@@ -2,7 +2,7 @@ module github.com/pion/example-webrtc-applications/v3
 
 go 1.25.0
 
-toolchain go1.26.6
+toolchain go1.27.0
 
 require (
 	github.com/asticode/go-astiav v0.41.0
