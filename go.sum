@@ -14,8 +14,8 @@ github.com/ebitengine/hideconsole v1.0.0 h1:5J4U0kXF+pv/DhiXt5/lTz0eO5ogJ1iXb8Yj
 github.com/ebitengine/hideconsole v1.0.0/go.mod h1:hTTBTvVYWKBuxPr7peweneWdkUwEuHuB3C1R/ielR1A=
 github.com/ebitengine/purego v0.10.1 h1:dewVBCBT2GaMu1SrNTYxQhgQBethzfhiwvZiLGP/qyY=
 github.com/ebitengine/purego v0.10.1/go.mod h1:iIjxzd6CiRiOG0UyXP+V1+jWqUXVjPKLAI0mRfJZTmQ=
-github.com/emiago/sipgo v1.5.0 h1:YVq5Rw5eVN4DRsB5MoBBiiurpHXXCjJstaH9cTvrlyI=
-github.com/emiago/sipgo v1.5.0/go.mod h1:DuwAxBZhKMqIzQFPGZb1MVAGU6Wuxj64oTOhd5dx/FY=
+github.com/emiago/sipgo v1.6.0 h1:6EuOP7c6f0VRatKYTPEYNezt4hslBEsaCzZZOhT2n3s=
+github.com/emiago/sipgo v1.6.0/go.mod h1:DuwAxBZhKMqIzQFPGZb1MVAGU6Wuxj64oTOhd5dx/FY=
 github.com/go-gst/go-glib v0.0.2 h1:2sclYOyJzyi2/iRQlNjXoDi0FBxt8NHFPQFdRV9qH38=
 github.com/go-gst/go-glib v0.0.2/go.mod h1:cHWRWZCiwhx4CmW92T0/+cxn69AquI7aj2mIk96WgEI=
 github.com/go-gst/go-gst v0.0.2 h1:WVhfnSPUq9+Ilre50iP7lPklr35l3jyiPY+cq8bpTVk=
