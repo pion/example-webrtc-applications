@@ -12,7 +12,7 @@ require (
 	github.com/go-gst/go-gst v0.0.2
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
-	github.com/hajimehoshi/ebiten/v2 v2.9.10
+	github.com/hajimehoshi/ebiten/v2 v2.9.11
 	github.com/kelindar/binary v1.2.0
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
 	github.com/pion/interceptor v0.1.47

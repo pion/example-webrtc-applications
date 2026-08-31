@@ -38,8 +38,8 @@ github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aN
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/hajimehoshi/bitmapfont/v4 v4.1.1 h1:5FNENqs0QbURnFG8HeDJuPl/FIjU4tNesm4suKJfIwY=
 github.com/hajimehoshi/bitmapfont/v4 v4.1.1/go.mod h1:/PD+aLjAJ0F2UoQx6hkOfXqWN7BkroDUMr5W+IT1dpE=
-github.com/hajimehoshi/ebiten/v2 v2.9.10 h1:Z2z8hq8/RVS4tfUcjKGdwzhBhNTbxSkxv867MPiGCLM=
-github.com/hajimehoshi/ebiten/v2 v2.9.10/go.mod h1:UqZjna6ppO9dTZtO97LySdB5ustokqOcQKrAfWPrVro=
+github.com/hajimehoshi/ebiten/v2 v2.9.11 h1:VXnv8jHvTHEeLBoPKEvPdywwJdcemur+EoXE/0Gsj78=
+github.com/hajimehoshi/ebiten/v2 v2.9.11/go.mod h1:UqZjna6ppO9dTZtO97LySdB5ustokqOcQKrAfWPrVro=
 github.com/icholy/digest v1.1.0 h1:HfGg9Irj7i+IX1o1QAmPfIBNu/Q5A5Tu3n/MED9k9H4=
 github.com/icholy/digest v1.1.0/go.mod h1:QNrsSGQ5v7v9cReDI0+eyjsXGUoRSUZQHeQ5C4XLa0Y=
 github.com/jezek/xgb v1.3.1 h1:NQCAEfQyzN+3RjWUSHBuVIxQcy2YfG3/mNvKfs/0rEg=
