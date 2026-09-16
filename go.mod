@@ -20,7 +20,7 @@ require (
 	github.com/pion/opus v0.1.1-0.20260721155525-ad89c91733fe
 	github.com/pion/rtcp v1.2.17
 	github.com/pion/rtp v1.10.5
-	github.com/pion/sdp/v3 v3.0.19
+	github.com/pion/sdp/v3 v3.0.20
 	github.com/pion/webrtc/v4 v4.2.20
 	github.com/rs/cors v1.11.1
 	gocv.io/x/gocv v0.43.0
