@@ -2,8 +2,8 @@ github.com/asticode/go-astiav v0.42.0 h1:uKEnuge8Uglh+Iv6Igrep2wzDjLjne9z9+XMmTe
 github.com/asticode/go-astiav v0.42.0/go.mod h1:GI0pHw6K2/pl/o8upCtT49P/q4KCwhv/8nGLlCsZLdA=
 github.com/asticode/go-astikit v0.59.0 h1:tjbwDym+MTSxqkAhJoHRZmHMXK6Jv4vGx+97FptKH6k=
 github.com/asticode/go-astikit v0.59.0/go.mod h1:fV43j20UZYfXzP9oBn33udkvCvDvCDhzjVqoLFuuYZE=
-github.com/at-wat/ebml-go v0.19.3 h1:d+UC5nz3as8at1Ek4bhGPY5f+eoVYSQZmnTF4D+cJMs=
-github.com/at-wat/ebml-go v0.19.3/go.mod h1:wu3fQj+DWo6SOOl9c4yDi+gFs9Oa96Z2B5qxo1OxFYY=
+github.com/at-wat/ebml-go v0.19.4 h1:6F767ThzH/JqNUsF79PwRFP0pwUF5ALXWJ6pXuiolI8=
+github.com/at-wat/ebml-go v0.19.4/go.mod h1:wu3fQj+DWo6SOOl9c4yDi+gFs9Oa96Z2B5qxo1OxFYY=
 github.com/ebitengine/debugui v0.3.1 h1:2qGpBnXwnMUsL5KgGBLweup/ZKF466hvQmWgN2QMtkE=
 github.com/ebitengine/debugui v0.3.1/go.mod h1:Ts8yAyc/TG861uojKM7c3ABjG07eqTCckIAysb9KJtw=
 github.com/ebitengine/gomobile v0.0.0-20260820040257-d11f821a26a6 h1:Tnc3YtzxhgsvNdNrER9wWkGJbyjOwyUuzjUY5rZK72k=
