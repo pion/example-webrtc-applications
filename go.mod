@@ -17,7 +17,7 @@ require (
 	github.com/notedit/janus-go v0.0.0-20210115013133-fdce1b146d0e
 	github.com/pion/interceptor v0.1.49
 	github.com/pion/logging v0.2.4
-	github.com/pion/opus v0.1.1-0.20261001050837-cfb9e7a35aad
+	github.com/pion/opus v0.1.1-0.20261005072002-44637de087b3
 	github.com/pion/rtcp v1.2.19
 	github.com/pion/rtp v1.10.5
 	github.com/pion/sdp/v3 v3.0.20
