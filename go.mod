@@ -8,7 +8,7 @@ require (
 	github.com/asticode/go-astiav v0.43.0
 	github.com/at-wat/ebml-go v0.19.4
 	github.com/ebitengine/debugui v0.3.1
-	github.com/emiago/sipgo v1.6.0
+	github.com/emiago/sipgo v1.7.1
 	github.com/go-gst/go-gst v0.0.2
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
@@ -39,7 +39,7 @@ require (
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.4.0 // indirect
 	github.com/hajimehoshi/bitmapfont/v4 v4.2.0 // indirect
-	github.com/icholy/digest v1.1.0 // indirect
+	github.com/icholy/digest v1.2.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.29 // indirect
 	github.com/pion/datachannel v1.6.3 // indirect
 	github.com/pion/dtls/v3 v3.1.15 // indirect
