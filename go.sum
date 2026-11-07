@@ -10,8 +10,8 @@ github.com/ebitengine/gomobile v0.0.0-20260820040257-d11f821a26a6 h1:Tnc3Ytzxhgs
 github.com/ebitengine/gomobile v0.0.0-20260820040257-d11f821a26a6/go.mod h1:gwnFEwdzWZpNehgwkeK4756Ez58f58bXz6bgEAq+xqk=
 github.com/ebitengine/hideconsole v1.0.0 h1:5J4U0kXF+pv/DhiXt5/lTz0eO5ogJ1iXb8Yj1yReDqE=
 github.com/ebitengine/hideconsole v1.0.0/go.mod h1:hTTBTvVYWKBuxPr7peweneWdkUwEuHuB3C1R/ielR1A=
-github.com/ebitengine/purego v0.11.0 h1:jhp/D+Nyv7UUW8HAcmcjt2N2rYrYi9m3SL21k0Ua/NI=
-github.com/ebitengine/purego v0.11.0/go.mod h1:DCHPP08djqhNSoTfImcnHYQRZmd0qhakvrozqaEYhGQ=
+github.com/ebitengine/purego v0.11.3 h1:OB+JLpdm7ioymhyA+6s5kbb/uOuYycAgL8NNTFc5MLg=
+github.com/ebitengine/purego v0.11.3/go.mod h1:DCHPP08djqhNSoTfImcnHYQRZmd0qhakvrozqaEYhGQ=
 github.com/emiago/sipgo v1.7.2 h1:OH+2EOx0Cdi09O5P1rL5+LemDfd8sIT0ddYLvZIKrYo=
 github.com/emiago/sipgo v1.7.2/go.mod h1:6pByIgH5KcO0L1w1wm1c9XB+KNrS1/xyw59uFjMqN0M=
 github.com/go-gst/go-glib v0.0.2 h1:2sclYOyJzyi2/iRQlNjXoDi0FBxt8NHFPQFdRV9qH38=
@@ -36,8 +36,8 @@ github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aN
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/hajimehoshi/bitmapfont/v4 v4.2.0 h1:bpeN2ph7aHSuX7yoWFkLPo4ado9K+E+Dq7t6MoFcJAU=
 github.com/hajimehoshi/bitmapfont/v4 v4.2.0/go.mod h1:AIeoQek1nxUmDczXNtFEYWTQ4ArINijutPD729q/NeE=
-github.com/hajimehoshi/ebiten/v2 v2.10.5 h1:D6XuOFhzgkvfqeA6Xwwvcz54uj6HHPNC9Y+0pE6Qfs4=
-github.com/hajimehoshi/ebiten/v2 v2.10.5/go.mod h1:47QNgyS/y2ZRkjVUvlGLx8a+F7MSjcn8/GsjcCZ9Rc8=
+github.com/hajimehoshi/ebiten/v2 v2.10.6 h1:GXnY8UMglSjsszZJpBxbqzdQHkmWqS0vMxD/h93sE7k=
+github.com/hajimehoshi/ebiten/v2 v2.10.6/go.mod h1:sUj89hH41Ph6bkTrdSrkKZYtGl0OENrkb7w1Y7xsJUc=
 github.com/icholy/digest v1.2.0 h1:oTbG4IsNOmidJ+421ehG7Ty93yt1yotq13kFMG569yw=
 github.com/icholy/digest v1.2.0/go.mod h1:1P1+LzUv48ybX7bu8tVpZ2QWdd+xRuePNuGawHjwRUE=
 github.com/kelindar/binary v1.2.0 h1:YelTDD/s6LIBRdjkvY7bT1lQxI4P4ldapheBc68NgI8=
