@@ -8,7 +8,7 @@ require (
 	github.com/asticode/go-astiav v0.43.0
 	github.com/at-wat/ebml-go v0.19.4
 	github.com/ebitengine/debugui v0.3.1
-	github.com/emiago/sipgo v1.7.2
+	github.com/emiago/sipgo v1.7.3
 	github.com/go-gst/go-gst v0.0.2
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
