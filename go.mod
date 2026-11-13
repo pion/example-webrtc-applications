@@ -9,7 +9,7 @@ require (
 	github.com/at-wat/ebml-go v0.19.4
 	github.com/ebitengine/debugui v0.3.1
 	github.com/emiago/sipgo v1.7.3
-	github.com/go-gst/go-gst v0.0.2
+	github.com/go-gst/go-gst v0.0.3
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/hajimehoshi/ebiten/v2 v2.10.6
@@ -33,7 +33,7 @@ require (
 	github.com/ebitengine/gomobile v0.0.0-20260820040257-d11f821a26a6 // indirect
 	github.com/ebitengine/hideconsole v1.0.0 // indirect
 	github.com/ebitengine/purego v0.11.3 // indirect
-	github.com/go-gst/go-glib v0.0.2 // indirect
+	github.com/go-gst/go-glib v0.0.4 // indirect
 	github.com/go-text/typesetting v0.3.5 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
