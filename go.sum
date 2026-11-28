@@ -14,10 +14,10 @@ github.com/ebitengine/purego v0.11.3 h1:OB+JLpdm7ioymhyA+6s5kbb/uOuYycAgL8NNTFc5
 github.com/ebitengine/purego v0.11.3/go.mod h1:DCHPP08djqhNSoTfImcnHYQRZmd0qhakvrozqaEYhGQ=
 github.com/emiago/sipgo v1.7.4 h1:aptEiE+SbH2kXosm6hJRfq3Y0RiskwO1c4eHfM9pAIQ=
 github.com/emiago/sipgo v1.7.4/go.mod h1:6pByIgH5KcO0L1w1wm1c9XB+KNrS1/xyw59uFjMqN0M=
-github.com/go-gst/go-glib v0.0.2 h1:2sclYOyJzyi2/iRQlNjXoDi0FBxt8NHFPQFdRV9qH38=
-github.com/go-gst/go-glib v0.0.2/go.mod h1:cHWRWZCiwhx4CmW92T0/+cxn69AquI7aj2mIk96WgEI=
-github.com/go-gst/go-gst v0.0.2 h1:WVhfnSPUq9+Ilre50iP7lPklr35l3jyiPY+cq8bpTVk=
-github.com/go-gst/go-gst v0.0.2/go.mod h1:NPMsDZ4Bq3TzTWxUYMYnOyclGNHQUEV9EcbUc6jN7cM=
+github.com/go-gst/go-glib v0.0.5 h1:ymJ3io8/lnaSwOox1HibSLqak1R+0QgtI9LmcSMwp+0=
+github.com/go-gst/go-glib v0.0.5/go.mod h1:cHWRWZCiwhx4CmW92T0/+cxn69AquI7aj2mIk96WgEI=
+github.com/go-gst/go-gst v0.0.4 h1:I2H1UrgeVeukYcRhxrKWurgvE2NbKNhr+Te5NzMP7pc=
+github.com/go-gst/go-gst v0.0.4/go.mod h1:1L2gyNBJAJf96pFqBzwbb7Ir5okPcj3O0egbqUDShkk=
 github.com/go-text/typesetting v0.3.5 h1:XZPUooClHY0Vf/rFyUyuPRNEkawARaFzLMQcXLSEyPk=
 github.com/go-text/typesetting v0.3.5/go.mod h1:XZO1hD+nQVyvVa5IicQk7FsCa4PFQaJ2soWAP1f//68=
 github.com/go-text/typesetting-utils v0.0.0-20260419141703-4ffe8874dabc h1:8FGo2It5K75XkavhTiCKExUfVaVDS1feBnLCru5qeoY=
